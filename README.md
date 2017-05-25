@@ -1,19 +1,17 @@
 # Steps to run Configurator-exporter
 
 ## Clone deepInsights git repo
-cd /opt/
-
-git clone https://USERNAME@github.com/pramurthy/deepInsight.git
+git clone https://github.com/maplelabs/configurator-exporter.git /opt/configurator-exporter
 
 ###### Note: replace USERNAME
 
 ## Set Pythonpath
 
-export PYTHONPATH=$PYTHONPATH:/opt/deepInsight/configurator-exporter
+export PYTHONPATH=$PYTHONPATH:/opt/configurator-exporter
 
 ## Run configurator server
 
-cd /opt/deepInsight/configurator-exporter
+cd /opt/configurator-exporter
 
 python api_server.py -h
 usage: api_server.py [-h] [-p PORT] [-i HOST]
