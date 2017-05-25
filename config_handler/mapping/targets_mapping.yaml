@@ -1,0 +1,7 @@
+#mappign files for targets
+
+elasticsearch:
+ type: elasticsearch
+ host: "Host Ip required"
+ port: "Port required "
+ index: "Index required"
