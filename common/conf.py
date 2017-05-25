@@ -1,5 +1,5 @@
 COLLECTDBIN = '/opt/collectd/sbin/collectd'
-CollectdPluginDestDir = '/opt/collectd'
+CollectdPluginDestDir = '/opt/collectd/plugins'
 CollectdPluginConfDir = '/opt/collectd/conf'
 CollectdConfDir = '/opt/collectd/etc'
 TEMPLATE_DIR = 'config_handler/templates'
