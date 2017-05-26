@@ -9,6 +9,7 @@ def set_collectd_config(metrics):
     :param metrics:
     :return:
     """
+    create_plugin_env()
     collector_obj = collectd_manager.CollectdManager(metrics)
     success, return_dict = collector_obj.set_config()
     return return_dict
