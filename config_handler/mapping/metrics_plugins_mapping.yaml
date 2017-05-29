@@ -42,9 +42,9 @@ libvirt_static:
 libvirt_dynamic:
  - name: libvirt_interface
    interval: 10
- - name: libvirt_interface
+ - name: libvirt_cpu
    interval: 10
- - name: libvirt_interface
+ - name: libvirt_disk
    interval: 10
 
 # mapping for mysql plugin
