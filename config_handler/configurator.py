@@ -158,10 +158,10 @@ def get_metrics_plugins_params(plugins=None):
 def get_logging_plugins_params(plugins=None):
     if plugins is None:
         plugins = []
-    result = []
+    result = {PLUGINS: []}
     for i in get_supported_logging_plugins():
         if plugins and i not in plugins:
             continue
-        result.append({NAME: i, "filter": []})
+        result[PLUGINS].append({NAME: i, "filter": []})
 
     return result
