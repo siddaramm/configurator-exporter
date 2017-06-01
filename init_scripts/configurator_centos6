@@ -11,7 +11,7 @@
 
 dir="/opt/configurator-exporter"
 cmd="python api_server.py"
-user="root"
+user=""
 
 name=`basename $0`
 pid_file="/var/run/$name.pid"
@@ -36,7 +36,7 @@ case "$1" in
         if [ -z "$user" ]; then
             sudo $cmd >> "$stdout_log" 2>> "$stderr_log" &
         else
-            sudo -u "$user" $cmd >> "$stdout_log" 2>> "$stderr_log" &
+            sudo -u $user $cmd >> "$stdout_log" 2>> "$stderr_log" &
         fi
         echo $! > "$pid_file"
         if ! is_running; then
