@@ -2,6 +2,7 @@
 
 import argparse
 import web
+import ConfigParser
 from common.util import *
 from stat_exporter import collectd_exporter
 from config_handler import configurator
@@ -213,14 +214,27 @@ class FluentdProcess:
 if __name__ == '__main__':
     """main function"""
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--port', type=int, action='store', default=8000, dest='port',
+    parser.add_argument('-p', '--port', type=int, action='store', dest='port',
                         help='port on which configurator will listen, Default 8000')
-    parser.add_argument('-i', '--ip', action='store', default="0.0.0.0", dest='host',
+    parser.add_argument('-i', '--ip', action='store', dest='host',
                         help='host ip on which configurator will listen, Default 0.0.0.0')
     args = parser.parse_args()
 
     host = args.host
     port = args.port
+
+    config = ConfigParser.ConfigParser()
+    config.read('./config.ini')
+
+    try:
+        if not host:
+            host = config.get('DEFAULT', 'host')
+            
+        if not port:
+            port = config.get('DEFAULT', 'port')
+    except:
+        pass
+
     if not host:
         host = "0.0.0.0"
     if not port:
@@ -228,4 +242,4 @@ if __name__ == '__main__':
 
     create_plugin_env()
     app = MyApplication(urls, globals())
-    app.run(host=host, port=port)
+    app.run(host=host, port=int(port))
