@@ -1,0 +1,14 @@
+[Unit]
+Description=Configurator
+After=syslog.target local-fs.target network.target
+ConditionPathExists=/opt/configurator-exporter/api_server.py
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/configurator-exporter
+ExecStart=/opt/configurator-exporter/api_server.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
