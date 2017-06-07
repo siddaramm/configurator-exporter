@@ -42,13 +42,13 @@ def delete_collectd_config():
 
 def get_collectd_plugins_mapping():
     dirname, filename = os.path.split(os.path.abspath(__file__))
-    file_name = dirname + os.path.sep + CollectdPluginMappingFilePath
+    file_name = os.path.join(dirname,CollectdPluginMappingFilePath)
     return read_yaml_file(file_name)
 
 
 def get_supported_targets_mapping():
     dirname, filename = os.path.split(os.path.abspath(__file__))
-    file_name = dirname + os.pathsep + TargetMappingFilePath
+    file_name = os.path.join(dirname, TargetMappingFilePath)
     return read_yaml_file(file_name)
 
 
@@ -250,7 +250,7 @@ def delete_collectd_conf():
 
 def get_fluentd_plugins_mapping():
     dirname, filename = os.path.split(os.path.abspath(__file__))
-    file_name = dirname + os.pathsep + FluentdPluginMappingFilePath
+    file_name = os.path.join(dirname, FluentdPluginMappingFilePath)
     return read_yaml_file(file_name)
     # return read_yaml_file(FluentdPluginMappingFilePath)
 
