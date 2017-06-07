@@ -42,7 +42,7 @@ def delete_collectd_config():
 
 def get_collectd_plugins_mapping():
     dirname, filename = os.path.split(os.path.abspath(__file__))
-    file_name = dirname + os.pathsep + CollectdPluginMappingFilePath
+    file_name = dirname + os.path.sep + CollectdPluginMappingFilePath
     return read_yaml_file(file_name)
 
 

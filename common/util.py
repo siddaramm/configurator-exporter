@@ -10,9 +10,9 @@ from constants import *
 
 CollectdData = ConfigDataDir + '/collectd_data.json'
 FluentdData = ConfigDataDir + '/fluentd_data.json'
-CollectdPluginMappingFilePath = 'config_handler/mapping/metrics_plugins_mapping.yaml'
-FluentdPluginMappingFilePath = 'config_handler/mapping/logging_plugins_mapping.yaml'
-TargetMappingFilePath = 'config_handler/mapping/targets_mapping.yaml'
+CollectdPluginMappingFilePath = 'mapping/metrics_plugins_mapping.yaml'
+FluentdPluginMappingFilePath = 'mapping/logging_plugins_mapping.yaml'
+TargetMappingFilePath = 'mapping/targets_mapping.yaml'
 
 def format_response(count, data=None, error=None):
     if data is None:
