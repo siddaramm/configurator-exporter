@@ -42,7 +42,7 @@ libvirt_static:
 libvirt_dynamic:
  - name: libvirt_interface
    interval: 10
- - name: libvirt_cpu
+ - name: libvirt_compute
    interval: 10
  - name: libvirt_disk
    interval: 10
