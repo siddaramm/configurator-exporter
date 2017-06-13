@@ -133,6 +133,7 @@ def get_targets_params(targets=None):
             continue
         result.append(value)
     return result
+
 def get_metrics_plugins_params(plugins=None):
     """
     Get the names of plugin and configurable parameters

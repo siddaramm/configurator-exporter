@@ -25,7 +25,8 @@ class FluentdPluginManager:
         self.tags = template_data.get(TAGS, [])
         self.logger_user_input = template_data
 
-        self.plugin_config = read_yaml_file(FluentdPluginMappingFilePath)
+        # self.plugin_config = read_yaml_file(FluentdPluginMappingFilePath)
+        self.plugin_config = get_fluentd_plugins_mapping()
         self.target_mapping_list = get_supported_targets_mapping()
 
         self.plugin_post_data, self.status = [], []
@@ -392,6 +393,7 @@ class FluentdPluginManager:
 
             logging[PLUGINS] = plugins_list
 
+            mapping_list = get_supported_targets_mapping()
             for i in range(len(targets_list)):
                 if STATUS in targets_list[i] and "FAILED" in targets_list[i][STATUS]:
                     del targets_list[i]
@@ -399,6 +401,19 @@ class FluentdPluginManager:
 
                 if STATUS in targets_list[i]:
                     del targets_list[i][STATUS]
+
+                # # Storing only value of  mapping file targets params
+                # try:
+                #     keys = []
+                #     if TYPE in targets_list[i] and targets_list[i][TYPE] in mapping_list.keys():
+                #         keys = mapping_list[targets_list[i][TYPE]].keys()
+                #
+                #     for key in targets_list[i].keys():
+                #         if key not in keys:
+                #             del targets_list[i][key]
+                #
+                # except:
+                #     pass
 
             logging[TARGETS] = targets_list
 
@@ -415,7 +430,10 @@ class FluentdPluginManager:
         print self.target_mapping_list
         for x_targets in self.logger_user_input.get('targets'):
             if x_targets[TYPE] in self.target_mapping_list.keys():
-                pass
+                keys = self.target_mapping_list[x_targets[TYPE]].keys()
+                for key in x_targets.keys():
+                    if key not in keys:
+                        del x_targets[key]
             else:
                 x_targets[STATUS] = "FAILED: Unsupported metrics targets"
 
