@@ -196,6 +196,11 @@ class CollectdManager:
             if TARGETS in collector_dict:
                 for target in collector_dict[TARGETS]:
                     if target[TYPE] in self.target_mapping_list.keys():
+                        keys = self.target_mapping_list[target[TYPE]].keys()
+                        for key in target.keys():
+                            if key not in keys:
+                                del target[key]
+
                         self.target_list.append(target)
                         target_names_list.append(target[TYPE])
                     else:
@@ -217,10 +222,11 @@ class CollectdManager:
                             plugin_temp = copy.deepcopy(plugin)
                             # Propulate CONFIG_DATA is applicable
                             if CONFIG_DATA in plugin_temp:
-                                del plugin_temp[CONFIG_DATA]
                                 if CONFIG_DATA in profile:
                                     for key, value in profile[CONFIG_DATA].items():
-                                        plugin_temp[key] = value
+                                        if key in plugin_temp[CONFIG_DATA].keys():
+                                            plugin_temp[key] = value
+                                del plugin_temp[CONFIG_DATA]
 
                             # Propulate TARGETS ,INTERVAL,TAGS in each plugin
                             plugin_temp[TARGETS] = target_names_list
@@ -301,6 +307,7 @@ class CollectdManager:
             metrics[PLUGINS] = cfg_dict
 
             # Build Targets Result
+            mapping_list = get_supported_targets_mapping()
             for i in range(len(target_list)):
                 if STATUS in target_list[i] and "FAILED" in target_list[i][STATUS]:
                     del target_list[i]
@@ -308,6 +315,19 @@ class CollectdManager:
 
                 if STATUS in target_list[i]:
                     del target_list[i][STATUS]
+
+                # try:
+                #     keys = []
+                #     if TYPE in target_list[i] and target_list[i][TYPE] in mapping_list.keys():
+                #         keys = mapping_list[target_list[i][TYPE]].keys()
+                #
+                #     for key in target_list[i].keys():
+                #         if key not in keys:
+                #             del target_list[i][key]
+                #
+                # except:
+                #     pass
+
             metrics[TARGETS] = target_list
 
             # Store config data
