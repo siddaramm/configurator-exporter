@@ -146,7 +146,6 @@ def start_collectd():
         out, err = run_shell_command(command)
     if err:
         logger.warning("Failed to start collectd" + str(err))
-        
 
 def stop_collectd():
     # command = "service collectd stop".split()

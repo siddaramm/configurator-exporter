@@ -427,7 +427,6 @@ class FluentdPluginManager:
             self.logger.error(error_msg)
 
     def verify_targets(self):
-        print self.target_mapping_list
         for x_targets in self.logger_user_input.get('targets'):
             if x_targets[TYPE] in self.target_mapping_list.keys():
                 keys = self.target_mapping_list[x_targets[TYPE]].keys()
