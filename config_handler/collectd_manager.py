@@ -272,7 +272,7 @@ class CollectdManager:
                 if STATUS not in target:
                     target[STATUS] = "SUCCESS: targets configured"
             metrics[TARGETS] = self.target_list
-
+            metrics[ENABLED] = self.collector_dict.get(ENABLED)
             return True, metrics
         except Exception as e:
             error_msg += "bulid set config result: "
@@ -329,7 +329,7 @@ class CollectdManager:
                 #     pass
 
             metrics[TARGETS] = target_list
-
+            metrics[ENABLED] = self.collector_dict.get(ENABLED)
             # Store config data
             file_writer(CollectdData, json.dumps(metrics))
             self.logger.info(" maintain set configuration data for configurator to use")
@@ -386,7 +386,7 @@ class CollectdManager:
             stop_collectd()
             if self.collector_dict.get(ENABLED, True):
                 start_collectd()
-            self.logger.info("collectd process successfully enable")
+                self.logger.info("collectd process successfully enable")
 
             (success, result) = self.bulid_set_config_result()
             if not success:
