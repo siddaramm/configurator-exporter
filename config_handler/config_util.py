@@ -126,7 +126,6 @@ def get_fluentd_version():
                 return line
     return "UNKNOWN"
 
-
 def start_collectd():
     service = "collectd"
     status = get_service_status(service)
@@ -141,9 +140,13 @@ def start_collectd():
     else:
         out, err = restart_service(service)
 
+    pid = get_process_id(service)
+    if pid == -1:
+        command = COLLECTDBIN + " -C " + CollectdConfDir + "/collectd.conf"
+        out, err = run_shell_command(command)
     if err:
         logger.warning("Failed to start collectd" + str(err))
-
+        
 
 def stop_collectd():
     # command = "service collectd stop".split()
@@ -151,12 +154,11 @@ def stop_collectd():
     #     print (line)
     service = "collectd"
     status = get_service_status(service)
-    if status == -1:
-        pid = get_process_id(service)
-        if pid != -1:
-            kill_process(pid)
-    elif status == 1:
+    if status == 1:
         stop_service(service)
+    pid = get_process_id(service)
+    if pid != -1:
+        kill_process(pid)
 
 
 def get_collectd_status():

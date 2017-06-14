@@ -369,7 +369,7 @@ class FluentdPluginManager:
                 x_targets[STATUS] = "SUCCESS: targets configured"
 
         logging[TARGETS] = self.logger_user_input.get(TARGETS)
-
+        logging[ENABLED] = self.enable
         return logging
 
     def store_set_config(self):
@@ -416,7 +416,7 @@ class FluentdPluginManager:
                 #     pass
 
             logging[TARGETS] = targets_list
-
+            logging[ENABLED] = self.enable
             # Store config data
             file_writer(FluentdData, json.dumps(logging))
             self.logger.info(" maintain set configuration data for configurator to use")

@@ -12,6 +12,8 @@ def set_collectd_config(metrics):
     create_plugin_env()
     collector_obj = collectd_manager.CollectdManager(metrics)
     success, return_dict = collector_obj.set_config()
+    if ERROR not in  return_dict:
+        return_dict[COLLECTD_STATUS] = get_collectd_process()
     return return_dict
 
 
@@ -23,6 +25,7 @@ def get_collectd_config():
     exsting_data = file_reader(CollectdData)
     if exsting_data:
         exsting_data = json.loads(exsting_data)
+        exsting_data[COLLECTD_STATUS] = get_collectd_process()
     else:
         exsting_data = {}
     return exsting_data
@@ -50,7 +53,7 @@ def get_collectd_process():
     API endpoint for get collectd status
     :return:
     """
-    return {COLLECTD_STATUS: get_collectd_status(), VERSION: get_collectd_version()}
+    return {COLLECTD_SERVICE: get_collectd_status(), VERSION: get_collectd_version()}
 
 
 def enabled_fluentd(data):
@@ -75,7 +78,7 @@ def get_fluentd_process():
     API endpoint for get fluentd status
     :return:
     """
-    return {FLUENTD_STATUS: get_fluentd_status(), VERSION: get_fluentd_version()}
+    return {FLUENTD_SERVICE: get_fluentd_status(), VERSION: get_fluentd_version()}
 
 
 def set_fluentd_config(logging):
@@ -87,6 +90,8 @@ def set_fluentd_config(logging):
     return_dict = None
     obj = fluentd_manager.FluentdPluginManager(logging)
     return_dict = obj.set_config()
+    if ERROR not in return_dict:
+        return_dict[FLUENTD_STATUS] = get_fluentd_process()
     # collector_obj = collectd_manager.CollectdManager(logging)
     # success, return_dict = collector_obj.set_config()
     return return_dict
@@ -96,6 +101,7 @@ def get_fluentd_config():
     exsting_data = file_reader(FluentdData)
     if exsting_data:
         exsting_data = json.loads(exsting_data)
+        exsting_data[FLUENTD_STATUS]= get_fluentd_process()
     else:
         exsting_data = {}
     return exsting_data
