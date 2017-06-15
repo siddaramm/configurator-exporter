@@ -47,7 +47,7 @@ apache:
   - name: jvm_stats
     interval: 300
     config_data:
-      process: "name of java process"
+      processName: "name of java process"
 
 # apache perf plugin mapping to apache_perf
 apache_perf:
@@ -102,4 +102,4 @@ java:
  - name: jvm_stats
    interval: 300
    config_data:
-    process: "name of java process"
+    processName: "name of java process"

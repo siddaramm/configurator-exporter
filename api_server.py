@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
-import argparse
-import web
 import ConfigParser
+import argparse
+
+import web
+
 from common.util import *
-from stat_exporter import collectd_exporter
 from config_handler import configurator
+from stat_exporter import collectd_exporter
 
 urls = (
     "/", "Root",
@@ -22,6 +24,8 @@ urls = (
     "/api/collectd/process", "CollectdProcess",
     "/api/fluentd/process", "FluentdProcess"
 )
+
+
 # app = web.application(urls, globals())
 
 class MyApplication(web.application):
@@ -115,16 +119,30 @@ class Config:
             error_msg = "Invalid logging config"
             raise web.badrequest(error_msg)
 
-
-
-
         if metrics:
             metrics = configurator.map_local_targets(targets, metrics)
             result[METRICS] = configurator.set_collectd_config(metrics)
+        else:
+            result[METRICS] = configurator.set_collectd_config(metrics)
 
         if logging:
-            logging = configurator.map_local_targets(targets,logging)
+            logging = configurator.map_local_targets(targets, logging)
             result[LOGGING] = configurator.set_fluentd_config(logging)
+        else:
+            result[LOGGING] = configurator.set_fluentd_config(logging)
+
+        if data.get(HEARTBEAT, True):
+            es_config = dict()
+            for target in targets:
+                if target[TYPE] == ELASTICSEARCH:
+                    es_config = target
+                    break
+            if configurator.timer:
+                try:
+                    configurator.timer.cancel()
+                except:
+                    pass
+            configurator.write_config_to_target(es_config)
         return json.dumps(result)
 
     def GET(self):
@@ -235,7 +253,7 @@ if __name__ == '__main__':
     try:
         if not host:
             host = config.get('DEFAULT', 'host')
-            
+
         if not port:
             port = config.get('DEFAULT', 'port')
     except:

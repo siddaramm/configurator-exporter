@@ -1,3 +1,6 @@
+import requests
+from elasticsearch import Elasticsearch
+
 from stat_exporter.collectd_exporter import *
 
 
@@ -42,7 +45,7 @@ def delete_collectd_config():
 
 def get_collectd_plugins_mapping():
     dirname, filename = os.path.split(os.path.abspath(__file__))
-    file_name = os.path.join(dirname,CollectdPluginMappingFilePath)
+    file_name = os.path.join(dirname, CollectdPluginMappingFilePath)
     return read_yaml_file(file_name)
 
 
@@ -126,6 +129,7 @@ def get_fluentd_version():
                 return line
     return "UNKNOWN"
 
+
 def start_collectd():
     service = "collectd"
     status = get_service_status(service)
@@ -146,6 +150,7 @@ def start_collectd():
         out, err = run_shell_command(command)
     if err:
         logger.warning("Failed to start collectd" + str(err))
+
 
 def stop_collectd():
     # command = "service collectd stop".split()
@@ -291,3 +296,31 @@ def delete_fluentd_config():
         error_msg += str(e)
         logger.error(error_msg)
     return False, error_msg
+
+
+def write_to_elasticsearch(host, port, index, type, data):
+    '''
+    Post the Data to Elastic_search
+    '''
+    url = "http://{0}:{1}/{2}/{3}".format(host, port, index, type)
+    headers = {'content-type': 'application/json'}
+    hostname = get_hostname()
+    data['hostName'] = hostname
+    # print json.dumps(data)
+    try:
+        r = requests.post(url, data=json.dumps(data),
+                          headers=headers, timeout=30)
+    except Exception as e:
+        logger.error("write_to_elastic() error: %s" % str(e))
+
+# def write_in_elasticsearch(host, port, index, type, data):
+#     try:
+#         es = Elasticsearch([{'host': host, 'port': port}])
+#         r = requests.get('http://{0}:{1}'.format(host, port), timeout=10)
+#         hostname = get_hostname()
+#         data['hostName'] = hostname
+#         if r.status_code == 200:
+#             es.index(index=index, doc_type=type, body=data)
+#     except Exception as e:
+#         logger.error("write_in_elasticsearch error: %s" % str(e))
+
