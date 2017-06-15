@@ -172,3 +172,20 @@ def get_logging_plugins_params(plugins=None):
         result[PLUGINS].append({NAME: i, "filter": []})
 
     return result
+
+def map_local_targets(targets,data):
+    n_targets = list()
+    if TARGETS in data:
+        for l_targets in data[TARGETS]:
+            for g_targets in targets:
+                if l_targets == g_targets.get(NAME):
+                    n_targets.append(g_targets)
+    if not n_targets:
+        logger.info("local targets is not matching with Global Targets")
+    data[TARGETS] = n_targets
+    return data
+
+
+
+
+

@@ -103,6 +103,7 @@ class Config:
 
         metrics = data.get(METRICS, {})
         logging = data.get(LOGGING, {})
+        targets = data.get(TARGETS, {})
 
         if not (metrics or logging):
             error_msg = "Invalid Config"
@@ -114,10 +115,15 @@ class Config:
             error_msg = "Invalid logging config"
             raise web.badrequest(error_msg)
 
+
+
+
         if metrics:
+            metrics = configurator.map_local_targets(targets, metrics)
             result[METRICS] = configurator.set_collectd_config(metrics)
 
         if logging:
+            logging = configurator.map_local_targets(targets,logging)
             result[LOGGING] = configurator.set_fluentd_config(logging)
         return json.dumps(result)
 
