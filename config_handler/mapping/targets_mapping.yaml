@@ -1,6 +1,7 @@
 #mappign files for targets
 
 elasticsearch:
+ name: "name of elastic search clluster"
  type: elasticsearch
  host: "Host Ip required"
  port: "Port required "

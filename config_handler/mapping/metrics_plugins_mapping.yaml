@@ -1,5 +1,20 @@
 # mapping file provide abtraction for different collectd plugins
 
+# GLobal abstraction for linuxstatic and linux_dynamics plugins
+linux:
+ - name: cpu_static
+   interval: 10
+ - name: disk_stat
+   interval: 300
+ - name: ram_util
+   interval: 300
+ - name: cpu_util
+   interval: 10
+ - name: tcp_stats
+   interval: 300
+ - name: nic_stats
+   interval: 300
+
 # linux static plugin mapping to cpu_static
 linux_static:
  - name: cpu_static
@@ -18,6 +33,22 @@ linux_dynamic:
  - name: nic_stats
    interval: 300
 
+# abstraction for apache log and perf plugins with jvm stats
+apache:
+  - name: apache_perf
+    interval: 300
+    config_data:
+      port: "port in which apache service is exposed on localhost"
+      location: "location to get apache stats e.g. server_status"
+  - name: apache_trans
+    interval: 100
+    config_data:
+      accesslog: "accessLog path for apache"
+  - name: jvm_stats
+    interval: 300
+    config_data:
+      process: "name of java process"
+
 # apache perf plugin mapping to apache_perf
 apache_perf:
  - name: apache_perf
@@ -32,6 +63,16 @@ apache_trans:
    interval: 100
    config_data:
     accesslog: "accessLog path for apache"
+
+libvirt:
+  - name: libvirt_static
+    interval: 10
+  - name: libvirt_interface
+    interval: 10
+  - name: libvirt_compute
+    interval: 10
+  - name: libvirt_disk
+    interval: 10
 
 # mapping for libvirt static plugin
 libvirt_static:
