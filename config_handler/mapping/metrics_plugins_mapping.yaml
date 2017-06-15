@@ -43,7 +43,7 @@ apache:
   - name: apache_trans
     interval: 100
     config:
-      accesslog: "accessLog path for apache"
+      logPath: "accessLog path for apache"
   - name: jvm_stats
     interval: 300
     config:
