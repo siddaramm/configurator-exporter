@@ -37,23 +37,23 @@ linux_dynamic:
 apache:
   - name: apache_perf
     interval: 300
-    config_data:
+    config:
       port: "port in which apache service is exposed on localhost"
       location: "location to get apache stats e.g. server_status"
   - name: apache_trans
     interval: 100
-    config_data:
+    config:
       accesslog: "accessLog path for apache"
   - name: jvm_stats
     interval: 300
-    config_data:
+    config:
       processName: "name of java process"
 
 # apache perf plugin mapping to apache_perf
 apache_perf:
  - name: apache_perf
    interval: 300
-   config_data:
+   config:
     port: "port in which apache service is exposed on localhost"
     location: "location to get apache stats e.g. server_status"
 
@@ -61,7 +61,7 @@ apache_perf:
 apache_trans:
  - name: apache_trans
    interval: 100
-   config_data:
+   config:
     accesslog: "accessLog path for apache"
 
 libvirt:
@@ -92,7 +92,7 @@ libvirt_dynamic:
 mysql:
  - name: mysql
    interval: 300
-   config_data:
+   config:
     host: "MySql Host IP"
     user: "mysql username"
     password: "mysql password"
@@ -101,5 +101,5 @@ mysql:
 java:
  - name: jvm_stats
    interval: 300
-   config_data:
+   config:
     processName: "name of java process"

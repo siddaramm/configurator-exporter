@@ -140,9 +140,11 @@ class Config:
             if configurator.timer:
                 try:
                     configurator.timer.cancel()
+                    configurator.timer = None
                 except:
                     pass
-            configurator.write_config_to_target(es_config)
+            h_interval = data.get(HEARTBEAT_INTERVAL, configurator.CONFIG_WRITE_INTERVAL)
+            configurator.write_config_to_target(es_config, h_interval)
         return json.dumps(result)
 
     def GET(self):

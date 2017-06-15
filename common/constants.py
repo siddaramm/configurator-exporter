@@ -1,7 +1,7 @@
 COLLECTORS = "collectors"
 COLLECTOR_MGR = "collector_manager"
 COLLECTD_MGR = "collectd_manager"
-CONFIG_DATA = "config_data"
+CONFIG_DATA = "config"
 NODEMGR = "nodemgr_type"
 ERROR = "error_msg"
 ENABLED = "enabled"
@@ -74,3 +74,4 @@ METRICS = "metrics"
 LOGGING = "logging"
 
 HEARTBEAT = "heartbeat"
+HEARTBEAT_INTERVAL = "heartbeat_interval"

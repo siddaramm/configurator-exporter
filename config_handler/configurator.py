@@ -199,7 +199,8 @@ def map_local_targets(targets, data):
     return data
 
 
-def write_config_to_target(es_config):
+def write_config_to_target(es_config, interval=CONFIG_WRITE_INTERVAL):
+    # print json.dumps(es_config), interval
     global timer
     # es_config = dict()
     data = dict()
@@ -217,9 +218,10 @@ def write_config_to_target(es_config):
         try:
             if timer:
                 timer.cancel()
+                timer = None
                 write_to_elasticsearch(host=host, port=port, index=index, type=type, data=data)
 
-            timer = Timer(CONFIG_WRITE_INTERVAL, write_config_to_target, [es_config])
+            timer = Timer(interval, write_config_to_target, [es_config, interval])
             timer.start()
         except Exception as e:
             logger.error("Write Config to Target failed, Error: {0}\n".format(str(e)))
