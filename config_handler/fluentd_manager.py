@@ -111,7 +111,7 @@ class FluentdPluginManager:
         # Read template config, merge them with plugin config and generate
         # plugin params
         self.logger.info('Configuring the plugin data.')
-        for x_plugin in self.plugins:
+        for x_plugin in self.logger_user_input.get(PLUGINS, []):
             temp = dict()
             temp['source'] = {}
             temp['source']['tag'] = x_plugin.get('tags', [])
@@ -261,7 +261,7 @@ class FluentdPluginManager:
         """
         self.logger.info('Generating fluentd config file (td-agent.conf).')
         lines = []
-        for x_plugin in self.logger_user_input.get(PLUGINS, []):
+        for x_plugin in self.plugins:
             if STATUS not in x_plugin:
                 lines.append('@include ' + x_plugin.get('name'))
 
@@ -435,7 +435,7 @@ class FluentdPluginManager:
                     if key not in keys:
                         del x_targets[key]
             else:
-                x_targets[STATUS] = "FAILED: Unsupported metrics targets"
+                x_targets[STATUS] = "FAILED: Unsupported logging targets"
 
     def set_config(self):
         """

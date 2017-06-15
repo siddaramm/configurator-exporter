@@ -189,9 +189,12 @@ def map_local_targets(targets, data):
         for l_targets in data[TARGETS]:
             for g_targets in targets:
                 if l_targets == g_targets.get(NAME):
+                    if CONFIG in g_targets:
+                        g_targets.update(g_targets[CONFIG])
+                        g_targets.pop(CONFIG)
                     n_targets.append(g_targets)
     if not n_targets:
-        logger.info("local targets is not matching with Global Targets")
+        logger.info("local targets list is not matching with Global Targets")
     data[TARGETS] = n_targets
     return data
 

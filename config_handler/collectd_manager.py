@@ -1,5 +1,6 @@
 import copy
 from mako.template import Template
+
 from config_util import *
 
 
@@ -272,7 +273,7 @@ class CollectdManager:
                 if STATUS not in target:
                     target[STATUS] = "SUCCESS: targets configured"
             metrics[TARGETS] = self.target_list
-            metrics[ENABLED] = self.collector_dict.get(ENABLED)
+            metrics[ENABLED] = self.collector_dict.get(ENABLED, True)
             return True, metrics
         except Exception as e:
             error_msg += "bulid set config result: "
@@ -316,20 +317,20 @@ class CollectdManager:
                 if STATUS in target_list[i]:
                     del target_list[i][STATUS]
 
-                # try:
-                #     keys = []
-                #     if TYPE in target_list[i] and target_list[i][TYPE] in mapping_list.keys():
-                #         keys = mapping_list[target_list[i][TYPE]].keys()
-                #
-                #     for key in target_list[i].keys():
-                #         if key not in keys:
-                #             del target_list[i][key]
-                #
-                # except:
-                #     pass
+                    # try:
+                    #     keys = []
+                    #     if TYPE in target_list[i] and target_list[i][TYPE] in mapping_list.keys():
+                    #         keys = mapping_list[target_list[i][TYPE]].keys()
+                    #
+                    #     for key in target_list[i].keys():
+                    #         if key not in keys:
+                    #             del target_list[i][key]
+                    #
+                    # except:
+                    #     pass
 
             metrics[TARGETS] = target_list
-            metrics[ENABLED] = self.collector_dict.get(ENABLED)
+            metrics[ENABLED] = self.collector_dict.get(ENABLED, True)
             # Store config data
             file_writer(CollectdData, json.dumps(metrics))
             self.logger.info(" maintain set configuration data for configurator to use")
