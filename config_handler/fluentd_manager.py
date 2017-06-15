@@ -20,9 +20,10 @@ class FluentdPluginManager:
         self.plugin_path = os.path.sep + 'etc' + os.path.sep + 'td-agent'
         self.service_name = 'td-agent'
 
-        self.tags, self.plugins, self.target = [], [], []
-        self.enable = template_data[ENABLED]
+        self.plugins = []
+        self.enable = template_data.get(ENABLED, True)
         self.tags = template_data.get(TAGS, [])
+        self.targets = template_data.get(TARGETS, [])
         self.logger_user_input = template_data
 
         # self.plugin_config = read_yaml_file(FluentdPluginMappingFilePath)
@@ -110,7 +111,7 @@ class FluentdPluginManager:
         # Read template config, merge them with plugin config and generate
         # plugin params
         self.logger.info('Configuring the plugin data.')
-        for x_plugin in self.logger_user_input.get('plugins'):
+        for x_plugin in self.plugins:
             temp = dict()
             temp['source'] = {}
             temp['source']['tag'] = x_plugin.get('tags', [])
@@ -213,7 +214,7 @@ class FluentdPluginManager:
         lines.extend(['\t</record>', '</filter>'])
 
         # Add match. if data.get('match').has_key('tag'):
-        for x_targets in self.logger_user_input.get('targets'):
+        for x_targets in self.targets:
             if STATUS not in x_targets:
                 if 'tag' in data.get('match'):
                     lines.append('\n<match ' + source_tag + '.' +
@@ -260,11 +261,11 @@ class FluentdPluginManager:
         """
         self.logger.info('Generating fluentd config file (td-agent.conf).')
         lines = []
-        for x_plugin in self.plugins:
+        for x_plugin in self.logger_user_input.get(PLUGINS, []):
             if STATUS not in x_plugin:
                 lines.append('@include ' + x_plugin.get('name'))
 
-        for x_targets in self.logger_user_input.get('targets'):
+        for x_targets in self.targets:
             if STATUS not in x_targets:
                 lines.append('\n<match *>')
                 # for key, val in self.logger_user_input.get('targets')[0].iteritems():
@@ -364,11 +365,11 @@ class FluentdPluginManager:
 
         logging[PLUGINS] = self.plugins
 
-        for x_targets in self.logger_user_input.get(TARGETS):
+        for x_targets in self.targets:
             if STATUS not in x_targets:
                 x_targets[STATUS] = "SUCCESS: targets configured"
 
-        logging[TARGETS] = self.logger_user_input.get(TARGETS)
+        logging[TARGETS] = self.targets
         logging[ENABLED] = self.enable
         return logging
 
@@ -380,7 +381,7 @@ class FluentdPluginManager:
         error_msg = ""
         logging = {}
         plugins_list = copy.deepcopy(self.plugins)
-        targets_list = copy.deepcopy(self.logger_user_input.get(TARGETS))
+        targets_list = copy.deepcopy(self.targets)
         try:
             # Build plugin Result
             for i in range(len(plugins_list)):
@@ -427,7 +428,7 @@ class FluentdPluginManager:
             self.logger.error(error_msg)
 
     def verify_targets(self):
-        for x_targets in self.logger_user_input.get('targets'):
+        for x_targets in self.targets:
             if x_targets[TYPE] in self.target_mapping_list.keys():
                 keys = self.target_mapping_list[x_targets[TYPE]].keys()
                 for key in x_targets.keys():

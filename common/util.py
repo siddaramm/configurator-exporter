@@ -4,6 +4,7 @@ import os
 from subprocess import Popen, PIPE, STDOUT
 import yaml
 import signal
+from socket import gethostname
 
 from conf import *
 from constants import *
@@ -181,3 +182,11 @@ def get_process_id(process_name):
 
 def kill_process(pid):
     os.kill(pid, signal.SIGKILL)
+
+def get_hostname():
+    hostname = "UNKNOWN"
+    try:
+        hostname = gethostname()
+    except:
+        pass
+    return hostname

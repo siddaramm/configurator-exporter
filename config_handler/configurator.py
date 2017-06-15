@@ -1,6 +1,11 @@
+from threading import Timer
+
 from config_handler import collectd_manager
 from config_handler import fluentd_manager
 from config_util import *
+
+CONFIG_WRITE_INTERVAL = 30
+timer = None
 
 
 def set_collectd_config(metrics):
@@ -12,7 +17,7 @@ def set_collectd_config(metrics):
     create_plugin_env()
     collector_obj = collectd_manager.CollectdManager(metrics)
     success, return_dict = collector_obj.set_config()
-    if ERROR not in  return_dict:
+    if ERROR not in return_dict:
         return_dict[COLLECTD_STATUS] = get_collectd_process()
     return return_dict
 
@@ -101,7 +106,7 @@ def get_fluentd_config():
     exsting_data = file_reader(FluentdData)
     if exsting_data:
         exsting_data = json.loads(exsting_data)
-        exsting_data[FLUENTD_STATUS]= get_fluentd_process()
+        exsting_data[FLUENTD_STATUS] = get_fluentd_process()
     else:
         exsting_data = {}
     return exsting_data
@@ -122,12 +127,14 @@ def get_supported_logging_plugins():
         result.append(key)
     return result
 
+
 def get_supported_targets():
     mapping_list = get_supported_targets_mapping()
     result = []
     for key in mapping_list:
         result.append(key)
     return result
+
 
 def get_targets_params(targets=None):
     if targets is None:
@@ -139,6 +146,7 @@ def get_targets_params(targets=None):
             continue
         result.append(value)
     return result
+
 
 def get_metrics_plugins_params(plugins=None):
     """
@@ -162,6 +170,7 @@ def get_metrics_plugins_params(plugins=None):
         result[PLUGINS].append(data)
     return result
 
+
 def get_logging_plugins_params(plugins=None):
     if plugins is None:
         plugins = []
@@ -173,7 +182,8 @@ def get_logging_plugins_params(plugins=None):
 
     return result
 
-def map_local_targets(targets,data):
+
+def map_local_targets(targets, data):
     n_targets = list()
     if TARGETS in data:
         for l_targets in data[TARGETS]:
@@ -186,6 +196,27 @@ def map_local_targets(targets,data):
     return data
 
 
+def write_config_to_target(es_config):
+    global timer
+    # es_config = dict()
+    data = dict()
+    # for target in targets:
+    #     if target[TYPE] == ELASTICSEARCH:
+    #         es_config = target[CONFIG]
+    host = es_config.get(HOST)
+    port = es_config.get(PORT)
+    index = es_config.get(INDEX)
+    if host and port and index:
+        type = CONFIG
+        data[METRICS] = get_collectd_config()
+        data[LOGGING] = get_fluentd_config()
+        data[PLUGIN] = HEARTBEAT
+        try:
+            if timer:
+                timer.cancel()
+                write_to_elasticsearch(host=host, port=port, index=index, type=type, data=data)
 
-
-
+            timer = Timer(CONFIG_WRITE_INTERVAL, write_config_to_target, [es_config])
+            timer.start()
+        except Exception as e:
+            logger.error("Write Config to Target failed, Error: {0}\n".format(str(e)))
