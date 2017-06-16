@@ -43,11 +43,11 @@ apache:
   - name: apache_trans
     interval: 100
     config:
-      logPath: "accessLog path for apache"
+      accessLog: "accessLog path for apache"
   - name: jvm_stats
     interval: 300
     config:
-      processName: "name of java process"
+      process: "name of java process"
 
 # apache perf plugin mapping to apache_perf
 apache_perf:
@@ -102,4 +102,4 @@ java:
  - name: jvm_stats
    interval: 300
    config:
-    processName: "name of java process"
+    process: "name of java process"
