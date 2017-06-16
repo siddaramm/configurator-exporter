@@ -48,7 +48,7 @@ def expoter_logging(module_name):
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
 
-    logfile = log_dir + os.path.sep + 'exporter.log'
+    logfile = os.path.join(log_dir, LOGFILE)
 
     formatter_str = FORMATTER
     formatter_str = formatter_str.replace('*', '%')

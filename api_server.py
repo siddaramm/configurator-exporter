@@ -25,11 +25,11 @@ urls = (
     "/api/fluentd/process", "FluentdProcess"
 )
 
-
+DEFAULT_PORT = 8585
 # app = web.application(urls, globals())
 
 class MyApplication(web.application):
-    def run(self, host='0.0.0.0', port=8000, *middleware):
+    def run(self, host='0.0.0.0', port=DEFAULT_PORT, *middleware):
         func = self.wsgifunc(*middleware)
         return web.httpserver.runsimple(func, (host, port))
 
@@ -241,7 +241,7 @@ if __name__ == '__main__':
     """main function"""
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port', type=int, action='store', dest='port',
-                        help='port on which configurator will listen, Default 8000')
+                        help='port on which configurator will listen, Default {0}'.format(DEFAULT_PORT))
     parser.add_argument('-i', '--ip', action='store', dest='host',
                         help='host ip on which configurator will listen, Default 0.0.0.0')
     args = parser.parse_args()
@@ -264,7 +264,7 @@ if __name__ == '__main__':
     if not host:
         host = "0.0.0.0"
     if not port:
-        port = 8000
+        port = DEFAULT_PORT
 
     create_plugin_env()
     app = MyApplication(urls, globals())
