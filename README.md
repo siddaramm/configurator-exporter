@@ -20,12 +20,12 @@ optional arguments:
 
   -h, --help            show this help message and exit
 
-  -p PORT, --port PORT  port on which configurator will listen, Default 8000
+  -p PORT, --port PORT  port on which configurator will listen, Default 8585
 
   -i HOST, --ip HOST    host ip on which configurator will listen, Default 0.0.0.0
 
 
-python api_server.py -i 0.0.0.0 -p 8000
+python api_server.py -i 0.0.0.0 -p 8585
 
 
 
