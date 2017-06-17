@@ -62,7 +62,7 @@ apache_trans:
  - name: apache_trans
    interval: 100
    config:
-    accesslog: "accessLog path for apache"
+    accessLog: "accessLog path for apache"
 
 libvirt:
   - name: libvirt_static
