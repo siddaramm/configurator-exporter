@@ -32,6 +32,21 @@ mysql-slow:
     flush_interval: 120s
 
 # apache logging mapping
+apache:
+  source:
+    '@type': tail
+    path: '/var/log/apache2/*.log, /var/log/httpd/*_log'
+    read_from_head: true
+    pos_file: '/var/log/td-agent/apache.pos'
+    refresh_interval: 2s
+  filter:
+    node: '#{Socket.gethostname}'
+    time: '#{Time.now.to_f}'
+    file: '${tag_suffix[1]}'
+  match:
+    flush_interval: 120s
+
+# apache logging mapping
 apache_error:
   source:
     '@type': tail
