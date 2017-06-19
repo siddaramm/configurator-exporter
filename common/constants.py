@@ -1,6 +1,7 @@
 COLLECTORS = "collectors"
 COLLECTOR_MGR = "collector_manager"
 COLLECTD_MGR = "collectd_manager"
+FLUENTD_MGR = "fluentd_manager"
 CONFIG_DATA = "config"
 NODEMGR = "nodemgr_type"
 ERROR = "error_msg"

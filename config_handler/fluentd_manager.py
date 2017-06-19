@@ -33,7 +33,7 @@ class FluentdPluginManager:
         self.plugin_post_data, self.status = [], []
 
         # Initialize logger object
-        self.logger = expoter_logging(COLLECTD_MGR)
+        self.logger = expoter_logging(FLUENTD_MGR)
         self.logger.info('Logger Object Successfully Initialized.')
         # self.logger.info('Targets Nodes : %s', str(self.nodelist))
         self.logger.info('User Input : %s', str(self.logger_user_input))
