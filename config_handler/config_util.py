@@ -1,5 +1,4 @@
 import requests
-from elasticsearch import Elasticsearch
 
 from stat_exporter.collectd_exporter import *
 
