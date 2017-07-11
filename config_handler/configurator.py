@@ -192,7 +192,7 @@ def map_local_targets(targets, data):
                     if CONFIG in g_targets:
                         g_targets.update(g_targets[CONFIG])
                         g_targets.pop(CONFIG)
-                    g_targets = {str(k): str(v) for k, v in g_targets.items()}
+                    g_targets = dict((str(k), str(v)) for k, v in g_targets.items())
                     n_targets.append(g_targets)
     if not n_targets:
         logger.info("local targets list is not matching with Global Targets")
