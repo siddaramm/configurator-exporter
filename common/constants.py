@@ -28,6 +28,7 @@ PROCESS = "process"
 USER = "user"
 PASSWORD = "password"
 LOCATION = "location"
+NODETYPE = "nodeType"
 
 SALT = "salt"
 COLLECTD = "collectd"

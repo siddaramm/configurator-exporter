@@ -4,6 +4,8 @@
 linux:
  - name: cpu_static
    interval: 10
+   config:
+    nodeType: "Type of Node Virtual/Physical"
  - name: disk_stat
    interval: 300
  - name: ram_util
@@ -19,6 +21,8 @@ linux:
 linux_static:
  - name: cpu_static
    interval: 10
+   config:
+    nodeType: "Type of Node Virtual/Physical"
 
 # linux dynamic plugin mapping to disk_stat, ram_util, cpu_util, tcp_stats, nic_stats
 linux_dynamic:
