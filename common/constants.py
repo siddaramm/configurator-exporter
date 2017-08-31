@@ -29,6 +29,7 @@ USER = "user"
 PASSWORD = "password"
 LOCATION = "location"
 NODETYPE = "nodeType"
+SECURE = "secure"
 
 SALT = "salt"
 COLLECTD = "collectd"

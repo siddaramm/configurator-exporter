@@ -44,6 +44,7 @@ apache:
     config:
       port: "port in which apache service is exposed on localhost"
       location: "location to get apache stats e.g. server_status"
+      secure: "true for https and false for http"
   - name: apache_trans
     interval: 100
     config:
@@ -60,6 +61,7 @@ apache_perf:
    config:
     port: "port in which apache service is exposed on localhost"
     location: "location to get apache stats e.g. server_status"
+    secure: "true for https and false for http"
 
 # apache trans plugin mapping to apache_trans
 apache_trans:
