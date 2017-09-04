@@ -20,7 +20,7 @@ class CollectdManager:
         self.collectd_conf_dir = CollectdConfDir
         self.interval = 10
         self.cfg_dict = {}
-        self.tag_list = []
+        self.tag_list = {}
         self.target_list = []
         self.seperate_files = True
         self.targets = {}
@@ -39,7 +39,7 @@ class CollectdManager:
         :return:
         """
         if plugin_tags is None:
-            plugin_tags = []
+            plugin_tags = {}
         if plugin_targets is None:
             plugin_targets = []
         error_msg = ""
@@ -191,7 +191,7 @@ class CollectdManager:
         try:
             collector_dict = self.collector_dict
             if TAGS in collector_dict:
-                self.tag_list = self.tag_list + list(collector_dict[TAGS])
+                self.tag_list = collector_dict[TAGS]
 
             # Match supported Targets
             if TARGETS in collector_dict:
