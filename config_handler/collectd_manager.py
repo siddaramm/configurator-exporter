@@ -331,6 +331,7 @@ class CollectdManager:
 
             metrics[TARGETS] = target_list
             metrics[ENABLED] = self.collector_dict.get(ENABLED, True)
+            metrics[TAGS] = self.collector_dict.get(TAGS, {})
             # Store config data
             file_writer(CollectdData, json.dumps(metrics))
             self.logger.info(" maintain set configuration data for configurator to use")
