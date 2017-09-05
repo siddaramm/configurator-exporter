@@ -22,7 +22,7 @@ class FluentdPluginManager:
 
         self.plugins = []
         self.enable = template_data.get(ENABLED, True)
-        self.tags = template_data.get(TAGS, [])
+        self.tags = template_data.get(TAGS, {})
         self.targets = template_data.get(TARGETS, [])
         self.logger_user_input = template_data
 
@@ -418,6 +418,7 @@ class FluentdPluginManager:
 
             logging[TARGETS] = targets_list
             logging[ENABLED] = self.enable
+            logging[TAGS] = self.tags
             # Store config data
             file_writer(FluentdData, json.dumps(logging))
             self.logger.info(" maintain set configuration data for configurator to use")
