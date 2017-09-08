@@ -114,7 +114,7 @@ class FluentdPluginManager:
         for x_plugin in self.logger_user_input.get(PLUGINS, []):
             temp = dict()
             temp['source'] = {}
-            temp['source']['tag'] = x_plugin.get('tags', [])
+            temp['source']['tag'] = x_plugin.get('tags', {})
             temp['name'] = x_plugin.get(NAME)
 
             if x_plugin.get(NAME) in self.plugin_config.keys():
@@ -171,21 +171,25 @@ class FluentdPluginManager:
         source_tag = str()
         lines = ['<source>']
         for key, val in data.get('source', {}).iteritems():
-            if isinstance(val, list):
-                try:
-                    source_tag = val[0] + '.*'
-                except Exception as err:
-                    self.logger.debug('Plugin tags not configured. Using plugin name as tag.'
-                                      'Exception - %s ', str(err))
-                    source_tag = data.get('name') + '.*'
-                    lines.append('\t' + key + ' ' + source_tag)
-                    continue
-                '''
-                source_tag = val[0]
-                except:
-                    self.logger.debug('Plugin tags not configured. Using plugin name as tag.')
-                    source_tag = data.get('name')
-                '''
+            # if isinstance(val, list):
+            #     try:
+            #         source_tag = val[0] + '.*'
+            #     except Exception as err:
+            #         self.logger.debug('Plugin tags not configured. Using plugin name as tag.'
+            #                           'Exception - %s ', str(err))
+            #         source_tag = data.get('name') + '.*'
+            #         lines.append('\t' + key + ' ' + source_tag)
+            #         continue
+            #     '''
+            #     source_tag = val[0]
+            #     except:
+            #         self.logger.debug('Plugin tags not configured. Using plugin name as tag.')
+            #         source_tag = data.get('name')
+            #     '''
+            #     lines.append('\t' + key + ' ' + source_tag)
+            #     continue
+            if key == "tag":
+                source_tag = data.get('name') + '.*'
                 lines.append('\t' + key + ' ' + source_tag)
                 continue
             lines.append('\t' + str(key) + ' ' + str(val))
@@ -209,8 +213,9 @@ class FluentdPluginManager:
             lines.append('\t\t' + key + ' \"' + val + '\"')
 
         # lines.append('\t\ttags ' + str(self.tags + [data.get('source').get('tag')]))
-        tags = [str(x) for x in self.tags + data.get('source').get('tag')]
-        lines.append('\t\ttags ' + str(tags).replace('\'', '"'))
+        for tag_key, tag_val in self.tags.items():
+            # tags = [str(x) for x in self.tags + data.get('source').get('tag')]
+            lines.append('\t\t' + '_tag_' + str(tag_key) + ' ' + '"' + str(tag_val) + '"')
         lines.extend(['\t</record>', '</filter>'])
 
         # Add match. if data.get('match').has_key('tag'):
