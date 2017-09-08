@@ -104,7 +104,7 @@ mysql:
     password: "mysql password"
 
 # mapping for java plugin
-java:
+jvm:
  - name: jvm
    interval: 300
    config:
