@@ -1,108 +1,122 @@
 # mysql logging mapping
 mysql:
-  source:
-    '@type': tail
-    format: none
-    path: '/var/log/mysql.log, /var/log/mysql/mysql.log'
-    read_from_head: true
-    pos_file: '/var/log/td-agent/mysql.pos'
-    refresh_interval: 2s
-  filter:
-    node: '#{Socket.gethostname}'
-    time: '#{Time.now.to_f}'
-    file: '${tag_suffix[1]}'
-  match:
-    flush_interval: 120s
+  error:
+    source:
+      '@type': tail
+      format: none
+      path: '/var/log/mysql/error.log, /var/log/mysql/mysql-error.log'
+      read_from_head: true
+      pos_file: '/var/log/td-agent/mysql-error.pos'
+      refresh_interval: 2s
+    filter:
+      node: '#{Socket.gethostname}'
+      time: '#{Time.now.to_f}'
+      file: '${tag_suffix[1]}'
+      _plugin: 'mysql'
+      _documentType: 'error'
+    match:
+      flush_interval: 120s
 
-mysql-slow:
-  source:
-    '@type': tail
-    format: multiline
-    format_firstline: '/^((. User)|(. Time))/'
-    format1: '/(?<message>.*)/'
-    path: '/var/log/mysql/mysql-slow.log'
-    read_from_head: true
-    pos_file: '/var/log/td-agent/mysql-slow.pos'
-    refresh_interval: 2s
-  filter:
-    node: '#{Socket.gethostname}'
-    time: '#{Time.now.to_f}'
-    file: '${tag_suffix[1]}'
-  match:
-    flush_interval: 120s
+  general-query:
+    source:
+      '@type': tail
+      format: none
+      path: '/var/log/mysql/mysql.log, /var/log/mysql.log'
+      read_from_head: true
+      pos_file: '/var/log/td-agent/mysql-error.pos'
+      refresh_interval: 2s
+    filter:
+      node: '#{Socket.gethostname}'
+      time: '#{Time.now.to_f}'
+      file: '${tag_suffix[1]}'
+      _plugin: 'mysql'
+      _documentType: 'general-query'
+    match:
+      flush_interval: 60s
+
+  slow-query:
+    source:
+      '@type': tail
+      format: multiline
+      format_firstline: '/^((. User)|(. Time))/'
+      format1: '/(?<message>.*)/'
+      path: '/var/log/mysql/mysql-slow-query.log'
+      read_from_head: true
+      pos_file: '/var/log/td-agent/mysql-slow.pos'
+      refresh_interval: 2s
+    filter:
+      node: '#{Socket.gethostname}'
+      time: '#{Time.now.to_f}'
+      file: '${tag_suffix[1]}'
+      _plugin: 'mysql'
+      _documentType: 'slow-query'
+    match:
+      flush_interval: 60s
 
 # apache logging mapping
 apache:
-  source:
-    '@type': tail
-    path: '/var/log/apache2/*.log, /var/log/httpd/*_log'
-    read_from_head: true
-    pos_file: '/var/log/td-agent/apache.pos'
-    refresh_interval: 2s
-  filter:
-    node: '#{Socket.gethostname}'
-    time: '#{Time.now.to_f}'
-    file: '${tag_suffix[1]}'
-  match:
-    flush_interval: 120s
-
-# apache logging mapping
-apache_error:
-  source:
-    '@type': tail
-    format: apache_error
-    path: '/var/log/apache2/error.log, /var/log/httpd/error_log'
-    read_from_head: true
-    pos_file: '/var/log/td-agent/apache_error.pos'
-    refresh_interval: 2s
-  filter:
-    node: '#{Socket.gethostname}'
-    time: '#{Time.now.to_f}'
-    file: '${tag_suffix[1]}'
-  match:
-    flush_interval: 120s
-
-apache_access:
-  source:
-    '@type': tail
-    format: apache2
-    path: '/var/log/apache2/access.log, /var/log/httpd/access_log'
-    read_from_head: true
-    pos_file: '/var/log/td-agent/apache_access.pos'
-    refresh_interval: 2s
-  filter:
-    node: '#{Socket.gethostname}'
-    time: '#{Time.now.to_f}'
-    file: '${tag_suffix[1]}'
-  match:
-    flush_interval: 120s
+  error:
+     source:
+       '@type': tail
+       format: apache_error
+       path: '/var/log/apache2/error.log, /var/log/httpd/error_log'
+       read_from_head: true
+       pos_file: '/var/log/td-agent/apache_error.pos'
+       refresh_interval: 2s
+     filter:
+       node: '#{Socket.gethostname}'
+       time: '#{Time.now.to_f}'
+       file: '${tag_suffix[1]}'
+       _plugin: 'apache'
+       _documentType: 'error'
+     match:
+       flush_interval: 60s
+  access:
+     source:
+       '@type': tail
+       format: apache2
+       path: '/var/log/apache2/access.log, /var/log/httpd/access_log'
+       read_from_head: true
+       pos_file: '/var/log/td-agent/apache_access.pos'
+       refresh_interval: 2s
+     filter:
+       node: '#{Socket.gethostname}'
+       time: '#{Time.now.to_f}'
+       file: '${tag_suffix[1]}'
+       _plugin: 'apache'
+       _documentType: 'access'
+     match:
+       flush_interval: 60s
 
 # libvirt log mapping
-libvirt:
-  source:
-    '@type': tail
-    path: '/var/log/libvirt/libvitd.log, /var/log/libvirt/*/*.log'
-    read_from_head: true
-    pos_file: '/var/log/td-agent/libvritd.pos'
-    refresh_interval: 2s
-  filter:
-    node: '#{Socket.gethostname}'
-    time: '#{Time.now.to_f}'
-    file: '${tag_suffix[1]}'
-  match:
-    flush_interval: 120s
+#libvirt:
+#  source:
+#    '@type': tail
+#    path: '/var/log/libvirt/libvitd.log, /var/log/libvirt/*/*.log'
+#    read_from_head: true
+#    pos_file: '/var/log/td-agent/libvritd.pos'
+#    refresh_interval: 2s
+#  filter:
+#    node: '#{Socket.gethostname}'
+#    time: '#{Time.now.to_f}'
+#    file: '${tag_suffix[1]}'
+#  match:
+#    flush_interval: 120s
 
 # syslog mapping
-syslog:
-  source:
-    '@type': syslog
-    refresh_interval: 2s
-  filter:
-    node: '#{Socket.gethostname}'
-    time: '#{Time.now.to_f}'
-  match:
-    tag: '**'
-    flush_interval: 120s
-    include_tag_key: true
+linux:
+  syslog:
+    source:
+      '@type': syslog
+      refresh_interval: 2s
+    filter:
+      node: '#{Socket.gethostname}'
+      time: '#{Time.now.to_f}'
+      _plugin: 'linux'
+      _documentType: 'syslog'
+    match:
+#      tag: '**'
+      flush_interval: 60s
+      include_tag_key: true
 
-default_flush_interval: 120s
+default_flush_interval: 60s

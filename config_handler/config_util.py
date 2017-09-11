@@ -259,21 +259,28 @@ def get_fluentd_plugins_mapping():
     return read_yaml_file(file_name)
     # return read_yaml_file(FluentdPluginMappingFilePath)
 
+def get_fluentd_plugins_components_mapping():
+    plugin_mapping =  get_fluentd_plugins_mapping()
+    n_plugins = dict()
+    for plugin_name, plugin_comps in plugin_mapping.items():
+        if isinstance(plugin_comps, dict):
+            for comp_name, comp_config in plugin_comps.items():
+                n_plugins[plugin_name + '-' + comp_name] = comp_config
+    logger.info("Converted plugin mapping %s" %json.dumps(n_plugins))
+    return n_plugins
 
 def delete_fluentd_config():
+    logger.info("Delete existing fluentd config")
     error_msg = ''
     fluentd_conf_dir = FluentdPluginConfDir + os.path.sep
-
     try:
         exsting_data = file_reader(FluentdData)
         if exsting_data:
             exsting_data = json.loads(exsting_data)
         else:
             exsting_data = {}
-
-        if LOGGING in exsting_data:
-            for x_plugin in exsting_data[LOGGING]:
-
+        if PLUGINS in exsting_data:
+            for x_plugin in exsting_data[PLUGINS]:
                 if NAME in x_plugin:
                     fluentd_conf_filepath = fluentd_conf_dir + x_plugin[NAME]
                     command = "rm -rf " + fluentd_conf_filepath
@@ -288,6 +295,7 @@ def delete_fluentd_config():
             if err:
                 msg = "Failed to Delete Fluentd conf file " + fluentd_conf_filepath
                 logger.warning(msg)
+        logger.info("Successfully deleted old fluentd config")
         return True, error_msg
 
     except Exception as e:
