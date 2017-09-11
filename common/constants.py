@@ -78,3 +78,5 @@ LOGGING = "logging"
 
 HEARTBEAT = "heartbeat"
 HEARTBEAT_INTERVAL = "heartbeat_interval"
+
+COMPONENTS = "components"

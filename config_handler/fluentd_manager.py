@@ -27,7 +27,7 @@ class FluentdPluginManager:
         self.logger_user_input = template_data
 
         # self.plugin_config = read_yaml_file(FluentdPluginMappingFilePath)
-        self.plugin_config = get_fluentd_plugins_mapping()
+        self.plugin_config = get_fluentd_plugins_components_mapping()
         self.target_mapping_list = get_supported_targets_mapping()
 
         self.plugin_post_data, self.status = [], []
@@ -111,7 +111,32 @@ class FluentdPluginManager:
         # Read template config, merge them with plugin config and generate
         # plugin params
         self.logger.info('Configuring the plugin data.')
+        x_comp_plugins = list()
         for x_plugin in self.logger_user_input.get(PLUGINS, []):
+            temp = dict()
+            if x_plugin.get(NAME) not in get_fluentd_plugins_mapping().keys():
+                temp['name'] = x_plugin.get(NAME)
+                strr = 'In-Valid input plugin type.' + x_plugin.get(NAME)
+                self.logger.warning(strr)
+                temp[STATUS] = "FAILED: Unsupported logging Plugin"
+                # self.plugins.append(temp)
+                continue
+            x_comps = x_plugin.get(CONFIG, {}).get(COMPONENTS, [])
+            # x_comp_plugins = list()
+            if x_comps:
+                for x_comp in x_comps:
+                    n_plugin = {NAME: x_plugin[NAME] + '-' + x_comp[NAME]}
+                    n_plugin["filter"] = x_comp.get("filter")
+                    n_plugin[TAGS] = x_plugin.get('tags', {})
+                    x_comp_plugins.append(n_plugin)
+            else:
+                for x_comp_name in get_fluentd_plugins_mapping().get(x_plugin[NAME], {}).keys():
+                    n_plugin = {NAME: x_plugin[NAME] + '-' + x_comp_name}
+                    n_plugin["filter"] = dict()
+                    n_plugin[TAGS] = x_plugin.get('tags', {})
+                    x_comp_plugins.append(n_plugin)
+        self.logger.info("New plugins based on components %s", json.dumps(x_comp_plugins))
+        for x_plugin in x_comp_plugins:
             temp = dict()
             temp['source'] = {}
             temp['source']['tag'] = x_plugin.get('tags', {})
@@ -130,33 +155,39 @@ class FluentdPluginManager:
                 self.plugins.append(temp)
                 continue
 
-            filter_lower = [x.lower()
-                            for x in x_plugin.get('filter', [])]
-            filter_upper = [x.upper()
-                            for x in x_plugin.get('filter', [])]
-
-            if 'WARNING' in filter_upper:
-                filter_upper.remove('WARNING')
-                filter_upper.append('WARN')
-
-            if 'all' in filter_lower:
-                if x_plugin.get(NAME) == 'syslog':
-                    temp['source']['log_level'] = 'debug'
-                else:
-                    if not temp['source'].get('format'):
-                        temp['source']['format'] = 'none'
-                    # temp['source']['format'] = 'none'
-                    temp['usr_filter'] = '(.*?)'
-            else:
-                if x_plugin.get(NAME) == 'syslog':
-                    temp['source']['log_level'] = filter_upper[0].lower()
-                else:
-                    if not temp['source'].get('format'):
-                        temp['source']['format'] = 'none'
-                    # temp['source']['format'] = 'none'
-                    temp[
-                        'usr_filter'] = '(.*(' + '|'.join(filter_upper) + ').*?)'
-
+            # filter_lower = [x.lower()
+            #                 for x in x_plugin.get('filter', [])]
+            # filter_upper = [x.upper()
+            #                 for x in x_plugin.get('filter', [])]
+            #
+            # if 'WARNING' in filter_upper:
+            #     filter_upper.remove('WARNING')
+            #     filter_upper.append('WARN')
+            #
+            # if 'all' in filter_lower:
+            #     if x_plugin.get(NAME) == 'linux-syslog':
+            #         temp['source']['log_level'] = 'debug'
+            #     else:
+            #         if not temp['source'].get('format'):
+            #             temp['source']['format'] = 'none'
+            #         # temp['source']['format'] = 'none'
+            #         temp['usr_filter'] = '(.*?)'
+            # else:
+            #     if x_plugin.get(NAME) == 'linux-syslog':
+            #         temp['source']['log_level'] = filter_upper[0].lower()
+            #     else:
+            #         if not temp['source'].get('format'):
+            #             temp['source']['format'] = 'none'
+            #         # temp['source']['format'] = 'none'
+            #         temp[
+            #             'usr_filter'] = '(.*(' + '|'.join(filter_upper) + ').*?)'
+            temp['usr_filter'] = {}
+            if x_plugin.get('filter', None):
+                for key, value in x_plugin.get('filter', {}).items():
+                    if isinstance(value, list):
+                        temp['usr_filter'][key] = '(.*(' + '|'.join(value) + ').*?)'
+                    else:
+                        temp['usr_filter'][key] = '(.*(' + str(value) + ').*?)'
             self.plugins.append(temp)
         self.logger.info('Plugin data successfully Configured.')
         return True
@@ -168,6 +199,7 @@ class FluentdPluginManager:
         :return: True if operation is successful
         """
         # Add source.
+        logger.info("Configure plugin file, data %s" %json.dumps(data))
         source_tag = str()
         lines = ['<source>']
         for key, val in data.get('source', {}).iteritems():
@@ -199,7 +231,10 @@ class FluentdPluginManager:
         if data.get('usr_filter', None):
             lines.append('\n<filter ' + source_tag + '*>')
             lines.append('\t@type grep')
-            lines.append('\tregexp1 message ' + data.get('usr_filter'))
+            count = 0
+            for key, value in data.get('usr_filter', {}).items():
+                count = count + 1
+                lines.append('\tregexp' + str(count) + ' ' + str(key) + ' ' + str(value))
             lines.append('</filter>')
 
         # Add record-transormation filter. if data.get('match').has_key('tag'):
@@ -251,6 +286,7 @@ class FluentdPluginManager:
         :return: true if operation is successful
         """
         # Generate the files in the salt dir
+        logger.debug("Generate plugins configs")
         self.configure_plugin_data()
 
         for x_plugin in self.plugins:
@@ -434,6 +470,7 @@ class FluentdPluginManager:
             self.logger.error(error_msg)
 
     def verify_targets(self):
+        logger.info("Verify targets")
         for x_targets in self.targets:
             if x_targets[TYPE] in self.target_mapping_list.keys():
                 keys = self.target_mapping_list[x_targets[TYPE]].keys()
