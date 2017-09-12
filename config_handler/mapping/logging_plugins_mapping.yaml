@@ -59,13 +59,14 @@ apache:
      source:
        '@type': tail
        format: apache_error
+       keep_time_key: 'true'
        path: '/var/log/apache2/error.log, /var/log/httpd/error_log'
        read_from_head: true
        pos_file: '/var/log/td-agent/apache_error.pos'
        refresh_interval: 2s
      filter:
        node: '#{Socket.gethostname}'
-       time: '#{Time.now.to_f}'
+#       time: '#{Time.now.to_f}'
        file: '${tag_suffix[1]}'
        _plugin: 'apache'
        _documentType: 'error'
@@ -74,14 +75,16 @@ apache:
   access:
      source:
        '@type': tail
-       format: apache2
+       format: '/^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$/'
+       time_format: '%d/%b/%Y:%H:%M:%S %z'
+       keep_time_key: 'true'
        path: '/var/log/apache2/access.log, /var/log/httpd/access_log'
        read_from_head: true
        pos_file: '/var/log/td-agent/apache_access.pos'
        refresh_interval: 2s
      filter:
        node: '#{Socket.gethostname}'
-       time: '#{Time.now.to_f}'
+#       time: '#{Time.now.to_f}'
        file: '${tag_suffix[1]}'
        _plugin: 'apache'
        _documentType: 'access'

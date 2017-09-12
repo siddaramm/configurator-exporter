@@ -124,6 +124,8 @@ def get_supported_logging_plugins():
     mapping_list = get_fluentd_plugins_mapping()
     result = []
     for key in mapping_list:
+        if key == 'default_flush_interval':
+            continue
         result.append(key)
     return result
 
@@ -178,7 +180,7 @@ def get_logging_plugins_params(plugins=None):
     for i in get_supported_logging_plugins():
         if plugins and i not in plugins:
             continue
-        result[PLUGINS].append({NAME: i, "filter": []})
+        result[PLUGINS].append({NAME: i, "config": {"components": [{"name": "Name of the component", "filter": {}}]}})
 
     return result
 
