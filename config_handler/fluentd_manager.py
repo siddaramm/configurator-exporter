@@ -119,7 +119,7 @@ class FluentdPluginManager:
                 strr = 'In-Valid input plugin type.' + x_plugin.get(NAME)
                 self.logger.warning(strr)
                 temp[STATUS] = "FAILED: Unsupported logging Plugin"
-                # self.plugins.append(temp)
+                self.plugins.append(temp)
                 continue
             x_comps = x_plugin.get(CONFIG, {}).get(COMPONENTS, [])
             # x_comp_plugins = list()
@@ -151,7 +151,7 @@ class FluentdPluginManager:
             else:
                 strr = 'In-Valid input plugin type.' + x_plugin.get(NAME)
                 self.logger.warning(strr)
-                temp[STATUS] = "FAILED: Unsupported logging Plugin"
+                temp[STATUS] = "FAILED: Unsupported logging plugin component"
                 self.plugins.append(temp)
                 continue
 
