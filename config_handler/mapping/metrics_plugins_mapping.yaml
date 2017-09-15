@@ -39,16 +39,16 @@ linux:
 
 # abstraction for apache log and perf plugins with jvm stats
 apache:
-  - name: apache_perf
+  - name: apache
     interval: 300
     config:
       port: "port in which apache service is exposed on localhost"
       location: "location to get apache stats e.g. server_status"
       secure: "true for https and false for http"
-  - name: apache_trans
-    interval: 100
-    config:
-      accessLog: "accessLog path for apache"
+#  - name: apache_trans
+#    interval: 100
+#    config:
+#      accessLog: "accessLog path for apache"
 #  - name: jvm_stats
 #    interval: 300
 #    config:
