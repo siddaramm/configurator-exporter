@@ -110,16 +110,21 @@ apache:
 linux:
   syslog:
     source:
-      '@type': syslog
+#      '@type': syslog
+      '@type': tail
+      format: syslog
+      keep_time_key: 'true'
+      path: '/var/log/syslog'
+      pos_file: '/var/log/td-agent/syslog.pos'
+      read_from_head: 'true'
       refresh_interval: 2s
     filter:
       node: '#{Socket.gethostname}'
-      time: '#{Time.now.to_f}'
+#      time: '#{Time.now.to_f}'
       _plugin: 'linux'
       _documentType: 'syslog'
+      file: '${tag_suffix[1]}'
     match:
-#      tag: '**'
-      flush_interval: 60s
-      include_tag_key: true
+      flush_interval: 30s
 
 default_flush_interval: 60s
