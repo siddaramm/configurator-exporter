@@ -224,6 +224,11 @@ class FluentdPluginManager:
                 source_tag = data.get('name') + '.*'
                 lines.append('\t' + key + ' ' + source_tag)
                 continue
+            if key == "multi_format_patterns":
+                for v in val:
+                    lines.append('\t' + str(v))
+                continue
+
             lines.append('\t' + str(key) + ' ' + str(val))
 
         lines.append('</source>')
@@ -321,7 +326,7 @@ class FluentdPluginManager:
                     lines.append('\t' + key + ' ' + val)
 
                 lines.append('\t' + 'flush_interval' + ' ' +
-                             str(self.plugin_config.get('default_flush_interval', '120s')))
+                             str(self.plugin_config.get('default_flush_interval', '60s')))
                 lines.append('\t' + 'include_tag_key' + ' true')
                 lines.append('</match>')
 

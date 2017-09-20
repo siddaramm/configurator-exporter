@@ -3,14 +3,22 @@ mysql:
   error:
     source:
       '@type': tail
-      format: none
       path: '/var/log/mysql/error.log, /var/log/mysql/mysql-error.log'
       read_from_head: true
       pos_file: '/var/log/td-agent/mysql-error.pos'
       refresh_interval: 2s
+      format: 'multi_format'
+      time_format: '%Y-%m-%d %H:%M:%S'
+      multi_format_patterns:
+       - '<pattern>'
+       - 'format /(?<time>[^ ]* [^ ]*)\s*\[(?<level>\S+)\]\s(?<message>.*)$/'
+       - '</pattern>'
+       - '<pattern>'
+       - 'format /(?<time>[^ ]* [^ ]*)\s*(?<message>.*)$/'
+       - '</pattern>'
     filter:
       node: '#{Socket.gethostname}'
-      time: '#{Time.now.to_f}'
+      time: ${require 'time'; time.to_time.to_f}
       file: '${tag_suffix[1]}'
       _plugin: 'mysql'
       _documentType: 'error'
@@ -20,14 +28,23 @@ mysql:
   general-query:
     source:
       '@type': tail
-      format: none
+      format: 'multi_format'
       path: '/var/log/mysql/mysql.log, /var/log/mysql.log'
       read_from_head: true
-      pos_file: '/var/log/td-agent/mysql-error.pos'
+      pos_file: '/var/log/td-agent/mysql-general-query.pos'
       refresh_interval: 2s
+      multi_format_patterns:
+       - '<pattern>'
+       - 'format /\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<IP>(\d+\.\d+\.\d+\.\d+))\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command_type>.\w*)\W+(?<argument>.*)\"/'
+       - '</pattern>'
+       - '<pattern>'
+       - 'format /\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command_type>.\w*)\W+(?<argument>.*)\"/'
+       - '</pattern>'
+    time_format: '%Y-%m-%d %H:%M:%S'
+    keep_time_key: 'true'
     filter:
       node: '#{Socket.gethostname}'
-      time: '#{Time.now.to_f}'
+      time: ${require 'time'; time.to_time.to_f}
       file: '${tag_suffix[1]}'
       _plugin: 'mysql'
       _documentType: 'general-query'
@@ -36,17 +53,11 @@ mysql:
 
   slow-query:
     source:
-      '@type': tail
-      format: multiline
-      format_firstline: '/^((. User)|(. Time))/'
-      format1: '/(?<message>.*)/'
-      path: '/var/log/mysql/mysql-slow-query.log'
-      read_from_head: true
-      pos_file: '/var/log/td-agent/mysql-slow.pos'
-      refresh_interval: 2s
+      '@type': mysql_slow_query
+      path: '/var/log/mysql/mysql-slow.log'
     filter:
       node: '#{Socket.gethostname}'
-      time: '#{Time.now.to_f}'
+      time: ${require 'time'; time.to_time.to_f}
       file: '${tag_suffix[1]}'
       _plugin: 'mysql'
       _documentType: 'slow-query'
