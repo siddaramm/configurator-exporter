@@ -70,6 +70,7 @@ apache:
        file: '${tag_suffix[1]}'
        _plugin: 'apache'
        _documentType: 'error'
+       time: ${require 'time'; time.to_time.to_f}
      match:
        flush_interval: 60s
   access:
@@ -84,10 +85,11 @@ apache:
        refresh_interval: 2s
      filter:
        node: '#{Socket.gethostname}'
-#       time: '#{Time.now.to_f}'
+       time: '#{Time.now.to_f}'
        file: '${tag_suffix[1]}'
        _plugin: 'apache'
        _documentType: 'access'
+       time: ${require 'time'; time.to_time.to_f}
      match:
        flush_interval: 60s
 

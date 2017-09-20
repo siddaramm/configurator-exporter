@@ -243,6 +243,7 @@ class FluentdPluginManager:
                          data.get('match').get('tag', []) + '>')
         else:
             lines.append('\n<filter ' + source_tag + '*>')
+        lines.append('\tenable_ruby')
         lines.extend(['\t@type record_transformer', '\t<record>'])
         for key, val in data.get('filter', {}).iteritems():
             lines.append('\t\t' + key + ' \"' + val + '\"')
