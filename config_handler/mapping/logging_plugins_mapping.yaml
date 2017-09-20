@@ -85,7 +85,7 @@ apache:
        refresh_interval: 2s
      filter:
        node: '#{Socket.gethostname}'
-       time: '#{Time.now.to_f}'
+#       time: '#{Time.now.to_f}'
        file: '${tag_suffix[1]}'
        _plugin: 'apache'
        _documentType: 'access'
@@ -126,6 +126,7 @@ linux:
       _plugin: 'linux'
       _documentType: 'syslog'
       file: '${tag_suffix[1]}'
+      time: ${require 'time'; time.to_time.to_f}
     match:
       flush_interval: 30s
 
