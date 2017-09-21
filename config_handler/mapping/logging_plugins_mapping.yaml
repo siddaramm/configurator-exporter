@@ -28,8 +28,9 @@ mysql:
       read_from_head: true
       pos_file: '/var/log/td-agent/mysql-general-query.pos'
       formats:
-       - '/\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<IP>(\d+\.\d+\.\d+\.\d+))\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command_type>.\w*)\W+(?<argument>.*)\"/'
-       - '/\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command_type>.\w*)\W+(?<argument>.*)\"/'
+       - '/(?<time>[^ ]* [^ ]*)\s*(?<id>\S+)\s(?<command>[^ ]*)\s(?<argument>[^\t].*)$/'
+       - '/\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<IP>(\d+\.\d+\.\d+\.\d+))\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command>.\w*)\W+(?<argument>.*)\"/'
+       - '/\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command>.\w*)\W+(?<argument>.*)\"/'
     time_format: '%Y-%m-%d %H:%M:%S'
     keep_time_key: 'true'
     filter:
