@@ -19,7 +19,7 @@ mysql:
       _plugin: 'mysql'
       _documentType: 'error'
     match:
-      flush_interval: 120s
+      flush_interval: 30s
 
   general-query:
     source:
@@ -41,7 +41,7 @@ mysql:
       _plugin: 'mysql'
       _documentType: 'general-query'
     match:
-      flush_interval: 60s
+      flush_interval: 30s
 
   slow-query:
     source:
@@ -54,7 +54,7 @@ mysql:
       _plugin: 'mysql'
       _documentType: 'slow-query'
     match:
-      flush_interval: 60s
+      flush_interval: 30s
 
 # apache logging mapping
 apache:
@@ -75,7 +75,7 @@ apache:
        _documentType: 'error'
        time: ${require 'time'; time.to_time.to_f}
      match:
-       flush_interval: 60s
+       flush_interval: 30s
   access:
      source:
        '@type': tail
@@ -94,7 +94,7 @@ apache:
        _documentType: 'access'
        time: ${require 'time'; time.to_time.to_f}
      match:
-       flush_interval: 60s
+       flush_interval: 30s
 
 # libvirt log mapping
 #libvirt:
