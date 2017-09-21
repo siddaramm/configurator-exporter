@@ -8,6 +8,7 @@ import web
 from common.util import *
 from config_handler import configurator
 from stat_exporter import collectd_exporter
+from service_discovery import discovery
 
 urls = (
     "/", "Root",
@@ -22,7 +23,10 @@ urls = (
     "/api/config", "Config",
     "/api/config/.*", "Config",
     "/api/collectd/process", "CollectdProcess",
-    "/api/fluentd/process", "FluentdProcess"
+    "/api/fluentd/process", "FluentdProcess",
+    "/api/service", "Service",
+    "/api/service/", "Service"
+
 )
 
 DEFAULT_PORT = 8585
@@ -231,6 +235,12 @@ class FluentdProcess:
     def GET(self):
         result = configurator.get_fluentd_process()
         return json.dumps(result)
+
+class Service:
+    # Gives details of all running services on the server
+    def GET(self):
+        data = discovery.discover_services()
+        return json.dumps(data)
 
 
 # if __name__ == "__main__":
