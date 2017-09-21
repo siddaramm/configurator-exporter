@@ -9,13 +9,9 @@ mysql:
       refresh_interval: 2s
       format: 'multi_format'
       time_format: '%Y-%m-%d %H:%M:%S'
-      multi_format_patterns:
-       - '<pattern>'
-       - 'format /(?<time>[^ ]* [^ ]*)\s*\[(?<level>\S+)\]\s(?<message>.*)$/'
-       - '</pattern>'
-       - '<pattern>'
-       - 'format /(?<time>[^ ]* [^ ]*)\s*(?<message>.*)$/'
-       - '</pattern>'
+      formats:
+       - '/(?<time>[^ ]* [^ ]*)\s*\[(?<level>\S+)\]\s(?<message>.*)$/'
+       - '/(?<time>[^ ]* [^ ]*)\s*(?<message>.*)$/'
     filter:
       node: '#{Socket.gethostname}'
       time: ${require 'time'; time.to_time.to_f}
@@ -33,13 +29,9 @@ mysql:
       read_from_head: true
       pos_file: '/var/log/td-agent/mysql-general-query.pos'
       refresh_interval: 2s
-      multi_format_patterns:
-       - '<pattern>'
-       - 'format /\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<IP>(\d+\.\d+\.\d+\.\d+))\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command_type>.\w*)\W+(?<argument>.*)\"/'
-       - '</pattern>'
-       - '<pattern>'
-       - 'format /\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command_type>.\w*)\W+(?<argument>.*)\"/'
-       - '</pattern>'
+      formats:
+       - '/\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<IP>(\d+\.\d+\.\d+\.\d+))\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command_type>.\w*)\W+(?<argument>.*)\"/'
+       - '/\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command_type>.\w*)\W+(?<argument>.*)\"/'
     time_format: '%Y-%m-%d %H:%M:%S'
     keep_time_key: 'true'
     filter:
