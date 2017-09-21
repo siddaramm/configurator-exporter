@@ -224,9 +224,11 @@ class FluentdPluginManager:
                 source_tag = data.get('name') + '.*'
                 lines.append('\t' + key + ' ' + source_tag)
                 continue
-            if key == "multi_format_patterns":
+            if key == "formats":
                 for v in val:
-                    lines.append('\t' + str(v))
+                    lines.append('\t' + "<pattern>")
+                    lines.append('\t' + 'format ' + str(v))
+                    lines.append('\t' + "</pattern>")
                 continue
 
             lines.append('\t' + str(key) + ' ' + str(val))
