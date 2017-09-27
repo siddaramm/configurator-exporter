@@ -1,5 +1,6 @@
 import json
 import subprocess
+from config_handler import configurator
 
 services = [
     "elasticsearch",
@@ -7,6 +8,13 @@ services = [
     "mysql",
     "mssql"
 ]
+
+service_plugin_mapping = {
+    "elasticsearch": "jvm",
+    "apache": "apache",
+    "mysql": "mysql",
+    "mssql": "mssql"
+}
 
 def get_process_id(service):
     pids = []
@@ -58,6 +66,34 @@ def add_ports(dict):
     return dict
 
 
+def add_logger_config(dict):
+    dict["loggerConfig"] = {}
+    return dict
+
+
+def add_poller_config(dict):
+    dict["pollerConfig"] = {}
+    return dict
+
+
+def add_agent_config(service, dict):
+    dict["agentConfig"] = {}
+    agentConfig = {}
+    for key,value in service_plugin_mapping.items():
+        if(key == service):
+            agentConfig["plugin"] = value
+            break
+    config = configurator.get_metrics_plugins_params(agentConfig["plugin"])
+    for item in config["plugins"]:
+        if(item.get("config") and item.get("name") == agentConfig["plugin"]):
+            #Config specific to jvm plugin
+            if(agentConfig["plugin"] == "jvm"):
+                item["config"]["process"] = service
+            agentConfig["config"] = item["config"]
+            break
+    dict["agentConfig"].update(agentConfig)
+    return dict
+
 def discover_services():
     discovery = {}
     for service in services:
@@ -66,24 +102,31 @@ def discover_services():
             discovery[service] = []
             for item in pidList:
                 service_pid_dict = {}
+
                 #Add PID, cpuUsage, memUsage, status to service_discovery
                 service_pid_dict["PID"] = item["process_id"]
                 service_pid_dict["user"] = item["user"]
                 service_pid_dict["cpuUsage"] = item["cpuUsage"]
                 service_pid_dict["memUsage"] = item["memUsage"]
                 service_pid_dict["status"] = item["status"]
+
                 #Add state, threads assosciated with the service PID
                 status_dict = add_status(service_pid_dict)
+
                 #Add listening ports assosciated with the service PID
                 port_dict = add_ports(status_dict)
+
+                #Add logger config to the service PID
+                logger_dict = add_logger_config(port_dict)
+
+                #Add poller config to the service dict
+                poller_dict = add_poller_config(logger_dict)
+
+                #Add agent config to the service dict
+                agent_dict = add_agent_config(service, poller_dict)
+
                 #final_dict assosciated with the service PID
-                final_dict = port_dict
+                final_dict = agent_dict
                 discovery[service].append(final_dict)
-        #The service is not running on the server
-        else:
-            discovery[service] = {}
-            discovery[service]["status"] = "not running"
 
     return discovery
-
-
