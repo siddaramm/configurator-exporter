@@ -42,9 +42,30 @@ apache:
   - name: apache
     interval: 300
     config:
-      port: "port in which apache service is exposed on localhost"
-      location: "location to get apache stats e.g. server_status"
-      secure: "true for https and false for http"
+    - Mandatory: true
+      min: ''
+      dataType: string
+      max: ''
+      defaultValue: '8080'
+      tooltip: "port in which apache service is exposed on localhost"
+      label: Port
+      fieldName: port
+    - Mandatory: true
+      min: ""
+      dataType: string
+      max: ""
+      defaultValue: "server-status?auto"
+      tooltip: "location to get apache stats e.g. server_status"
+      label: Location
+      fieldName: location
+    - Mandatory: true
+      min: ""
+      dataType: string
+      max: ""
+      defaultValue: False
+      tooltip: "server is listening on HTTP/HTTPS protocol"
+      label: Secure
+      fieldName: secure
 #  - name: apache_trans
 #    interval: 100
 #    config:
@@ -99,13 +120,41 @@ mysql:
  - name: mysql
    interval: 300
    config:
-    host: "MySql Host IP"
-    user: "mysql username"
-    password: "mysql password"
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: username
+     tooltip: Username for MySQL server
+     label: Username
+     fieldName: user
+   - Mandatory: true
+     min: ''
+     dataType: password
+     max: ''
+     defaultValue: "***"
+     tooltip: Password for MySQL server
+     label: Password
+     fieldName: password
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: 127.0.0.1
+     tooltip: MySql Host IP
+     label: Host Ip
+     fieldName: host
 
 # mapping for java plugin
 jvm:
  - name: jvm
    interval: 300
    config:
-    process: "name of java process"
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: ''
+     tooltip: Name of java process
+     label: Process
+     fieldName: process

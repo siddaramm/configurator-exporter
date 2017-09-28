@@ -164,9 +164,10 @@ def get_metrics_plugins_params(plugins=None):
         if plugins and name not in plugins:
             continue
         data = {NAME: name}
-        config_data = {}
+        config_data = []
         for v in value:
-            config_data.update(v.get(CONFIG_DATA, {}))
+            for item in v.get(CONFIG_DATA):
+                config_data.append(item)
         if config_data:
             data[CONFIG_DATA] = config_data
         result[PLUGINS].append(data)

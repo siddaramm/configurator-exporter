@@ -79,20 +79,23 @@ def add_poller_config(dict):
 def add_agent_config(service, dict):
     dict["agentConfig"] = {}
     agentConfig = {}
+    agentConfig["config"] = {}
     for key,value in service_plugin_mapping.items():
         if(key == service):
-            agentConfig["plugin"] = value
+            agentConfig["name"] = value
             break
-    config = configurator.get_metrics_plugins_params(agentConfig["plugin"])
+    config = configurator.get_metrics_plugins_params(agentConfig["name"])
     for item in config["plugins"]:
-        if(item.get("config") and item.get("name") == agentConfig["plugin"]):
+        if(item.get("config") and item.get("name") == agentConfig["name"]):
             #Config specific to jvm plugin
-            if(agentConfig["plugin"] == "jvm"):
-                item["config"]["process"] = service
-            agentConfig["config"] = item["config"]
-            break
+            if(agentConfig["name"] == "jvm"):
+                agentConfig["config"]["process"] = service
+                break
+            for item1 in item["config"]:
+                agentConfig["config"][item1["fieldName"]] = item1["defaultValue"]
     dict["agentConfig"].update(agentConfig)
     return dict
+
 
 def discover_services():
     discovery = {}

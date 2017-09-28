@@ -216,7 +216,6 @@ class CollectdManager:
                     # Match supported Plugin
                     if profile[NAME] in self.plugin_mapping_list.keys():
                         plugin_list = self.plugin_mapping_list[profile[NAME]]
-
                         # print "plugin_list",plugin_list
                         # Verify Supported Plugin
                         for plugin in plugin_list:
@@ -225,10 +224,11 @@ class CollectdManager:
                             if CONFIG_DATA in plugin_temp:
                                 if CONFIG_DATA in profile:
                                     for key, value in profile[CONFIG_DATA].items():
-                                        if key in plugin_temp[CONFIG_DATA].keys():
-                                            plugin_temp[key] = value
+                                        for item in plugin_temp[CONFIG_DATA]:
+                                            if key in item.values():
+                                                plugin_temp[key] = value
+                                                break
                                 del plugin_temp[CONFIG_DATA]
-
                             # Propulate TARGETS ,INTERVAL,TAGS in each plugin
                             plugin_temp[TARGETS] = target_names_list
                             if INTERVAL not in plugin_temp:
