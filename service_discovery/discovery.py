@@ -8,7 +8,9 @@ services = [
     "mysql",
     "mssql"
 ]
-
+'''
+Mapping for services and the plugin to be configured for them.
+'''
 service_plugin_mapping = {
     "elasticsearch": "jvm",
     "apache": "apache",
@@ -16,7 +18,13 @@ service_plugin_mapping = {
     "mssql": "mssql"
 }
 
+
 def get_process_id(service):
+    '''
+    :param service: name of the service
+    :return: return a list of PID's assosciated with the service along with their
+    status, memUsage, cpuUsage and user
+    '''
     pids = []
     cmd = "ps auxww | grep [" + service[:1] + "]" + service[1:]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -30,10 +38,16 @@ def get_process_id(service):
             pid["memUsage"] = line.split()[3]
             pid["status"] = "running"
             pids.append(pid)
+
     return pids
 
 
 def add_status(dict):
+    '''
+    Find the status of the PID running, sleeping.
+    :param dict: dictionary return by get_process_id
+    :return: add status for the PID in th dictionary.
+    '''
     # Add state, threads assosciated with the service PID
     fileobj = open('/proc/%d/status' % (dict["PID"]))
     if fileobj is None:
@@ -51,14 +65,33 @@ def add_status(dict):
     return dict
 
 
-def add_ports(dict):
-    cmd = "netstat -anp | grep %s" %(dict["PID"])
+def add_ports(dict, service):
+    '''
+    Add listening ports for the PID
+    :param dict: dictionary returned by add_status
+    :param service: name of the service
+    :return: add listening ports for the PID to the dictionary
+    '''
+    if(service == "apache"):
+        apache_service = ""
+        os_cmd = "lsb_release -d"
+        p = subprocess.Popen(os_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        (out, err) = p.communicate()
+        for line in out.splitlines():
+            if("Ubuntu" in line):
+                apache_service = "apache"
+                break
+        if(apache_service == ""):
+            apache_service = "httpd"
+        cmd = "netstat -anp | grep %s" %(apache_service)
+    else:
+        cmd = "netstat -anp | grep %s" %(dict["PID"])
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     (out, err) = p.communicate()
     ports = []
     for line in out.splitlines():
         line = line.split()
-        if((line[5] == 'LISTEN') and (str(dict['PID']) in line[6])):
+        if((line[5] == 'LISTEN') and (service == "apache" or str(dict['PID']) in line[6])):
             port = (line[3].split(':')[-1])
             if port not in ports:
                 ports.append(port)
@@ -77,6 +110,12 @@ def add_poller_config(dict):
 
 
 def add_agent_config(service, dict):
+    '''
+    Find the input config for the plugin fieldname:defaultvalue
+    :param service: name of the service
+    :param dict: poller_dict as the input
+    :return:
+    '''
     dict["agentConfig"] = {}
     agentConfig = {}
     agentConfig["config"] = {}
@@ -93,11 +132,25 @@ def add_agent_config(service, dict):
                 break
             for item1 in item["config"]:
                 agentConfig["config"][item1["fieldName"]] = item1["defaultValue"]
+
+    #In apache plugin replace the port default value with the listening ports for apache/httpd,
+    #if there are multiple listening ports for the PID assosciate the first port with the PID
+    if(service == "apache"):
+        if(len(dict["ports"]) != 0):
+            agentConfig["config"]["port"] = dict["ports"][0]
+            if(agentConfig["config"]["port"] == "443"):
+                agentConfig["config"]["secure"] = True
+
     dict["agentConfig"].update(agentConfig)
     return dict
 
 
 def discover_services():
+    '''
+    Find the services which are running on the server and return it's PID list, users, CPUUsage,
+    memUsage, Listening ports, input configuration for the plugin.
+    :return:
+    '''
     discovery = {}
     for service in services:
         pidList = get_process_id(service)
@@ -105,6 +158,8 @@ def discover_services():
             discovery[service] = []
             for item in pidList:
                 service_pid_dict = {}
+                service_pid_dict["PID"] = []
+                service_pid_dict["PID"] = item["process_id"]
 
                 #Add PID, cpuUsage, memUsage, status to service_discovery
                 service_pid_dict["PID"] = item["process_id"]
@@ -117,7 +172,7 @@ def discover_services():
                 status_dict = add_status(service_pid_dict)
 
                 #Add listening ports assosciated with the service PID
-                port_dict = add_ports(status_dict)
+                port_dict = add_ports(status_dict, service)
 
                 #Add logger config to the service PID
                 logger_dict = add_logger_config(port_dict)
