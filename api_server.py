@@ -80,6 +80,10 @@ class CollectdStats:
             plugins.append(str(url_param[0]).replace("_", ''))
         else:
             return json.dumps(result)
+
+        if (url_param[0] == "linux"):
+            plugins.append("linux")
+
         user_data = web.input(samples="1", instances="")
         plugin_instances = [ALL]
         if user_data.instances:
