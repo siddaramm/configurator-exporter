@@ -1,97 +1,95 @@
 # mysql logging mapping
-mysql:
-  error:
-    source:
-      '@type': tail
-      path: '/var/log/mysql/error.log, /var/log/mysql/mysql-error.log'
-      read_from_head: true
-      pos_file: '/var/log/td-agent/mysql-error.pos'
-      format: 'multi_format'
-      time_format: '%Y-%m-%d %H:%M:%S'
-      formats:
-       - '/(?<time>[^ ]* [^ ]*)\s*\[(?<level>\S+)\]\s(?<message>.*)$/'
-       - '/(?<time>[^ ]* [^ ]*)\s*(?<message>.*)$/'
-    filter:
-      node: '#{Socket.gethostname}'
-      time: ${require 'time'; time.to_time.to_f}
-      file: '${tag_suffix[1]}'
-      _plugin: 'mysql'
-      _documentType: 'error'
-    match:
-      flush_interval: 30s
-
-  general-query:
-    source:
-      '@type': tail
-      format: 'multi_format'
-      path: '/var/log/mysql/mysql.log, /var/log/mysql.log'
-      read_from_head: true
-      pos_file: '/var/log/td-agent/mysql-general-query.pos'
-      formats:
-       - '/(?<time>[^ ]* [^ ]*)\s*(?<id>\S+)\s(?<command>[^ ]*)\s(?<argument>[^\t].*)$/'
-       - '/\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<IP>(\d+\.\d+\.\d+\.\d+))\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command>.\w*)\W+(?<argument>.*)\"/'
-       - '/\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command>.\w*)\W+(?<argument>.*)\"/'
+mysql-error:
+  source:
+    '@type': tail
+    path: '/var/log/mysql/error.log, /var/log/mysql/mysql-error.log'
+    read_from_head: true
+    pos_file: '/var/log/td-agent/mysql-error.pos'
+    format: 'multi_format'
     time_format: '%Y-%m-%d %H:%M:%S'
-    keep_time_key: 'true'
-    filter:
-      node: '#{Socket.gethostname}'
-      time: ${require 'time'; time.to_time.to_f}
-      file: '${tag_suffix[1]}'
-      _plugin: 'mysql'
-      _documentType: 'general-query'
-    match:
-      flush_interval: 30s
+    formats:
+     - '/(?<time>[^ ]* [^ ]*)\s*\[(?<level>\S+)\]\s(?<message>.*)$/'
+     - '/(?<time>[^ ]* [^ ]*)\s*(?<message>.*)$/'
+  filter:
+    node: '#{Socket.gethostname}'
+    time: ${require 'time'; time.to_time.to_f}
+    file: '${tag_suffix[1]}'
+    _plugin: 'mysql'
+    _documentType: 'error'
+  match:
+    flush_interval: 30s
 
-  slow-query:
-    source:
-      '@type': mysql_slow_query
-      path: '/var/log/mysql/mysql-slow.log'
-    filter:
-      node: '#{Socket.gethostname}'
-      time: ${require 'time'; time.to_time.to_f}
-      file: '${tag_suffix[1]}'
-      _plugin: 'mysql'
-      _documentType: 'slow-query'
-    match:
-      flush_interval: 30s
+mysql-general:
+  source:
+    '@type': tail
+    format: 'multi_format'
+    path: '/var/log/mysql/mysql.log, /var/log/mysql.log'
+    read_from_head: true
+    pos_file: '/var/log/td-agent/mysql-general-query.pos'
+    formats:
+     - '/(?<time>[^ ]* [^ ]*)\s*(?<id>\S+)\s(?<command>[^ ]*)\s(?<argument>[^\t].*)$/'
+     - '/\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<IP>(\d+\.\d+\.\d+\.\d+))\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command>.\w*)\W+(?<argument>.*)\"/'
+     - '/\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command>.\w*)\W+(?<argument>.*)\"/'
+  time_format: '%Y-%m-%d %H:%M:%S'
+  keep_time_key: 'true'
+  filter:
+    node: '#{Socket.gethostname}'
+    time: ${require 'time'; time.to_time.to_f}
+    file: '${tag_suffix[1]}'
+    _plugin: 'mysql'
+    _documentType: 'general-query'
+  match:
+    flush_interval: 30s
+
+mysql-slow:
+  source:
+    '@type': mysql_slow_query
+    path: '/var/log/mysql/mysql-slow.log'
+  filter:
+    node: '#{Socket.gethostname}'
+    time: ${require 'time'; time.to_time.to_f}
+    file: '${tag_suffix[1]}'
+    _plugin: 'mysql'
+    _documentType: 'slow-query'
+  match:
+    flush_interval: 30s
 
 # apache logging mapping
-apache:
-  error:
-     source:
-       '@type': tail
-       format: apache_error
-       keep_time_key: 'true'
-       path: '/var/log/apache2/error.log, /var/log/httpd/error_log'
-       read_from_head: true
-       pos_file: '/var/log/td-agent/apache_error.pos'
-     filter:
-       node: '#{Socket.gethostname}'
+apache-error:
+   source:
+     '@type': tail
+     format: apache_error
+     keep_time_key: 'true'
+     path: '/var/log/apache2/error.log, /var/log/httpd/error_log'
+     read_from_head: true
+     pos_file: '/var/log/td-agent/apache_error.pos'
+   filter:
+     node: '#{Socket.gethostname}'
 #       time: '#{Time.now.to_f}'
-       file: '${tag_suffix[1]}'
-       _plugin: 'apache'
-       _documentType: 'error'
-       time: ${require 'time'; time.to_time.to_f}
-     match:
-       flush_interval: 30s
-  access:
-     source:
-       '@type': tail
-       format: '/^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$/'
-       time_format: '%d/%b/%Y:%H:%M:%S %z'
-       keep_time_key: 'true'
-       path: '/var/log/apache2/access.log, /var/log/httpd/access_log'
-       read_from_head: true
-       pos_file: '/var/log/td-agent/apache_access.pos'
-     filter:
-       node: '#{Socket.gethostname}'
+     file: '${tag_suffix[1]}'
+     _plugin: 'apache'
+     _documentType: 'error'
+     time: ${require 'time'; time.to_time.to_f}
+   match:
+     flush_interval: 30s
+apache-access:
+   source:
+     '@type': tail
+     format: '/^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$/'
+     time_format: '%d/%b/%Y:%H:%M:%S %z'
+     keep_time_key: 'true'
+     path: '/var/log/apache2/access.log, /var/log/httpd/access_log'
+     read_from_head: true
+     pos_file: '/var/log/td-agent/apache_access.pos'
+   filter:
+     node: '#{Socket.gethostname}'
 #       time: '#{Time.now.to_f}'
-       file: '${tag_suffix[1]}'
-       _plugin: 'apache'
-       _documentType: 'access'
-       time: ${require 'time'; time.to_time.to_f}
-     match:
-       flush_interval: 30s
+     file: '${tag_suffix[1]}'
+     _plugin: 'apache'
+     _documentType: 'access'
+     time: ${require 'time'; time.to_time.to_f}
+   match:
+     flush_interval: 30s
 
 # libvirt log mapping
 #libvirt:
@@ -109,24 +107,23 @@ apache:
 #    flush_interval: 120s
 
 # syslog mapping
-linux:
-  syslog:
-    source:
+linux-syslog:
+  source:
 #      '@type': syslog
-      '@type': tail
-      format: syslog
-      keep_time_key: 'true'
-      path: '/var/log/syslog'
-      pos_file: '/var/log/td-agent/syslog.pos'
-      read_from_head: 'true'
-    filter:
-      node: '#{Socket.gethostname}'
+    '@type': tail
+    format: syslog
+    keep_time_key: 'true'
+    path: '/var/log/syslog'
+    pos_file: '/var/log/td-agent/syslog.pos'
+    read_from_head: 'true'
+  filter:
+    node: '#{Socket.gethostname}'
 #      time: '#{Time.now.to_f}'
-      _plugin: 'linux'
-      _documentType: 'syslog'
-      file: '${tag_suffix[1]}'
-      time: ${require 'time'; time.to_time.to_f}
-    match:
-      flush_interval: 30s
+    _plugin: 'linux'
+    _documentType: 'syslog'
+    file: '${tag_suffix[1]}'
+    time: ${require 'time'; time.to_time.to_f}
+  match:
+    flush_interval: 30s
 
 default_flush_interval: 60s

@@ -27,7 +27,8 @@ class FluentdPluginManager:
         self.logger_user_input = template_data
 
         # self.plugin_config = read_yaml_file(FluentdPluginMappingFilePath)
-        self.plugin_config = get_fluentd_plugins_components_mapping()
+        # self.plugin_config = get_fluentd_plugins_components_mapping()
+        self.plugin_config = get_fluentd_plugins_mapping()
         self.target_mapping_list = get_supported_targets_mapping()
 
         self.plugin_post_data, self.status = [], []
@@ -114,30 +115,30 @@ class FluentdPluginManager:
         x_comp_plugins = list()
         for x_plugin in self.logger_user_input.get(PLUGINS, []):
             temp = dict()
-            if x_plugin.get(NAME) not in get_fluentd_plugins_mapping().keys():
-                temp['name'] = x_plugin.get(NAME)
-                strr = 'In-Valid input plugin type.' + x_plugin.get(NAME)
-                self.logger.warning(strr)
-                temp[STATUS] = "FAILED: Unsupported logging Plugin"
-                self.plugins.append(temp)
-                continue
-            x_comps = x_plugin.get(CONFIG, {}).get(COMPONENTS, [])
-            # x_comp_plugins = list()
-            if x_comps:
-                for x_comp in x_comps:
-                    n_plugin = {NAME: x_plugin[NAME] + '-' + x_comp[NAME]}
-                    n_plugin["filter"] = x_comp.get("filter")
-                    n_plugin[TAGS] = x_plugin.get('tags', {})
-                    x_comp_plugins.append(n_plugin)
-            else:
-                for x_comp_name in get_fluentd_plugins_mapping().get(x_plugin[NAME], {}).keys():
-                    n_plugin = {NAME: x_plugin[NAME] + '-' + x_comp_name}
-                    n_plugin["filter"] = dict()
-                    n_plugin[TAGS] = x_plugin.get('tags', {})
-                    x_comp_plugins.append(n_plugin)
-        self.logger.info("New plugins based on components %s", json.dumps(x_comp_plugins))
-        for x_plugin in x_comp_plugins:
-            temp = dict()
+        #     if x_plugin.get(NAME) not in get_fluentd_plugins_mapping().keys():
+        #         temp['name'] = x_plugin.get(NAME)
+        #         strr = 'In-Valid input plugin type.' + x_plugin.get(NAME)
+        #         self.logger.warning(strr)
+        #         temp[STATUS] = "FAILED: Unsupported logging Plugin"
+        #         self.plugins.append(temp)
+        #         continue
+        #     x_comps = x_plugin.get(CONFIG, {}).get(COMPONENTS, [])
+        #     # x_comp_plugins = list()
+        #     if x_comps:
+        #         for x_comp in x_comps:
+        #             n_plugin = {NAME: x_plugin[NAME] + '-' + x_comp[NAME]}
+        #             n_plugin["filter"] = x_comp.get("filter")
+        #             n_plugin[TAGS] = x_plugin.get('tags', {})
+        #             x_comp_plugins.append(n_plugin)
+        #     else:
+        #         for x_comp_name in get_fluentd_plugins_mapping().get(x_plugin[NAME], {}).keys():
+        #             n_plugin = {NAME: x_plugin[NAME] + '-' + x_comp_name}
+        #             n_plugin["filter"] = dict()
+        #             n_plugin[TAGS] = x_plugin.get('tags', {})
+        #             x_comp_plugins.append(n_plugin)
+        # self.logger.info("New plugins based on components %s", json.dumps(x_comp_plugins))
+        # for x_plugin in x_comp_plugins:
+        #     temp = dict()
             temp['source'] = {}
             temp['source']['tag'] = x_plugin.get('tags', {})
             temp['name'] = x_plugin.get(NAME)
@@ -182,8 +183,8 @@ class FluentdPluginManager:
             #         temp[
             #             'usr_filter'] = '(.*(' + '|'.join(filter_upper) + ').*?)'
             temp['usr_filter'] = {}
-            if x_plugin.get('filter', None):
-                for key, value in x_plugin.get('filter', {}).items():
+            if x_plugin.get(CONFIG, {}).get(FILTERS):
+                for key, value in x_plugin[CONFIG][FILTERS].items():
                     if isinstance(value, list):
                         temp['usr_filter'][key] = '(.*(' + '|'.join(value) + ').*?)'
                     else:
