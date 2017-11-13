@@ -1,4 +1,3 @@
-import json
 import subprocess
 from config_handler import configurator
 
@@ -99,8 +98,16 @@ def add_ports(dict, service):
     return dict
 
 
-def add_logger_config(dict):
-    dict["loggerConfig"] = {}
+def add_logger_config(dict, service):
+    dict["loggerConfig"] = []
+    fluentdPlugins = configurator.get_fluentd_plugins_mapping().keys()
+    for item in fluentdPlugins:
+        if(item.startswith(service)):
+            logConfig = {}
+            logConfig["name"] = item
+            logConfig["config"] = {}
+            logConfig["config"]["filters"] = {}
+            dict["loggerConfig"].append(logConfig)
     return dict
 
 
@@ -175,7 +182,7 @@ def discover_services():
                 port_dict = add_ports(status_dict, service)
 
                 #Add logger config to the service PID
-                logger_dict = add_logger_config(port_dict)
+                logger_dict = add_logger_config(port_dict, service)
 
                 #Add poller config to the service dict
                 poller_dict = add_poller_config(logger_dict)
