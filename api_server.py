@@ -7,8 +7,8 @@ import web
 
 from common.util import *
 from config_handler import configurator
-from stat_exporter import collectd_exporter
 from service_discovery import discovery
+from stat_exporter import collectd_exporter
 
 urls = (
     "/", "Root",
@@ -30,6 +30,8 @@ urls = (
 )
 
 DEFAULT_PORT = 8585
+
+
 # app = web.application(urls, globals())
 
 class MyApplication(web.application):
@@ -161,7 +163,16 @@ class Config:
         except:
             error_msg = "URl not Found"
             raise web.notfound(error_msg)
+
         result = {}
+        try:
+            import platform
+            if float(".".join([platform.python_version_tuple()[0], platform.python_version_tuple()[1]])) < 2.6:
+                result["distro"] = " ".join(platform.dist())
+            else:
+                result["distro"] = " ".join(platform.linux_distribution())
+        except:
+            result["distro"] = None
 
         if len(url_param) == 0:
             result[METRICS] = configurator.get_collectd_config()
@@ -239,6 +250,7 @@ class FluentdProcess:
     def GET(self):
         result = configurator.get_fluentd_process()
         return json.dumps(result)
+
 
 class Service:
     # Gives details of all running services on the server
