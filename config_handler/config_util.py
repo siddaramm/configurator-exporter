@@ -131,17 +131,16 @@ def get_fluentd_version():
 
 def start_collectd():
     service = "collectd"
-    status = get_service_status(service)
-    if status == -1:
-        pid = get_process_id(service)
-        if pid != -1:
-            kill_process(pid)
-        command = COLLECTDBIN + " -C " + CollectdConfDir + "/collectd.conf"
-        out, err = run_shell_command(command)
-    elif status == 0:
-        out, err = start_service(service)
-    else:
-        out, err = restart_service(service)
+    status = -1
+    pid = get_process_id(service)
+    if pid != -1:
+        kill_process(pid)
+    command = COLLECTDBIN + " -C " + CollectdConfDir + "/collectd.conf"
+    out, err = run_shell_command(command)
+    # if status == 0:
+    #     out, err = start_service(service)
+    # else:
+    #     out, err = restart_service(service)
 
     pid = get_process_id(service)
     if pid == -1:
@@ -156,9 +155,9 @@ def stop_collectd():
     # for line in run_command(command):
     #     print (line)
     service = "collectd"
-    status = get_service_status(service)
-    if status == 1:
-        stop_service(service)
+    # status = get_service_status(service)
+    # if status == 1:
+    #     stop_service(service)
     pid = get_process_id(service)
     if pid != -1:
         kill_process(pid)
@@ -166,11 +165,11 @@ def stop_collectd():
 
 def get_collectd_status():
     service = "collectd"
-    status = get_service_status(service)
-    if status == -1:
-        pid = get_process_id(service)
-        if pid != -1:
-            status = 1
+    # status = get_service_status(service)
+    pid = get_process_id(service)
+    status = -1
+    if pid != -1:
+        status = 1
     if status == 1:
         return "RUNNING"
     elif status == 0:
