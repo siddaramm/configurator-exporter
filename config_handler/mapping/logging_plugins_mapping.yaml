@@ -41,18 +41,18 @@ mysql-general:
   match:
     flush_interval: 30s
 
-mysql-slow:
-  source:
-    '@type': mysql_slow_query
-    path: '/var/log/mysql/mysql-slow.log'
-  filter:
-    node: '#{Socket.gethostname}'
-    time: ${require 'time'; time.to_time.to_f}
-    file: '${tag_suffix[1]}'
-    _plugin: 'mysql'
-    _documentType: 'slow-query'
-  match:
-    flush_interval: 30s
+#mysql-slow:
+#  source:
+#    '@type': mysql_slow_query
+#    path: '/var/log/mysql/mysql-slow.log'
+#  filter:
+#    node: '#{Socket.gethostname}'
+#    time: ${require 'time'; time.to_time.to_f}
+#    file: '${tag_suffix[1]}'
+#    _plugin: 'mysql'
+#    _documentType: 'slow-query'
+#  match:
+#    flush_interval: 30s
 
 # apache logging mapping
 apache-error:
