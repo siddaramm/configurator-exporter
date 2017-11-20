@@ -132,6 +132,7 @@ def get_stats_dir():
 #     return data
 
 def get_data(num_samples=1, plugins=None, plugin_instances=None):
+    multi_plugins = ["linux"]
     if plugin_instances is None:
         plugin_instances = [ALL]
     if plugins is None:
@@ -139,8 +140,10 @@ def get_data(num_samples=1, plugins=None, plugin_instances=None):
     # rootdir = os.path.join(get_root_dir(), STATSDIR)
     try:
         data = get_plugin_data(get_stats_dir(), num_samples, plugins, plugin_instances)
-        # print data
-        data = get_merged_data(data, num_samples)
+        if any(x in multi_plugins for x in plugins):
+            data = get_merged_data(data, num_samples)
+        else:
+            data = [data]
     except:
         data = {}
     # data = {hostname:data}
