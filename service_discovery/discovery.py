@@ -25,6 +25,17 @@ def get_process_id(service):
     status, memUsage, cpuUsage and user
     '''
     pids = []
+    if (service == "apache"):
+        os_cmd = "lsb_release -d"
+        p = subprocess.Popen(os_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        (out, err) = p.communicate()
+        for line in out.splitlines():
+            if ("Ubuntu" in line):
+                service = "apache2"
+                break
+        # The linux flavour is not Ubuntu could be CentOS or redHat so search for httpd
+        if (service == "apache"):
+            service = "httpd"
     cmd = "ps auxww | grep [" + service[:1] + "]" + service[1:]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     (out, err) = p.communicate()
@@ -78,7 +89,7 @@ def add_ports(dict, service):
         (out, err) = p.communicate()
         for line in out.splitlines():
             if("Ubuntu" in line):
-                apache_service = "apache"
+                apache_service = "apache2"
                 break
         if(apache_service == ""):
             apache_service = "httpd"
