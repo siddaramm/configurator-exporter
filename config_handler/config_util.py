@@ -144,6 +144,7 @@ def start_collectd():
 
     pid = get_process_id(service)
     if pid == -1:
+        truncate_collectd_logfile()
         command = COLLECTDBIN + " -C " + CollectdConfDir + "/collectd.conf"
         out, err = run_shell_command(command)
     if err:
@@ -330,3 +331,13 @@ def write_to_elasticsearch(host, port, index, type, data):
 #     except Exception as e:
 #         logger.error("write_in_elasticsearch error: %s" % str(e))
 
+def truncate_collectd_logfile():
+    log_path = "/tmp/collectd.log"
+    print "truncate the file {0}".format(log_path)
+    try:
+        with open(log_path,"r+") as f:
+            # line = f.read()
+            f.seek(0)
+            f.truncate()
+    except:
+        print "failed to truncate the file {0}".format(log_path)

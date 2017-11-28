@@ -4,7 +4,7 @@ from config_handler import collectd_manager
 from config_handler import fluentd_manager
 from config_util import *
 
-CONFIG_WRITE_INTERVAL = 30
+CONFIG_WRITE_INTERVAL = 300
 timer = None
 
 
@@ -205,6 +205,7 @@ def map_local_targets(targets, data):
 
 def write_config_to_target(es_config, interval=CONFIG_WRITE_INTERVAL):
     # print json.dumps(es_config), interval
+    truncate_collectd_logfile()
     global timer
     # es_config = dict()
     data = dict()
