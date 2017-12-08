@@ -512,6 +512,15 @@ class FluentdPluginManager:
             self.create_conf_files()
             if self.enable:
                 # self.restart()
+                try:
+                    for plugin in self.plugins:
+                        files = plugin.get("source", {}).get("path")
+                        if files:
+                            for filepath in files.split(','):
+                                self.logger.info("changing file %s permission", filepath)
+                                set_log_file_permission(filepath, '+r')
+                except:
+                    self.logger.error("Error in changing file permission")
                 change_fluentd_status(RESTART)
             else:
                 # self.stop()

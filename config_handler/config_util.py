@@ -341,3 +341,22 @@ def truncate_collectd_logfile():
             f.truncate()
     except:
         print "failed to truncate the file {0}".format(log_path)
+
+def set_log_file_permission(filepath, permission):
+    dirs = list_dirs(filepath.strip())
+    for dir in reversed(dirs):
+        cmd = 'chmod {0} {1}'.format(permission, dir)
+        run_shell_command(cmd)
+
+
+def list_dirs(path):
+    dirs = [path]
+    if not os.path.isfile(path):
+        return []
+    while True:
+        path, tail = os.path.split(path)
+        if path == '/' or path == '/var/log':
+            break
+        dirs.append(path)
+
+    return dirs
