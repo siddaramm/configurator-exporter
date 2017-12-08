@@ -62,7 +62,7 @@ apache:
       min: ""
       dataType: string
       max: ""
-      defaultValue: False
+      defaultValue: "false"
       tooltip: "server is listening on HTTP/HTTPS protocol"
       label: Secure
       fieldName: secure
