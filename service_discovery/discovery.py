@@ -134,7 +134,6 @@ def add_agent_config(service, dict):
     :param dict: poller_dict as the input
     :return:
     '''
-    import pdb;pdb.set_trace()
     dict["agentConfig"] = {}
     agentConfig = {}
     agentConfig["config"] = {}
@@ -158,7 +157,7 @@ def add_agent_config(service, dict):
         if(len(dict["ports"]) != 0):
             agentConfig["config"]["port"] = dict["ports"][0]
             if(agentConfig["config"]["port"] == "443"):
-                agentConfig["config"]["secure"] = True
+                agentConfig["config"]["secure"] = "true"
 
     dict["agentConfig"].update(agentConfig)
     return dict
@@ -172,7 +171,6 @@ def discover_services():
     '''
     discovery = {}
     for service in services:
-        import pdb;pdb.set_trace()
         pidList = get_process_id(service)
         if(len(pidList) != 0):
             discovery[service] = []
