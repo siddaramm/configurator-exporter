@@ -84,11 +84,24 @@ def change_fluentd_status(oper):
     if status == -1:
         logger.warning("td-agent service not found, fluentd not installed")
     elif oper == "start":
-        start_service(service)
+        pid = get_process_id(service)
+        if pid > 0:
+            restart_service(service)
+        else:
+            start_service(service)
+        pid = get_process_id(service)
+        if pid <= 0:
+            logger.error("Failed to start service %s", service)
     elif oper == "stop":
         stop_service(service)
+        pid = get_process_id(service)
+        if pid > 0:
+            logger.error("Failed to stop service %s", service)
     elif oper == "restart":
         restart_service(service)
+        pid = get_process_id(service)
+        if pid <= 0:
+            logger.error("Failed to restart service %s", service)
     else:
         logger.error("Undefined operation %s, start|stop|restart", oper)
 

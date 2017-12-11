@@ -510,6 +510,8 @@ class FluentdPluginManager:
             self.logger.debug('self.plugin_post_data' +
                               json.dumps(self.plugin_post_data))
             self.create_conf_files()
+            self.logger.info("Stop fluentd process")
+            change_fluentd_status(STOP)
             if self.enable:
                 # self.restart()
                 try:
@@ -521,10 +523,8 @@ class FluentdPluginManager:
                                 set_log_file_permission(filepath, '+r')
                 except:
                     self.logger.error("Error in changing file permission")
-                change_fluentd_status(RESTART)
-            else:
-                # self.stop()
-                change_fluentd_status(STOP)
+                self.logger.info("Start fluentd process")
+                change_fluentd_status(START)
 
             return_dict = self.bulid_set_config_result()
             self.logger.info("Bulid set configuration result completed")
