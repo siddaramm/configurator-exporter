@@ -520,7 +520,7 @@ class FluentdPluginManager:
                         if files:
                             for filepath in files.split(','):
                                 self.logger.info("changing file %s permission", filepath)
-                                set_log_file_permission(filepath, '+r')
+                                set_log_file_permission(filepath, 'o+r,o+x')
                 except:
                     self.logger.error("Error in changing file permission")
                 self.logger.info("Start fluentd process")
