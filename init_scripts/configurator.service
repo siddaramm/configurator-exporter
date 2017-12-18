@@ -6,7 +6,7 @@ ConditionPathExists=/opt/configurator-exporter/api_server.py
 [Service]
 Type=simple
 WorkingDirectory=/opt/configurator-exporter
-ExecStart=/opt/configurator-exporter/api_server.py
+ExecStart=/usr/bin/python api_server.py
 Restart=always
 RestartSec=10
 
