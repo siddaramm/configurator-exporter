@@ -12,7 +12,7 @@ mysql-error:
      - '/(?<time>[^ ]* [^ ]*)\s*(?<message>.*)$/'
   filter:
     node: '#{Socket.gethostname}'
-    time: ${require 'time'; time.to_time.to_f}
+    time: ${require 'time'; time.to_time.to_i}
     file: '${tag_suffix[1]}'
     _plugin: 'mysql'
     _documentType: 'error'
@@ -34,7 +34,7 @@ mysql-general:
   keep_time_key: 'true'
   filter:
     node: '#{Socket.gethostname}'
-    time: ${require 'time'; time.to_time.to_f}
+    time: ${require 'time'; time.to_time.to_i}
     file: '${tag_suffix[1]}'
     _plugin: 'mysql'
     _documentType: 'general-query'
@@ -69,7 +69,7 @@ apache-error:
      file: '${tag_suffix[1]}'
      _plugin: 'apache'
      _documentType: 'error'
-     time: ${require 'time'; time.to_time.to_f}
+     time: ${require 'time'; time.to_time.to_i}
    match:
      flush_interval: 30s
 apache-access:
@@ -87,7 +87,7 @@ apache-access:
      file: '${tag_suffix[1]}'
      _plugin: 'apache'
      _documentType: 'access'
-     time: ${require 'time'; time.to_time.to_f}
+     time: ${require 'time'; time.to_time.to_i}
    match:
      flush_interval: 30s
 
@@ -122,7 +122,7 @@ linux-syslog:
     _plugin: 'linux'
     _documentType: 'syslog'
     file: '${tag_suffix[1]}'
-    time: ${require 'time'; time.to_time.to_f}
+    time: ${require 'time'; time.to_time.to_i}
   match:
     flush_interval: 30s
 
