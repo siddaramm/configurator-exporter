@@ -113,7 +113,7 @@ linux-syslog:
     '@type': tail
     format: syslog
     keep_time_key: 'true'
-    path: '/var/log/syslog'
+    path: '/var/log/syslog, /var/log/auth.log, /var/log/messages, /var/log/secure'
     pos_file: '/var/log/td-agent/syslog.pos'
     read_from_head: 'true'
   filter:
