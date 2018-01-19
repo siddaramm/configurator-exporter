@@ -3,7 +3,6 @@ mysql-error:
   source:
     '@type': tail
     path: '/var/log/mysql/error.log, /var/log/mysql/mysql-error.log'
-    read_from_head: true
     pos_file: '/var/log/td-agent/mysql-error.pos'
     format: 'multi_format'
     time_format: '%Y-%m-%d %H:%M:%S'
@@ -16,6 +15,7 @@ mysql-error:
     file: '${tag_suffix[1]}'
     _plugin: 'mysql'
     _documentType: 'error'
+    level: ${n_level='info'; if record.key?('level') == nil then n_level else record['level'] end}
   match:
     flush_interval: 30s
 
@@ -24,7 +24,6 @@ mysql-general:
     '@type': tail
     format: 'multi_format'
     path: '/var/log/mysql/mysql.log, /var/log/mysql.log'
-    read_from_head: true
     pos_file: '/var/log/td-agent/mysql-general-query.pos'
     formats:
      - '/(?<time>[^ ]* [^ ]*)\s*(?<id>\S+)\s(?<command>[^ ]*)\s(?<argument>[^\t].*)$/'
@@ -38,6 +37,8 @@ mysql-general:
     file: '${tag_suffix[1]}'
     _plugin: 'mysql'
     _documentType: 'general-query'
+    level: 'info'
+    message: ''
   match:
     flush_interval: 30s
 
@@ -61,7 +62,6 @@ apache-error:
      format: apache_error
      keep_time_key: 'true'
      path: '/var/log/apache2/error.log, /var/log/httpd/error_log'
-     read_from_head: true
      pos_file: '/var/log/td-agent/apache_error.pos'
    filter:
      node: '#{Socket.gethostname}'
@@ -70,6 +70,7 @@ apache-error:
      _plugin: 'apache'
      _documentType: 'error'
      time: ${require 'time'; time.to_time.to_i}
+     level: ${if record['level].include?':' then }
    match:
      flush_interval: 30s
 apache-access:
@@ -79,8 +80,8 @@ apache-access:
      time_format: '%d/%b/%Y:%H:%M:%S %z'
      keep_time_key: 'true'
      path: '/var/log/apache2/access.log, /var/log/httpd/access_log'
-     read_from_head: true
      pos_file: '/var/log/td-agent/apache_access.pos'
+     types: 'response_time:integer'
    filter:
      node: '#{Socket.gethostname}'
 #       time: '#{Time.now.to_f}'
@@ -88,6 +89,8 @@ apache-access:
      _plugin: 'apache'
      _documentType: 'access'
      time: ${require 'time'; time.to_time.to_i}
+     level: 'info'
+     message: ''
    match:
      flush_interval: 30s
 
@@ -115,7 +118,6 @@ linux-syslog:
     keep_time_key: 'true'
     path: '/var/log/syslog, /var/log/auth.log, /var/log/messages, /var/log/secure'
     pos_file: '/var/log/td-agent/syslog.pos'
-    read_from_head: 'true'
   filter:
     node: '#{Socket.gethostname}'
 #      time: '#{Time.now.to_f}'
@@ -123,6 +125,7 @@ linux-syslog:
     _documentType: 'syslog'
     file: '${tag_suffix[1]}'
     time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='info'; if record.key?('level') == nil then n_level else record['level'] end}
   match:
     flush_interval: 30s
 
