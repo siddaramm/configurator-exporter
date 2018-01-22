@@ -124,7 +124,7 @@ linux-syslog:
     _documentType: 'syslog'
     file: '${tag_suffix[1]}'
     time: ${require 'time'; time.to_time.to_i}
-    level: ${n_level='info'; if record.key?('level') == nil then n_level else record['level'] end}
+    level: ${n_level='info'; if record.key?('level') == nil or record['level'] == nil then n_level else record['level'] end}
   match:
     flush_interval: 30s
 
