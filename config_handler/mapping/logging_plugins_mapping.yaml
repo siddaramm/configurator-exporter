@@ -70,6 +70,8 @@ apache-error:
      _plugin: 'apache'
      _documentType: 'error'
      time: ${require 'time'; time.to_time.to_i}
+     component: ${record['level'].split(':').first()}
+     level: ${record['level'].split(':').last()}
    match:
      flush_interval: 30s
 apache-access:
