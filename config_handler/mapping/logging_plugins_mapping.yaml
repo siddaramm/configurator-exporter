@@ -23,15 +23,16 @@ mysql-error:
 mysql-general:
   source:
     '@type': tail
-    format: 'multi_format'
     path: '/var/log/mysql/mysql.log, /var/log/mysql.log'
     pos_file: '/var/log/td-agent/mysql-general-query.pos'
-    formats:
-     - '/(?<time>[^ ]* [^ ]*)\s*(?<id>\S+)\s(?<command>[^ ]*)\s(?<argument>[^\t].*)$/'
-     - '/\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<IP>(\d+\.\d+\.\d+\.\d+))\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command>.\w*)\W+(?<argument>.*)\"/'
-     - '/\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command>.\w*)\W+(?<argument>.*)\"/'
-  time_format: '%Y-%m-%d %H:%M:%S'
-  keep_time_key: 'true'
+    format: '/(?<time>[^ ]* [^ ]*)\s*(?<id>\S+)\s(?<command>[^ ]*)\s(?<argument>[^\t].*)$/'
+#    format: 'multi_format'
+#    formats:
+#     - '/(?<time>[^ ]* [^ ]*)\s*(?<id>\S+)\s(?<command>[^ ]*)\s(?<argument>[^\t].*)$/'
+#     - '/\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<IP>(\d+\.\d+\.\d+\.\d+))\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command>.\w*)\W+(?<argument>.*)\"/'
+#     - '/\"(?<time>[^\]]*)\"\W+(?<user1>\S+)\W+(?<user2>\w+)\W+(?<host>\w+)\W+(?<pid1>\d+)\W+(?<pid2>\d+)\W+(?<command>.\w*)\W+(?<argument>.*)\"/'
+#     time_format: '%Y-%m-%d %H:%M:%S'
+#     keep_time_key: 'true'
   filter:
     node: '#{Socket.gethostname}'
     time: ${require 'time'; time.to_time.to_i}
