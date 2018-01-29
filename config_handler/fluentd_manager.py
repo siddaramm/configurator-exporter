@@ -147,7 +147,8 @@ class FluentdPluginManager:
                 plugin = self.plugin_config.get(
                     x_plugin.get(NAME))
                 temp['source'].update(plugin.get('source'))
-                temp['filter'] = plugin.get('filter')
+                temp['transform'] = plugin.get('transform')
+                temp['parse'] = plugin.get('parse')
                 temp['match'] = plugin.get('match')
             else:
                 strr = 'In-Valid input plugin type.' + x_plugin.get(NAME)
@@ -225,14 +226,16 @@ class FluentdPluginManager:
                 source_tag = data.get('name') + '.*'
                 lines.append('\t' + key + ' ' + source_tag)
                 continue
-            if key == "formats":
-                for v in val:
-                    lines.append('\t' + "<pattern>")
-                    lines.append('\t' + 'format ' + str(v))
-                    lines.append('\t' + "</pattern>")
-                continue
-
+            # if key == "formats":
+            #     for v in val:
+            #         lines.append('\t' + "<pattern>")
+            #         lines.append('\t' + 'format ' + str(v))
+            #         lines.append('\t' + "</pattern>")
+            #     continue
             lines.append('\t' + str(key) + ' ' + str(val))
+        lines.append('\t' + "<parse>")
+        lines.append('\t\t' + '@type none')
+        lines.append('\t' + "</parse>")
 
         lines.append('</source>')
         # Add grep filter.
@@ -245,6 +248,24 @@ class FluentdPluginManager:
                 lines.append('\tregexp' + str(count) + ' ' + str(key) + ' ' + str(value))
             lines.append('</filter>')
 
+        # Add parser filter. if data.get('match').has_key('tag'):
+        if 'tag' in data.get('match'):
+            lines.append('\n<filter ' + source_tag + '.' +
+                         data.get('match').get('tag', []) + '>')
+        else:
+            lines.append('\n<filter ' + source_tag + '*>')
+        lines.extend(['\t@type parser', '\tkey_name message', '\t<parse>'])
+        for key, val in data.get('parse', {}).iteritems():
+            if key == "expressions":
+                for v in val:
+                    lines.append('\t\t' + "<pattern>")
+                    lines.append('\t\t\t' + 'format regexp')
+                    lines.append('\t\t\t' + 'expression ' + v)
+                    lines.append('\t\t' + "</pattern>")
+                continue
+            lines.append('\t\t' + key  + ' ' + val)
+        lines.extend(['\t</parse>', '</filter>'])
+
         # Add record-transormation filter. if data.get('match').has_key('tag'):
         if 'tag' in data.get('match'):
             lines.append('\n<filter ' + source_tag + '.' +
@@ -253,7 +274,7 @@ class FluentdPluginManager:
             lines.append('\n<filter ' + source_tag + '*>')
         lines.append('\tenable_ruby')
         lines.extend(['\t@type record_transformer', '\t<record>'])
-        for key, val in data.get('filter', {}).iteritems():
+        for key, val in data.get('transform', {}).iteritems():
             lines.append('\t\t' + key + ' \"' + val + '\"')
 
         # lines.append('\t\ttags ' + str(self.tags + [data.get('source').get('tag')]))
