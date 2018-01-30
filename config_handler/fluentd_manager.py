@@ -147,6 +147,8 @@ class FluentdPluginManager:
                 plugin = self.plugin_config.get(
                     x_plugin.get(NAME))
                 temp['source'].update(plugin.get('source'))
+                if x_plugin.get(CONFIG, {}).get('log_paths'):
+                    temp['source']['path'] = x_plugin[CONFIG]['log_paths']
                 temp['transform'] = plugin.get('transform')
                 temp['parse'] = plugin.get('parse')
                 temp['match'] = plugin.get('match')
