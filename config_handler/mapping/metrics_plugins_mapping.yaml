@@ -3,15 +3,15 @@
 # GLobal abstraction for linuxstatic and linux_dynamics plugins
 linux:
  - name: cpu_static
-   interval: 10
+   interval: 60
    config:
     nodeType: "Type of Node Virtual/Physical"
  - name: disk_stat
    interval: 300
  - name: ram_util
-   interval: 300
+   interval: 60
  - name: cpu_util
-   interval: 10
+   interval: 60
  - name: tcp_stats
    interval: 300
  - name: nic_stats
