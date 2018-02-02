@@ -1,8 +1,14 @@
 import subprocess
 from config_handler import configurator
 
+service_name = {
+    "elasticsearch": "ES",
+    "apache": "apache",
+    "mysql": "mysql",
+    "mssql": "mssql"
+}
 services = [
-    "ES",
+    "elasticsearch",
     "apache",
     "mysql",
     "mssql"
@@ -11,7 +17,7 @@ services = [
 Mapping for services and the plugin to be configured for them.
 '''
 service_plugin_mapping = {
-    "ES": "jvm",
+    "elasticsearch": "jvm",
     "apache": "apache",
     "mysql": "mysql",
     "mssql": "mssql"
@@ -203,6 +209,6 @@ def discover_services():
 
                 #final_dict assosciated with the service PID
                 final_dict = agent_dict
-                discovery[service].append(final_dict)
+                discovery[service_name[service]].append(final_dict)
 
     return discovery
