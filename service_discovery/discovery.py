@@ -179,7 +179,7 @@ def discover_services():
     for service in services:
         pidList = get_process_id(service)
         if(len(pidList) != 0):
-            discovery[service] = []
+            discovery[service_name[service]] = []
             for item in pidList:
                 service_pid_dict = {}
                 service_pid_dict["PID"] = []
