@@ -2,7 +2,7 @@ import subprocess
 from config_handler import configurator
 
 services = [
-    "elasticsearch",
+    "ES",
     "apache",
     "mysql",
     "mssql"
@@ -11,7 +11,7 @@ services = [
 Mapping for services and the plugin to be configured for them.
 '''
 service_plugin_mapping = {
-    "elasticsearch": "jvm",
+    "ES": "jvm",
     "apache": "apache",
     "mysql": "mysql",
     "mssql": "mssql"
