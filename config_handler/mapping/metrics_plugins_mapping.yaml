@@ -22,7 +22,7 @@ linux:
 # - name: cpu_static
 #   interval: 10
 #   config:
-#    nodeType: "Type of Node Virtual/Physical"
+#    nodeTyFpe: "Type of Node Virtual/Physical"
 #
 ## linux dynamic plugin mapping to disk_stat, ram_util, cpu_util, tcp_stats, nic_stats
 #linux_dynamic:
@@ -158,3 +158,18 @@ jvm:
      tooltip: Name of java process
      label: Process
      fieldName: process
+
+
+# mapping for elasticsearch plugin
+elasticsearch:
+ - name: elasticsearch
+   interval: 300
+   config:
+   - Mandatory: true
+     min: ''
+     dataType: Integer
+     max: ''
+     defaultValue: 9200
+     tooltip: Port on which elasticsearch master node is listening.
+     label: Port
+     fieldName: port

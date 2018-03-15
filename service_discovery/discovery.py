@@ -17,12 +17,15 @@ services = [
 Mapping for services and the plugin to be configured for them.
 '''
 service_plugin_mapping = {
-    "elasticsearch": "jvm",
+    "elasticsearch": "elasticsearch",
     "apache": "apache",
     "mysql": "mysql",
     "mssql": "mssql"
 }
 
+poller_plugin = [
+    "elasticsearch"
+]
 
 def get_process_id(service):
     '''
@@ -128,8 +131,23 @@ def add_logger_config(dict, service):
     return dict
 
 
-def add_poller_config(dict):
+def add_poller_config(service, dict):
     dict["pollerConfig"] = {}
+    pollerConfig = {}
+    pollerConfig["config"] = {}
+
+    for key, value in service_plugin_mapping.items():
+        if (key == service):
+            pollerConfig["name"] = value
+            break
+
+    config = configurator.get_metrics_plugins_params(pollerConfig["name"])
+    for item in config["plugins"]:
+        if(item.get("config") and item.get("name") == pollerConfig["name"]):
+            for item1 in item["config"]:
+                pollerConfig["config"][item1["fieldName"]] = item1["defaultValue"]
+    dict["pollerConfig"].update(pollerConfig)
+
     return dict
 
 
@@ -198,17 +216,29 @@ def discover_services():
                 #Add listening ports assosciated with the service PID
                 port_dict = add_ports(status_dict, service)
 
-                #Add logger config to the service PID
-                logger_dict = add_logger_config(port_dict, service)
+                if service not in poller_plugin:
+                    #Add logger config to the service PID
+                    logger_dict = add_logger_config(port_dict, service)
 
-                #Add poller config to the service dict
-                poller_dict = add_poller_config(logger_dict)
+                    #Add poller config to the service dict
+                    logger_dict["pollerConfig"] = {}
 
-                #Add agent config to the service dict
-                agent_dict = add_agent_config(service, poller_dict)
+                    #Add agent config to the service dict
+                    agent_dict = add_agent_config(service, logger_dict)
 
-                #final_dict assosciated with the service PID
-                final_dict = agent_dict
+                    #final_dict assosciated with the service PID
+                    final_dict = agent_dict
+
+                else:
+                    port_dict["loggerConfig"] = []
+                    port_dict["agentConfig"] = {}
+
+                    # Add poller config to the service dict
+                    poller_dict = add_poller_config(service, port_dict)
+
+                    # final_dict assosciated with the service PID
+                    final_dict = poller_dict
+
                 discovery[service_name[service]].append(final_dict)
 
     return discovery
