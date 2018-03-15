@@ -22,7 +22,7 @@ linux:
 # - name: cpu_static
 #   interval: 10
 #   config:
-#    nodeTyFpe: "Type of Node Virtual/Physical"
+#    nodeType: "Type of Node Virtual/Physical"
 #
 ## linux dynamic plugin mapping to disk_stat, ram_util, cpu_util, tcp_stats, nic_stats
 #linux_dynamic:
