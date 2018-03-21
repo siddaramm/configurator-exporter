@@ -216,7 +216,7 @@ def write_config_to_target(es_config, interval=CONFIG_WRITE_INTERVAL):
     port = es_config.get(PORT)
     index = es_config.get(INDEX)
     if host and port and index:
-        type = CONFIG
+        type = DOCUMENT
         data[METRICS] = get_collectd_config()
         data[LOGGING] = get_fluentd_config()
         data[PLUGIN] = HEARTBEAT
