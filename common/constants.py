@@ -80,3 +80,4 @@ HEARTBEAT = "heartbeat"
 HEARTBEAT_INTERVAL = "heartbeat_interval"
 
 COMPONENTS = "components"
+DOCUMENT = "_doc"

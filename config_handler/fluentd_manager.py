@@ -303,6 +303,7 @@ class FluentdPluginManager:
                     if key == "enable":
                         continue
                     lines.append('\t' + key + ' ' + val)
+                lines.append('\t' + 'type_name' + ' ' + DOCUMENT)
 
                 for key, val in data.get('match', {}).iteritems():
                     lines.append('\t' + str(key) + ' ' + str(val))

@@ -141,7 +141,7 @@ class Config:
         else:
             result[LOGGING] = configurator.set_fluentd_config(logging)
 
-        if data.get(HEARTBEAT, True):
+        if data.get(HEARTBEAT, False):
             es_config = dict()
             for target in targets:
                 if target[TYPE] == ELASTICSEARCH:
