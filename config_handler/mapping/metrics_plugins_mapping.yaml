@@ -7,15 +7,15 @@ linux:
    config:
     nodeType: "Type of Node Virtual/Physical"
  - name: disk_stat
-   interval: 300
+   interval: 10
  - name: ram_util
-   interval: 60
+   interval: 10
  - name: cpu_util
-   interval: 60
+   interval: 10
  - name: tcp_stats
-   interval: 300
+   interval: 10
  - name: nic_stats
-   interval: 300
+   interval: 10
 
 ## linux static plugin mapping to cpu_static
 #linux_static:
