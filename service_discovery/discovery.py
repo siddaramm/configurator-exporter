@@ -5,13 +5,15 @@ service_name = {
     "elasticsearch": "ES",
     "apache": "apache",
     "mysql": "mysql",
-    "mssql": "mssql"
+    "mssql": "mssql",
+    "postgres": "postgres"
 }
 services = [
     "elasticsearch",
     "apache",
     "mysql",
-    "mssql"
+    "mssql",
+    "postgres"
 ]
 '''
 Mapping for services and the plugin to be configured for them.
@@ -20,11 +22,13 @@ service_plugin_mapping = {
     "elasticsearch": "elasticsearch",
     "apache": "apache",
     "mysql": "mysql",
-    "mssql": "mssql"
+    "mssql": "mssql",
+    "postgres": "postgres"
 }
 
 poller_plugin = [
-    "elasticsearch"
+    "elasticsearch",
+    "postgres"
 ]
 
 def get_process_id(service):
