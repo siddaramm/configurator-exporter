@@ -1,3 +1,5 @@
+import time
+
 import requests
 
 from stat_exporter.collectd_exporter import *
@@ -89,16 +91,19 @@ def change_fluentd_status(oper):
             restart_service(service)
         else:
             start_service(service)
+        time.sleep(1)
         pid = get_process_id(service)
         if pid <= 0:
             logger.error("Failed to start service %s", service)
     elif oper == "stop":
         stop_service(service)
+        time.sleep(1)
         pid = get_process_id(service)
         if pid > 0:
             logger.error("Failed to stop service %s", service)
     elif oper == "restart":
         restart_service(service)
+        time.sleep(1)
         pid = get_process_id(service)
         if pid <= 0:
             logger.error("Failed to restart service %s", service)
@@ -155,7 +160,7 @@ def start_collectd():
         out, err = start_service(service)
     else:
         out, err = restart_service(service)
-
+    time.sleep(1)
     pid = get_process_id(service)
     if pid == -1:
         command = COLLECTDBIN + " -C " + CollectdConfDir + "/collectd.conf"
@@ -172,6 +177,7 @@ def stop_collectd():
     status = get_service_status(service)
     if status == 1:
         stop_service(service)
+        time.sleep(1)
     pid = get_process_id(service)
     if pid != -1:
         kill_process(pid)
@@ -272,15 +278,17 @@ def get_fluentd_plugins_mapping():
     return read_yaml_file(file_name)
     # return read_yaml_file(FluentdPluginMappingFilePath)
 
+
 def get_fluentd_plugins_components_mapping():
-    plugin_mapping =  get_fluentd_plugins_mapping()
+    plugin_mapping = get_fluentd_plugins_mapping()
     n_plugins = dict()
     for plugin_name, plugin_comps in plugin_mapping.items():
         if isinstance(plugin_comps, dict):
             for comp_name, comp_config in plugin_comps.items():
                 n_plugins[plugin_name + '-' + comp_name] = comp_config
-    logger.info("Converted plugin mapping %s" %json.dumps(n_plugins))
+    logger.info("Converted plugin mapping %s" % json.dumps(n_plugins))
     return n_plugins
+
 
 def delete_fluentd_config():
     logger.info("Delete existing fluentd config")
@@ -333,6 +341,7 @@ def write_to_elasticsearch(host, port, index, type, data):
     except Exception as e:
         logger.error("write_to_elastic() error: %s" % str(e))
 
+
 # def write_in_elasticsearch(host, port, index, type, data):
 #     try:
 #         es = Elasticsearch([{'host': host, 'port': port}])
@@ -348,12 +357,13 @@ def truncate_collectd_logfile():
     log_path = "/tmp/collectd.log"
     print "truncate the file {0}".format(log_path)
     try:
-        with open(log_path,"r+") as f:
+        with open(log_path, "r+") as f:
             # line = f.read()
             f.seek(0)
             f.truncate()
     except:
         print "failed to truncate the file {0}".format(log_path)
+
 
 def set_log_file_permission(filepath, permission):
     dirs = list_dirs(filepath.strip())
