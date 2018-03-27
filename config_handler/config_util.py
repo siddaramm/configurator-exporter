@@ -176,10 +176,10 @@ def stop_collectd():
     #     print (line)
     logger.info("Stop collectd")
     service = "collectd"
-    status = get_service_status(service)
-    if status == 1:
-        stop_service(service)
-        time.sleep(1)
+    # status = get_service_status(service)
+    # if status == 1:
+    stop_service(service)
+    time.sleep(1)
     pid = get_process_id(service)
     if pid != -1:
         logger.info("Failed to stop collectd")
