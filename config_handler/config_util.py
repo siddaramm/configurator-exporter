@@ -81,6 +81,7 @@ def get_dest_filename(plugin):
 
 
 def change_fluentd_status(oper):
+    logger.info("Change td-agent status, operation %s", oper)
     service = "td-agent"
     status = get_service_status(service)
     if status == -1:
@@ -173,6 +174,7 @@ def stop_collectd():
     # command = "service collectd stop".split()
     # for line in run_command(command):
     #     print (line)
+    logger.info("Stop collectd")
     service = "collectd"
     status = get_service_status(service)
     if status == 1:
@@ -180,7 +182,8 @@ def stop_collectd():
         time.sleep(1)
     pid = get_process_id(service)
     if pid != -1:
-        kill_process(pid)
+        logger.info("Failed to stop collectd")
+        # kill_process(pid)
 
 
 def get_collectd_status():
