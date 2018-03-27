@@ -120,8 +120,8 @@ class Config:
         targets = data.get(TARGETS, {})
 
         if not (metrics or logging):
-            error_msg = "Invalid Config"
-            raise web.badrequest(error_msg)
+            result[METRICS] = configurator.set_collectd_config(metrics)
+            result[LOGGING] = configurator.set_fluentd_config(logging)
         elif metrics and not (metrics.get(PLUGINS, []) and metrics.get(TARGETS, [])):
             error_msg = "Invalid metrics config"
             raise web.badrequest(error_msg)
