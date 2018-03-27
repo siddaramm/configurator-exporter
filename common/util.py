@@ -102,6 +102,7 @@ def read_yaml_file(filename):
 
 
 def run_command(command):
+    # logger.info("Run Command %s", command)
     p = Popen(command,
               stdout=PIPE,
               stderr=STDOUT)
@@ -109,6 +110,7 @@ def run_command(command):
 
 
 def run_shell_command(command):
+    # logger.info("Run Shell Command %s", command)
     p = Popen(command, stdin=PIPE,
               stdout=PIPE,
               stderr=PIPE, shell=True)
@@ -131,8 +133,9 @@ def create_plugin_env():
 
 def get_service_status(service_name):
     # result = {COLLECTD_STATUS: None, VERSION: None}
-    command = "service " + service_name + " status"
+    # command = "service " + service_name + " status"
     # command = ' service collectd status'.split()
+    command = "systemctl status {0}.service".format(service_name)
     out, err = run_shell_command(command)
     if err:
         return -1
@@ -152,20 +155,23 @@ def get_service_status(service_name):
 
 def start_service(service_name):
     # result = {COLLECTD_STATUS: None, VERSION: None}
-    command = "service " + service_name + " start"
+    # command = "service " + service_name + " start"
     # command = ' service collectd status'.split()
     # out, err = run_shell_command(command)
     # print command
+    command = "systemctl start {0}.service".format(service_name)
     return run_shell_command(command)
 
 
 def stop_service(service_name):
-    command = "service " + service_name + " stop"
+    # command = "service " + service_name + " stop"
+    command = "systemctl stop {0}.service".format(service_name)
     return run_shell_command(command)
 
 
 def restart_service(service_name):
-    command = "service " + service_name + " restart"
+    # command = "service " + service_name + " restart"
+    command = "systemctl restart {0}.service".format(service_name)
     return run_shell_command(command)
 
 
