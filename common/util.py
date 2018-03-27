@@ -102,7 +102,7 @@ def read_yaml_file(filename):
 
 
 def run_command(command):
-    logger.info("Run Command %s", command)
+    # logger.info("Run Command %s", command)
     p = Popen(command,
               stdout=PIPE,
               stderr=STDOUT)
@@ -110,7 +110,7 @@ def run_command(command):
 
 
 def run_shell_command(command):
-    logger.info("Run Shell Command %s", command)
+    # logger.info("Run Shell Command %s", command)
     p = Popen(command, stdin=PIPE,
               stdout=PIPE,
               stderr=PIPE, shell=True)
