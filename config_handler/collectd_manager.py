@@ -385,10 +385,9 @@ class CollectdManager:
                 return success, return_dict
             self.logger.info("push configuration successfull")
 
-            stop_collectd()
+            # stop_collectd()
             if self.collector_dict.get(ENABLED, True):
                 start_collectd()
-                self.logger.info("collectd process successfully enable")
 
             (success, result) = self.bulid_set_config_result()
             if not success:

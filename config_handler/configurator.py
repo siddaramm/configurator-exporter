@@ -15,8 +15,13 @@ def set_collectd_config(metrics):
     :return:
     """
     create_plugin_env()
-    collector_obj = collectd_manager.CollectdManager(metrics)
-    success, return_dict = collector_obj.set_config()
+    return_dict = {}
+    stop_collectd()
+    if metrics:
+        collector_obj = collectd_manager.CollectdManager(metrics)
+        success, return_dict = collector_obj.set_config()
+    else:
+        delete_collectd_config()
     if ERROR not in return_dict:
         return_dict[COLLECTD_STATUS] = get_collectd_process()
     return return_dict
@@ -92,9 +97,13 @@ def set_fluentd_config(logging):
     :param logging:
     :return:
     """
-    return_dict = None
-    obj = fluentd_manager.FluentdPluginManager(logging)
-    return_dict = obj.set_config()
+    return_dict = {}
+    change_fluentd_status(STOP)
+    if logging:
+        obj = fluentd_manager.FluentdPluginManager(logging)
+        return_dict = obj.set_config()
+    else:
+        delete_fluentd_config()
     if ERROR not in return_dict:
         return_dict[FLUENTD_STATUS] = get_fluentd_process()
     # collector_obj = collectd_manager.CollectdManager(logging)
