@@ -1,4 +1,5 @@
 import copy
+import socket
 from mako.template import Template
 
 from config_util import *
@@ -29,6 +30,8 @@ class CollectdManager:
         self.logger = expoter_logging(COLLECTD_MGR)
         self.target_mapping_list = get_supported_targets_mapping()
         self.plugin_mapping_list = get_collectd_plugins_mapping()
+        self.custom_hostname = socket.gethostname()
+        self.nodeId = None 
 
     def set_targetandtag(self, plugin, plugin_targets=None, plugin_tags=None):
         """
@@ -151,8 +154,13 @@ class CollectdManager:
 
             # generate config for filters
             filename = get_dest_filename(FILTERS)
-            (success, cfg) = self.get_section_cfg(
-                FILTERS, {TAGS: self.tags, TARGETS: self.targets})
+            # (success, cfg) = self.get_section_cfg(
+            # FILTERS, {TAGS: self.tags, TARGETS: self.targets})
+            section = {TAGS: self.tags, TARGETS: self.targets, CUSTOM_HOSTNAME: self.custom_hostname}
+            if self.nodeId is not None:
+                section[NODEID] = self.nodeId
+            (success, cfg) = self.get_section_cfg( FILTERS, section)
+
             self.logger.debug("success: " + str(success) +
                               " section_cfg: " + cfg)
             if success:
@@ -241,6 +249,11 @@ class CollectdManager:
                         plugin_cfg_list.append({NAME: profile[NAME], STATUS: error_msg})
 
                     self.cfg_dict[profile[NAME]] = plugin_cfg_list
+            if "custom_hostname" in collector_dict:
+                self.custom_hostname = collector_dict["custom_hostname"]
+            if NODEID in collector_dict:
+                self.nodeId = collector_dict[NODEID]
+
             return True, error_msg
         except KeyError, e:
             error_msg = str(e) + KEY_ERROR
