@@ -118,6 +118,8 @@ class Config:
         metrics = data.get(METRICS, {})
         logging = data.get(LOGGING, {})
         targets = data.get(TARGETS, {})
+        hostname = data.get("name")
+        nodeId = data.get(NODEID)
 
         if not (metrics or logging):
             result[METRICS] = configurator.set_collectd_config(metrics)
@@ -131,6 +133,10 @@ class Config:
 
         if metrics:
             metrics = configurator.map_local_targets(targets, metrics)
+            metrics["custom_hostname"] = hostname
+            if nodeId:
+                metrics[NODEID]= nodeId
+
             result[METRICS] = configurator.set_collectd_config(metrics)
         else:
             result[METRICS] = configurator.set_collectd_config(metrics)

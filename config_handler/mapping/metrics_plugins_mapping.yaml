@@ -17,6 +17,10 @@ linux:
  - name: nic_stats
    interval: 10
 
+linux_stats:
+ - name: linux_stats
+   interval: 10
+
 ## linux static plugin mapping to cpu_static
 #linux_static:
 # - name: cpu_static
