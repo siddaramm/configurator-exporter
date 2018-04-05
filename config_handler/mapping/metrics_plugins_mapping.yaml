@@ -207,3 +207,11 @@ postgres:
      tooltip: Port
      label: Port
      fieldName: port
+   - Mandatory: true
+     min: ''
+     dataType: Integer
+     max: ''
+     defaultValue: 60
+     tooltip: Polling Interval
+     label: Interval
+     fieldName: interval
