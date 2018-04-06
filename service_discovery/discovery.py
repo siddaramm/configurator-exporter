@@ -1,5 +1,7 @@
 import subprocess
+import psutil
 from config_handler import configurator
+
 
 service_name = {
     "elasticsearch": "ES",
@@ -49,7 +51,21 @@ def get_process_id(service):
         # The linux flavour is not Ubuntu could be CentOS or redHat so search for httpd
         if (service == "apache"):
             service = "httpd"
-    cmd = "ps auxww | grep [" + service[:1] + "]" + service[1:]
+
+    processID = ""
+    for proc in psutil.process_iter(attrs=['pid', 'name', 'username']):
+        # Java processes
+        if service in ["elasticsearch"]:
+            if proc.info.get("name") == "java" and proc.info.get("username") == service:
+                processID = proc.info.get("pid")
+                break
+        # Non java processes
+        elif proc.info.get("name") == service:
+            processID = proc.info.get("pid")
+            break
+
+    # cmd = "ps auxww | grep [" + service[:1] + "]" + service[1:]
+    cmd = "ps elf | grep " + processID + " | grep -v grep"
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     (out, err) = p.communicate()
     for line in out.splitlines():
