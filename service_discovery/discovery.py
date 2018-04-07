@@ -65,7 +65,7 @@ def get_process_id(service):
             break
 
     # cmd = "ps auxww | grep [" + service[:1] + "]" + service[1:]
-    cmd = "ps elf | grep " + processID + " | grep -v grep"
+    cmd = "ps elf | grep " + str(processID) + " | grep -v grep"
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     (out, err) = p.communicate()
     for line in out.splitlines():
