@@ -1,8 +1,9 @@
 import subprocess
 import psutil
 from config_handler import configurator
+from common.util import *
 
-
+logger = expoter_logging(COLLECTD_MGR)
 service_name = {
     "elasticsearch": "ES",
     "apache": "apache",
@@ -39,6 +40,7 @@ def get_process_id(service):
     :return: return a list of PID's assosciated with the service along with their
     status, memUsage, cpuUsage and user
     '''
+    logger.info("Get process id for service %s", service)
     pids = []
     if (service == "apache"):
         os_cmd = "lsb_release -d"
@@ -77,7 +79,7 @@ def get_process_id(service):
             pid["memUsage"] = line.split()[3]
             pid["status"] = "running"
             pids.append(pid)
-
+    logger.info("PIDs %s", pids)
     return pids
 
 
@@ -111,6 +113,7 @@ def add_ports(dict, service):
     :param service: name of the service
     :return: add listening ports for the PID to the dictionary
     '''
+    logger.debug("Add ports %s %s", dict, service)
     if(service == "apache"):
         apache_service = ""
         os_cmd = "lsb_release -d"
@@ -213,6 +216,7 @@ def discover_services():
     memUsage, Listening ports, input configuration for the plugin.
     :return:
     '''
+    logger.info("Discover service started")
     discovery = {}
     for service in services:
         pidList = get_process_id(service)
@@ -261,4 +265,5 @@ def discover_services():
 
                 discovery[service_name[service]].append(final_dict)
 
+    logger.info("Discovered service %s", discovery)
     return discovery
