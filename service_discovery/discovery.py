@@ -62,7 +62,7 @@ def get_process_id(service):
                 processID = proc.info.get("pid")
                 break
         # Non java processes
-        elif proc.info.get("name") == service:
+        elif service in str(proc.info.get("name")):
             processID = proc.info.get("pid")
             break
 
