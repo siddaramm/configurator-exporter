@@ -161,11 +161,19 @@ def start_collectd():
         out, err = start_service(service)
     else:
         out, err = restart_service(service)
-    time.sleep(1)
+
+    #Attempting to get pid of collectd process for 3 times of every one second
+    for i in range(0, 3):
+        time.sleep(1)
+        pid = get_process_id(service)
+        if pid != -1:
+            break
     pid = get_process_id(service)
+
+    #If collectd process not get started, restart collectd service
     if pid == -1:
-        command = COLLECTDBIN + " -C " + CollectdConfDir + "/collectd.conf"
-        out, err = run_shell_command(command)
+        # command = COLLECTDBIN + " -C " + CollectdConfDir + "/collectd.conf"
+        out, err = restart_service(service)
     if err:
         logger.warning("Failed to start collectd" + str(err))
 
