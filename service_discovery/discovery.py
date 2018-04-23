@@ -9,14 +9,16 @@ service_name = {
     "apache": "apache",
     "mysql": "mysql",
     "mssql": "mssql",
-    "postgres": "postgres"
+    "postgres": "postgres",
+    "nginx": "nginx"
 }
 services = [
     "elasticsearch",
     "apache",
     "mysql",
     "mssql",
-    "postgres"
+    "postgres",
+    "nginx"
 ]
 '''
 Mapping for services and the plugin to be configured for them.
@@ -26,7 +28,8 @@ service_plugin_mapping = {
     "apache": "apache",
     "mysql": "mysql",
     "mssql": "mssql",
-    "postgres": "postgres"
+    "postgres": "postgres",
+    "nginx": "nginx"
 }
 
 poller_plugin = [

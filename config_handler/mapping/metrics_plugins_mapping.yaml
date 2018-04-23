@@ -215,3 +215,33 @@ postgres:
      tooltip: Polling Interval
      label: Interval
      fieldName: interval
+
+# abstraction for nginx 
+nginx:
+  - name: nginx
+    interval: 300
+    config:
+    - Mandatory: true
+      min: ''
+      dataType: string
+      max: ''
+      defaultValue: '80'
+      tooltip: "port in which nginx service is exposed on localhost"
+      label: Port
+      fieldName: port
+    - Mandatory: true
+      min: ""
+      dataType: string
+      max: ""
+      defaultValue: "stats"
+      tooltip: "location to get nginx stats e.g. stats"
+      label: Location
+      fieldName: location
+    - Mandatory: true
+      min: ""
+      dataType: string
+      max: ""
+      defaultValue: "false"
+      tooltip: "true for https and false for http"
+      label: Secure
+      fieldName: secure
