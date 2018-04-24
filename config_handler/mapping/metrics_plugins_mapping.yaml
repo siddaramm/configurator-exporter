@@ -245,3 +245,8 @@ nginx:
       tooltip: "true for https and false for http"
       label: Secure
       fieldName: secure
+
+#results of tpcc
+tpcc:
+   - name: tpcc
+     interval: 300
