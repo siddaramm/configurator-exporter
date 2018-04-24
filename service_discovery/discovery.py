@@ -1,3 +1,4 @@
+import os
 import subprocess
 import psutil
 from config_handler import configurator
@@ -10,7 +11,8 @@ service_name = {
     "mysql": "mysql",
     "mssql": "mssql",
     "postgres": "postgres",
-    "nginx": "nginx"
+    "nginx": "nginx",
+    "tpcc": "tpcc"
 }
 services = [
     "elasticsearch",
@@ -18,7 +20,8 @@ services = [
     "mysql",
     "mssql",
     "postgres",
-    "nginx"
+    "nginx",
+    "tpcc"
 ]
 '''
 Mapping for services and the plugin to be configured for them.
@@ -29,7 +32,8 @@ service_plugin_mapping = {
     "mysql": "mysql",
     "mssql": "mssql",
     "postgres": "postgres",
-    "nginx": "nginx"
+    "nginx": "nginx",
+    "tpcc": "tpcc"
 }
 
 poller_plugin = [
@@ -222,6 +226,19 @@ def discover_services():
     logger.info("Discover service started")
     discovery = {}
     for service in services:
+        if service == "tpcc":
+            '''
+            If service is tpcc the check for the existance of vcfg.properties file
+            '''
+            if os.path.exists("/opt/VDriver/jar/vcfg.properties"):
+                port_dict = {}
+                port_dict["loggerConfig"] = []
+                port_dict["agentConfig"] = {}
+                agent_dict = add_agent_config(service, port_dict)
+                final_dict = agent_dict
+                discovery[service_name[service]] = []
+                discovery[service_name[service]].append(final_dict)
+
         pidList = get_process_id(service)
         if(len(pidList) != 0):
             discovery[service_name[service]] = []
