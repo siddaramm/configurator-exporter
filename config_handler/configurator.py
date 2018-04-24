@@ -175,8 +175,11 @@ def get_metrics_plugins_params(plugins=None):
         data = {NAME: name}
         config_data = []
         for v in value:
-            for item in v.get(CONFIG_DATA):
-                config_data.append(item)
+            try:
+                for item in v.get(CONFIG_DATA):
+                    config_data.append(item)
+            except:
+                logger.info("No config data is present for %s" %(v.get("name")))
         if config_data:
             data[CONFIG_DATA] = config_data
         result[PLUGINS].append(data)
