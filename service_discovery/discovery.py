@@ -12,7 +12,8 @@ service_name = {
     "mssql": "mssql",
     "postgres": "postgres",
     "nginx": "nginx",
-    "tpcc": "tpcc"
+    "tpcc": "tpcc",
+    "kafka": "kafka"
 }
 services = [
     "elasticsearch",
@@ -21,7 +22,8 @@ services = [
     "mssql",
     "postgres",
     "nginx",
-    "tpcc"
+    "tpcc",
+    "kafka"
 ]
 '''
 Mapping for services and the plugin to be configured for them.
@@ -33,13 +35,43 @@ service_plugin_mapping = {
     "mssql": "mssql",
     "postgres": "postgres",
     "nginx": "nginx",
-    "tpcc": "tpcc"
+    "tpcc": "tpcc",
+    "kafka": "kafka_jmx"
 }
 
 poller_plugin = [
     "elasticsearch",
     "postgres"
 ]
+
+def add_pid_usage(pid, service, pid_list):
+    """Add usage stats of each pids"""
+    cmd = "ps auxww | grep %s | grep -v grep" % pid
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    (out, err) = p.communicate()
+    for line in out.splitlines():
+        if service in line:
+            pid = {}
+            pid["user"] = line.split()[0]
+            pid["process_id"] = int(line.split()[1])
+            pid["cpuUsage"] = line.split()[2]
+            pid["memUsage"] = line.split()[3]
+            pid["status"] = "running"
+            pid_list.append(pid)
+
+
+def check_jmx_enabled(pid):
+    """Check if jmx enabled for java process"""
+    ps_cmd = "ps -eaf | grep %s | grep -v grep" % pid
+    p = subprocess.Popen(ps_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    (res, err) = p.communicate()
+    if res is not "":
+        res_list = res.split()
+        for element in res_list:
+            if element == "-Dcom.sun.management.jmxremote":
+                return True
+    return False
+
 
 def get_process_id(service):
     '''
@@ -49,6 +81,27 @@ def get_process_id(service):
     '''
     logger.info("Get process id for service %s", service)
     pids = []
+    if (service == "kafka"):
+        # Common logic for jmx related process
+        processID = []
+        java_avail = subprocess.check_call(["java", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if not java_avail:
+            jcmd = subprocess.Popen("jcmd | grep kafka", shell=True,
+                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            res, err = jcmd.communicate()
+            if res is not "":
+                j_pids = res.splitlines()
+                for j_pid in j_pids:
+                    if j_pid is not "":
+                        pidval = j_pid.split()
+                        if check_jmx_enabled(pidval[0]):
+                            processID.append(pidval[0])
+
+        for procid in processID:
+            add_pid_usage(procid, service, pids)
+        logger.info("PIDs %s", pids)
+        return pids
+
     if (service == "apache"):
         os_cmd = "lsb_release -d"
         p = subprocess.Popen(os_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -73,19 +126,7 @@ def get_process_id(service):
             processID = proc.info.get("pid")
             break
 
-    # cmd = "ps auxww | grep [" + service[:1] + "]" + service[1:]
-    cmd = "ps auxww | grep " + str(processID) + " | grep -v grep"
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    (out, err) = p.communicate()
-    for line in out.splitlines():
-        if service in line:
-            pid = {}
-            pid["user"] = line.split()[0]
-            pid["process_id"] = int(line.split()[1])
-            pid["cpuUsage"] = line.split()[2]
-            pid["memUsage"] = line.split()[3]
-            pid["status"] = "running"
-            pids.append(pid)
+    add_pid_usage(processID, service, pids)
     logger.info("PIDs %s", pids)
     return pids
 
@@ -121,29 +162,40 @@ def add_ports(dict, service):
     :return: add listening ports for the PID to the dictionary
     '''
     logger.debug("Add ports %s %s", dict, service)
-    if(service == "apache"):
-        apache_service = ""
-        os_cmd = "lsb_release -d"
-        p = subprocess.Popen(os_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    ports = []
+    if(service != 'kafka'):
+        if(service == "apache"):
+            apache_service = ""
+            os_cmd = "lsb_release -d"
+            p = subprocess.Popen(os_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            (out, err) = p.communicate()
+            for line in out.splitlines():
+                if("Ubuntu" in line):
+                    apache_service = "apache2"
+                    break
+            if(apache_service == ""):
+                apache_service = "httpd"
+            cmd = "netstat -anp | grep %s" %(apache_service)
+        else:
+            cmd = "netstat -anp | grep %s" %(dict["PID"])
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         (out, err) = p.communicate()
         for line in out.splitlines():
-            if("Ubuntu" in line):
-                apache_service = "apache2"
-                break
-        if(apache_service == ""):
-            apache_service = "httpd"
-        cmd = "netstat -anp | grep %s" %(apache_service)
+            line = line.split()
+            if((line[5] == 'LISTEN') and (service == "apache" or str(dict['PID']) in line[6])):
+                port = (line[3].split(':')[-1])
+                if port not in ports:
+                    ports.append(port)
     else:
-        cmd = "netstat -anp | grep %s" %(dict["PID"])
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    (out, err) = p.communicate()
-    ports = []
-    for line in out.splitlines():
-        line = line.split()
-        if((line[5] == 'LISTEN') and (service == "apache" or str(dict['PID']) in line[6])):
-            port = (line[3].split(':')[-1])
-            if port not in ports:
-                ports.append(port)
+        # get port of jmxremote if configured for kafka
+        ps_cmd = "ps -eaf | grep %s | grep -v grep" % (dict["PID"])
+        p = subprocess.Popen(ps_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        (res, err) = p.communicate()
+        if res is not "":
+            res_list = res.split()
+            for element in res_list:
+                if "-Dcom.sun.management.jmxremote.port" in element:
+                    ports.append(element.split('=')[1])
     dict['ports'] = ports
     return dict
 
@@ -191,7 +243,7 @@ def add_agent_config(service, dict):
     dict["agentConfig"] = {}
     agentConfig = {}
     agentConfig["config"] = {}
-    for key,value in service_plugin_mapping.items():
+    for key, value in service_plugin_mapping.items():
         if(key == service):
             agentConfig["name"] = value
             break
@@ -199,7 +251,7 @@ def add_agent_config(service, dict):
     for item in config["plugins"]:
         if(item.get("config") and item.get("name") == agentConfig["name"]):
             #Config specific to jvm plugin
-            if(agentConfig["name"] == "jvm"):
+            if(agentConfig["name"] == "jvm" or agentConfig["name"] == "kafka_jmx"):
                 agentConfig["config"]["process"] = service
                 break
             for item1 in item["config"]:
