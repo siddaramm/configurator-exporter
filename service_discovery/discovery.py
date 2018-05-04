@@ -121,6 +121,11 @@ def get_process_id(service):
             if proc.info.get("name") == "java" and proc.info.get("username") == service:
                 processID = proc.info.get("pid")
                 break
+	# Postgres process
+        elif service in ["postgres"]:
+            if proc.info.get("name") == "postmaster" or proc.info.get("name") == "postgres":
+                processID = proc.info.get("pid")
+                break
         # Non java processes
         elif service in str(proc.info.get("name")):
             processID = proc.info.get("pid")

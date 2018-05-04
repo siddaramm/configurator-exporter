@@ -240,15 +240,6 @@ class FluentdPluginManager:
         lines.append('\t' + "</parse>")
 
         lines.append('</source>')
-        # Add grep filter.
-        if data.get('usr_filter', None):
-            lines.append('\n<filter ' + source_tag + '*>')
-            lines.append('\t@type grep')
-            count = 0
-            for key, value in data.get('usr_filter', {}).items():
-                count = count + 1
-                lines.append('\tregexp' + str(count) + ' ' + str(key) + ' ' + str(value))
-            lines.append('</filter>')
 
         # Add parser filter. if data.get('match').has_key('tag'):
         if 'tag' in data.get('match'):
@@ -284,6 +275,16 @@ class FluentdPluginManager:
             # tags = [str(x) for x in self.tags + data.get('source').get('tag')]
             lines.append('\t\t' + '_tag_' + str(tag_key) + ' ' + '"' + str(tag_val) + '"')
         lines.extend(['\t</record>', '</filter>'])
+
+	# Add grep filter.
+        if data.get('usr_filter', None):
+            lines.append('\n<filter ' + source_tag + '*>')
+            lines.append('\t@type grep')
+            count = 0
+            for key, value in data.get('usr_filter', {}).items():
+                count = count + 1
+                lines.append('\tregexp' + str(count) + ' ' + str(key) + ' ' + str(value))
+            lines.append('</filter>')
 
         # Add match. if data.get('match').has_key('tag'):
         for x_targets in self.targets:
