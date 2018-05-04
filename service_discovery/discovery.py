@@ -81,59 +81,68 @@ def get_process_id(service):
     '''
     logger.info("Get process id for service %s", service)
     pids = []
+   
     if (service == "kafka"):
-        # Common logic for jmx related process
-        processID = []
-        java_avail = subprocess.check_call(["java", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if not java_avail:
-            jcmd = subprocess.Popen("jcmd | grep kafka", shell=True,
-                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            res, err = jcmd.communicate()
-            if res is not "":
-                j_pids = res.splitlines()
-                for j_pid in j_pids:
-                    if j_pid is not "":
-                        pidval = j_pid.split()
-                        if check_jmx_enabled(pidval[0]):
-                            processID.append(pidval[0])
+        try:
+                # Common logic for jmx related process
+            processID = []
+            java_avail = subprocess.check_call(["java", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if not java_avail:
+                jcmd = subprocess.Popen("jcmd | grep kafka", shell=True,
+                                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                res, err = jcmd.communicate()
+                if res is not "":
+                    j_pids = res.splitlines()
+                    for j_pid in j_pids:
+                        if j_pid is not "":
+                            pidval = j_pid.split()
+                            if check_jmx_enabled(pidval[0]):
+                                processID.append(pidval[0])
+    
+            for procid in processID:
+                add_pid_usage(procid, service, pids)
+            logger.info("PIDs %s", pids)
+            return pids
+        except:
+            logger.info("PIDs %s", pids)
+            return pids
 
-        for procid in processID:
-            add_pid_usage(procid, service, pids)
+    try:
+        if (service == "apache"):
+            os_cmd = "lsb_release -d"
+            p = subprocess.Popen(os_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            (out, err) = p.communicate()
+            for line in out.splitlines():
+                if ("Ubuntu" in line):
+                    service = "apache2"
+                    break
+            # The linux flavour is not Ubuntu could be CentOS or redHat so search for httpd
+            if (service == "apache"):
+                service = "httpd"
+    
+        processID = ""
+        for proc in psutil.process_iter(attrs=['pid', 'name', 'username']):
+            # Java processes
+            if service in ["elasticsearch"]:
+                if proc.info.get("name") == "java" and proc.info.get("username") == service:
+                    processID = proc.info.get("pid")
+                    break
+	        # Postgres process
+            elif service in ["postgres"]:
+                if proc.info.get("name") == "postmaster" or proc.info.get("name") == "postgres":
+                    processID = proc.info.get("pid")
+                    break
+            # Non java processes
+            elif service in str(proc.info.get("name")):
+                processID = proc.info.get("pid")
+                break
+    
+        add_pid_usage(processID, service, pids)
         logger.info("PIDs %s", pids)
         return pids
-
-    if (service == "apache"):
-        os_cmd = "lsb_release -d"
-        p = subprocess.Popen(os_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-        (out, err) = p.communicate()
-        for line in out.splitlines():
-            if ("Ubuntu" in line):
-                service = "apache2"
-                break
-        # The linux flavour is not Ubuntu could be CentOS or redHat so search for httpd
-        if (service == "apache"):
-            service = "httpd"
-
-    processID = ""
-    for proc in psutil.process_iter(attrs=['pid', 'name', 'username']):
-        # Java processes
-        if service in ["elasticsearch"]:
-            if proc.info.get("name") == "java" and proc.info.get("username") == service:
-                processID = proc.info.get("pid")
-                break
-	# Postgres process
-        elif service in ["postgres"]:
-            if proc.info.get("name") == "postmaster" or proc.info.get("name") == "postgres":
-                processID = proc.info.get("pid")
-                break
-        # Non java processes
-        elif service in str(proc.info.get("name")):
-            processID = proc.info.get("pid")
-            break
-
-    add_pid_usage(processID, service, pids)
-    logger.info("PIDs %s", pids)
-    return pids
+    except:
+        logger.info("PIDs %s", pids)
+        return pids
 
 
 def add_status(dict):
