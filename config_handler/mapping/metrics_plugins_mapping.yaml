@@ -203,7 +203,7 @@ postgres:
      defaultValue: postgres
      tooltip: Username for Postgres server
      label: Username
-     fieldName: username
+     fieldName: user
    - Mandatory: true
      min: ''
      dataType: password
@@ -221,6 +221,7 @@ postgres:
      label: Port
      fieldName: port
    - Mandatory: true
+     hidden: true
      min: ''
      dataType: Integer
      max: ''
