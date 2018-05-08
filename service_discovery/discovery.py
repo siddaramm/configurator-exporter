@@ -87,7 +87,7 @@ def get_process_id(service):
             processID = []
             java_avail = subprocess.check_call(["java", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if not java_avail:
-                jcmd = subprocess.Popen("jcmd | grep kafka", shell=True,
+                jcmd = subprocess.Popen("jcmd | awk '{print $2}' | grep kafka", shell=True,
                                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 res, err = jcmd.communicate()
                 if res is not "":
