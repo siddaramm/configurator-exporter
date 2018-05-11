@@ -13,7 +13,7 @@ service_name = {
     "postgres": "postgres",
     "nginx": "nginx",
     "tpcc": "tpcc",
-    "kafka": "kafka"
+    "kafka.Kafka": "kafka"
 }
 services = [
     "elasticsearch",
@@ -23,7 +23,7 @@ services = [
     "postgres",
     "nginx",
     "tpcc",
-    "kafka"
+    "kafka.Kafka"
 ]
 '''
 Mapping for services and the plugin to be configured for them.
@@ -36,7 +36,7 @@ service_plugin_mapping = {
     "postgres": "postgres",
     "nginx": "nginx",
     "tpcc": "tpcc",
-    "kafka": "kafka_jmx"
+    "kafka.Kafka": "kafka_jmx"
 }
 
 poller_plugin = [
@@ -81,13 +81,13 @@ def get_process_id(service):
     logger.info("Get process id for service %s", service)
     pids = []
    
-    if (service == "kafka"):
+    if (service == "kafka.Kafka"):
         try:
                 # Common logic for jmx related process
             processID = []
             java_avail = subprocess.check_call(["java", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if not java_avail:
-                jcmd = subprocess.Popen("jcmd | awk '{print $2}' | grep kafka", shell=True,
+                jcmd = subprocess.Popen("jcmd | awk '{print $1 \" \" $2}' | grep -w \"%s\"" % service, shell=True,
                                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 res, err = jcmd.communicate()
                 if res is not "":
@@ -176,7 +176,7 @@ def add_ports(dict, service):
     '''
     logger.debug("Add ports %s %s", dict, service)
     ports = []
-    if(service != 'kafka'):
+    if(service != 'kafka.Kafka'):
         if(service == "apache"):
             apache_service = ""
             os_cmd = "lsb_release -d"
