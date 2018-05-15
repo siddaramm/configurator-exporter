@@ -100,7 +100,7 @@ apache-access:
    parse:
      '@type': regexp
      time_format: '%d/%b/%Y:%H:%M:%S %z'
-     expression: '/^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)" (?<response_time>[^ ]*))?$/'
+     expression: '^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$'
      types: 'response_time:integer'
    transform:
      node: '#{Socket.gethostname}'
@@ -148,6 +148,7 @@ linux-syslog:
     file: '${tag_suffix[1]}'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='info'; if record.key?('level') == nil or record['level'] == nil then n_level else record['level'] end}
+    pid: ${record['pid']}
   match:
     flush_interval: 30s
 
@@ -210,7 +211,7 @@ postgres-general:
     file: '${tag_suffix[1]}'
     _plugin: 'postgres'
     _documentType: 'general-query'
-    time: "${require 'time'; time.to_time.to_i}"
-    level: "${record['level'].split(':').first()}"
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${record['level'].split(':').first()}
   match:
     flush_interval: 30s
