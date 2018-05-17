@@ -13,7 +13,8 @@ service_name = {
     "postgres": "postgres",
     "nginx": "nginx",
     "tpcc": "tpcc",
-    "kafka.Kafka": "kafka"
+    "kafka.Kafka": "kafka",
+    "zookeeper": "zookeeper"
 }
 services = [
     "elasticsearch",
@@ -23,7 +24,8 @@ services = [
     "postgres",
     "nginx",
     "tpcc",
-    "kafka.Kafka"
+    "kafka.Kafka",
+    "zookeeper"
 ]
 '''
 Mapping for services and the plugin to be configured for them.
@@ -36,7 +38,8 @@ service_plugin_mapping = {
     "postgres": "postgres",
     "nginx": "nginx",
     "tpcc": "tpcc",
-    "kafka.Kafka": "kafka_jmx"
+    "kafka.Kafka": "kafka_jmx",
+    "zookeeper": "zookeeper_jmx"
 }
 
 poller_plugin = [
@@ -82,7 +85,7 @@ def get_process_id(service):
     logger.info("Get process id for service %s", service)
     pids = []
    
-    if (service == "kafka.Kafka"):
+    if service in ["kafka.Kafka", "zookeeper"]:
         try:
                 # Common logic for jmx related process
             processID = []
@@ -177,7 +180,7 @@ def add_ports(dict, service):
     '''
     logger.debug("Add ports %s %s", dict, service)
     ports = []
-    if(service != 'kafka.Kafka'):
+    if service not in ["kafka.Kafka", "zookeeper"]:
         if(service == "apache"):
             apache_service = ""
             os_cmd = "lsb_release -d"
@@ -265,11 +268,17 @@ def add_agent_config(service, dict):
     for item in config["plugins"]:
         if(item.get("config") and item.get("name") == agentConfig["name"]):
             #Config specific to jvm plugin
-            if(agentConfig["name"] == "jvm" or agentConfig["name"] == "kafka_jmx"):
+            if agentConfig["name"] == "jvm":
                 agentConfig["config"]["process"] = service
                 break
-            for item1 in item["config"]:
-                agentConfig["config"][item1["fieldName"]] = item1["defaultValue"]
+            if agentConfig["name"] in ["kafka_jmx", "zookeeper_jmx"]:
+                agentConfig["config"]["process"] = service
+                for parameter in item["config"]:
+                    if parameter["fieldName"] == "port":
+                        agentConfig["config"][parameter["fieldName"]] = parameter["defaultValue"]
+                break
+            for parameter in item["config"]:
+                agentConfig["config"][parameter["fieldName"]] = parameter["defaultValue"]
 
     #In apache plugin replace the port default value with the listening ports for apache/httpd,
     #if there are multiple listening ports for the PID assosciate the first port with the PID
