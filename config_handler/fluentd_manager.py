@@ -185,6 +185,8 @@ class FluentdPluginManager:
             #         # temp['source']['format'] = 'none'
             #         temp[
             #             'usr_filter'] = '(.*(' + '|'.join(filter_upper) + ').*?)'
+	    if "rewrite_tag_filter" in plugin:
+                temp['rewrite_tag_filter'] = plugin.get('rewrite_tag_filter')
             temp['usr_filter'] = {}
             if x_plugin.get(CONFIG, {}).get(FILTERS):
                 for key, value in x_plugin[CONFIG][FILTERS].items():
@@ -241,23 +243,48 @@ class FluentdPluginManager:
 
         lines.append('</source>')
 
-        # Add parser filter. if data.get('match').has_key('tag'):
-        if 'tag' in data.get('match'):
-            lines.append('\n<filter ' + source_tag + '.' +
-                         data.get('match').get('tag', []) + '>')
+	# Add rewrite tag filter
+        if "rewrite_tag_filter" in data:
+            lines.append('\n<match ' + source_tag + '*>')
+            lines.append('\t' + '@type rewrite_tag_filter')
+            for key,val in data.get('rewrite_tag_filter',{}).iteritems():
+                source_tag = data.get('rewrite_tag_filter').get('tag') + '.'
+                if key == 'tag':
+                    continue
+                lines.append('\t' + '<rule>')
+                lines.append('\t\tkey message')
+                lines.append('\t\tpattern '+ val)
+                if key != 'clear':
+                    lines.append('\t\ttag '+ source_tag + key)
+                else:
+                    lines.append('\t\ttag clear')
+                lines.append('\t' + '</rule>')
+            lines.append('</match>')
+            # Add filter for seperate rule
+            for key,val in data.get('parse',{}).iteritems():
+                if key != 'clear':
+		    lines.append('\n<filter ' + source_tag + key + '>')
+		    lines.extend(['\t@type parser', '\tkey_name message', '\t<parse>'])
+		    lines.append('\t\texpression ' + val)
+		    lines.extend(['\t\t@type regexp', '\t</parse>', '</filter>'])
         else:
-            lines.append('\n<filter ' + source_tag + '*>')
-        lines.extend(['\t@type parser', '\tkey_name message', '\t<parse>'])
-        for key, val in data.get('parse', {}).iteritems():
-            if key == "expressions":
-                for v in val:
-                    lines.append('\t\t' + "<pattern>")
-                    lines.append('\t\t\t' + 'format regexp')
-                    lines.append('\t\t\t' + 'expression ' + v)
-                    lines.append('\t\t' + "</pattern>")
-                continue
-            lines.append('\t\t' + key  + ' ' + val)
-        lines.extend(['\t</parse>', '</filter>'])
+            # Add parser filter. if data.get('match').has_key('tag'):
+            if 'tag' in data.get('match'):
+                lines.append('\n<filter ' + source_tag + '.' +
+                       data.get('match').get('tag', []) + '>')
+            else:
+		lines.append('\n<filter ' + source_tag + '*>')
+	    lines.extend(['\t@type parser', '\tkey_name message', '\t<parse>'])
+	    for key, val in data.get('parse', {}).iteritems():
+		if key == "expressions":
+		    for v in val:
+			lines.append('\t\t' + "<pattern>")
+			lines.append('\t\t\t' + 'format regexp')
+			lines.append('\t\t\t' + 'expression ' + v)
+			lines.append('\t\t' + "</pattern>")
+		    continue
+		lines.append('\t\t' + key  + ' ' + val)
+	    lines.extend(['\t</parse>', '</filter>'])
 
         # Add record-transormation filter. if data.get('match').has_key('tag'):
         if 'tag' in data.get('match'):
@@ -310,6 +337,11 @@ class FluentdPluginManager:
                     lines.append('\t' + str(key) + ' ' + str(val))
                 lines.append('</match>')
 
+	# Add match, if clear is present in rewrite tag filter
+	if 'rewrite_tag_filter' in data and 'clear' in data.get('rewrite_tag_filter',{}):
+	    lines.append('\n<match clear>')
+	    lines.append('\t@type null')
+	    lines.append('</match>')
         filename = self.plugin_path + os.path.sep + data.get('name')
         self.plugin_post_data.append((filename, '\n'.join(lines)))
         return True
