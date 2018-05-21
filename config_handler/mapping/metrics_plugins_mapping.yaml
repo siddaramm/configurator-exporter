@@ -3,7 +3,7 @@
 # GLobal abstraction for linuxstatic and linux_dynamics plugins
 linux:
  - name: cpu_static
-   interval: 60
+   interval: 300
    config:
     nodeType: "Type of Node Virtual/Physical"
  - name: disk_stat
