@@ -142,7 +142,7 @@ linux-syslog:
     extra_data: '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>.*)'
   parse:
     extra_data: '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^ :\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? (?<message>.*)'
-    python: '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^ :\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? (?<remote_host>[^:]+)[:](?<remote_pid>[^ -]+) -(?<msg_id>[\a-z])- (?<message>.+)$'
+    python: '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^ :\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? (?<remote_host>[^:]+)[:](?<remote_pid>[^ -]+) [\-](?<msg_id>[^-]+)[\-] (?<message>.+)$'
   transform:
     node: '#{Socket.gethostname}'
     _plugin: 'linux'
