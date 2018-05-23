@@ -219,3 +219,24 @@ postgres-general:
     level: ${record['level'].split(':').first()}
   match:
     flush_interval: 30s
+
+# elasticserach logging mapping
+elasticsearch:
+  source:
+    '@type': tail
+    path: '/var/log/elasticsearch/elasticsearch.log'
+    pos_file: '/var/log/td-agent/elasticsearch.pos'
+  parse:
+    '@type': regexp
+    expression: '/^[\[](?<time>[^\]]*)[\]]\[(?<level>[^\]]*)\]\[(?<logging_class>[^\]]*)\] (?<message>[\s\S]*)/'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'elasticsearch'
+    _documentType: 'elasticsearch'
+    time: ${require 'time'; time.to_time.to_i}
+    logging_class: ${record['logging_class'].strip()}
+    level: ${record['level'].strip()}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
