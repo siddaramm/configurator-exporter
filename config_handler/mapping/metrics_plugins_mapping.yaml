@@ -178,6 +178,14 @@ kafka_jmx:
      fieldName: process
    - Mandatory: true
      min: ''
+     dataType: string
+     max: ''
+     defaultValue: 'localhost'
+     tooltip: Listener binding IP
+     label: ListenerIP
+     fieldName: listener_ip
+   - Mandatory: true
+     min: ''
      dataType: Integer
      max: ''
      defaultValue: 9092
@@ -198,6 +206,14 @@ zookeeper_jmx:
      tooltip: Name of java process
      label: Process
      fieldName: process
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: 'localhost'
+     tooltip: Listener binding IP
+     label: ListenerIP
+     fieldName: listener_ip
    - Mandatory: true
      min: ''
      dataType: Integer

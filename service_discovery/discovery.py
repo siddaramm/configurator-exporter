@@ -274,7 +274,7 @@ def add_agent_config(service, dict):
             if agentConfig["name"] in ["kafka_jmx", "zookeeper_jmx"]:
                 agentConfig["config"]["process"] = service
                 for parameter in item["config"]:
-                    if parameter["fieldName"] == "port":
+                    if parameter["fieldName"] in ["port", "listener_ip"]:
                         agentConfig["config"][parameter["fieldName"]] = parameter["defaultValue"]
                 break
             for parameter in item["config"]:
