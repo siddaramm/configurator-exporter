@@ -38,7 +38,7 @@ service_plugin_mapping = {
     "postgres": "postgres",
     "nginx": "nginx",
     "tpcc": "tpcc",
-    "kafka.Kafka": "kafka_jmx",
+    "kafka.Kafka": "kafka_topic",
     "zookeeper": "zookeeper_jmx"
 }
 
@@ -271,7 +271,7 @@ def add_agent_config(service, dict):
             if agentConfig["name"] == "jvm":
                 agentConfig["config"]["process"] = service
                 break
-            if agentConfig["name"] in ["kafka_jmx", "zookeeper_jmx"]:
+            if agentConfig["name"] in ["kafka_topic", "zookeeper_jmx"]:
                 agentConfig["config"]["process"] = service
                 for parameter in item["config"]:
                     if parameter["fieldName"] in ["port", "listener_ip"]:
