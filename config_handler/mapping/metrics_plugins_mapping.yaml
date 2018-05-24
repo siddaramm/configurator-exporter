@@ -163,9 +163,9 @@ jvm:
      label: Process
      fieldName: process
 
-# mapping for kafka_jmx plugin
-kafka_jmx:
- - name: kafka_jmx
+# mapping for kafka_topic plugin
+kafka_topic:
+ - name: kafka_topic
    interval: 300
    config:
    - Mandatory: true
@@ -193,9 +193,23 @@ kafka_jmx:
      label: Port
      fieldName: port
 
+# mapping for kafka_jmx plugin
+kafka_jmx:
+ - name: kafka_jmx
+   interval: 300
+   config:
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: ''
+     tooltip: Name of java process
+     label: Process
+     fieldName: process
+
 # mapping for zookeeper_jmx plugin
 zookeeper_jmx:
- - name: kafka_jmx
+ - name: zookeeper_jmx
    interval: 300
    config:
    - Mandatory: true
