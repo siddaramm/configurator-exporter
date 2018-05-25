@@ -150,7 +150,10 @@ class FluentdPluginManager:
                 if x_plugin.get(CONFIG, {}).get('log_paths'):
                     temp['source']['path'] = x_plugin[CONFIG]['log_paths']
                 temp['transform'] = plugin.get('transform')
-                temp['parse'] = plugin.get('parse')
+                if plugin.get('parse'):
+                    temp['parse'] = plugin.get('parse')
+                elif plugin.get('multiline'):
+                    temp['multiline'] = plugin.get('multiline')
                 temp['match'] = plugin.get('match')
             else:
                 strr = 'In-Valid input plugin type.' + x_plugin.get(NAME)
@@ -237,10 +240,23 @@ class FluentdPluginManager:
             #         lines.append('\t' + "</pattern>")
             #     continue
             lines.append('\t' + str(key) + ' ' + str(val))
-        lines.append('\t' + "<parse>")
-        lines.append('\t\t' + '@type none')
-        lines.append('\t' + "</parse>")
-
+        if 'parse' in data:
+            lines.append('\t' + "<parse>")
+            lines.append('\t\t' + '@type none')
+            lines.append('\t' + "</parse>")
+        elif 'multiline' in data:
+            lines.append('\tformat multiline')
+            for key, val in data.get('multiline', {}).iteritems():
+                if key != "expression":
+                    lines.append('\t' + key  + ' ' + val)
+                    continue
+                else:
+                    i = 1
+                    for v in val:
+                        lines.append('\tformat' + str(i) + ' ' + v)
+                        i+=1
+                        continue
+            lines.append('\tread_from_head true')
         lines.append('</source>')
 
 	# Add rewrite tag filter
@@ -248,14 +264,11 @@ class FluentdPluginManager:
             lines.append('\n<match ' + source_tag + '*>')
             lines.append('\t' + '@type rewrite_tag_filter')
             for key,val in data.get('rewrite_tag_filter',{}).iteritems():
-                source_tag = data.get('rewrite_tag_filter').get('tag') + '.'
-                if key == 'tag':
-                    continue
                 lines.append('\t' + '<rule>')
                 lines.append('\t\tkey message')
                 lines.append('\t\tpattern '+ val)
                 if key != 'clear':
-                    lines.append('\t\ttag '+ source_tag + key)
+                    lines.append('\t\ttag '+ key + '.${tag}')
                 else:
                     lines.append('\t\ttag clear')
                 lines.append('\t' + '</rule>')
@@ -263,11 +276,12 @@ class FluentdPluginManager:
             # Add filter for seperate rule
             for key,val in data.get('parse',{}).iteritems():
                 if key != 'clear':
-		    lines.append('\n<filter ' + source_tag + key + '>')
+		    lines.append('\n<filter ' + key + '.**>')
 		    lines.extend(['\t@type parser', '\tkey_name message', '\t<parse>'])
 		    lines.append('\t\texpression ' + val)
 		    lines.extend(['\t\t@type regexp', '\t</parse>', '</filter>'])
-        else:
+                source_tag = '*.'+ source_tag
+        elif 'parse' in data:
             # Add parser filter. if data.get('match').has_key('tag'):
             if 'tag' in data.get('match'):
                 lines.append('\n<filter ' + source_tag + '.' +
