@@ -38,8 +38,8 @@ service_plugin_mapping = {
     "postgres": "postgres",
     "nginx": "nginx",
     "tpcc": "tpcc",
-    "kafka.Kafka": "kafka_topic",
-    "zookeeper": "zookeeper_jmx"
+    "kafka.Kafka": "kafkatopic",
+    "zookeeper": "zookeeperjmx"
 }
 
 poller_plugin = [

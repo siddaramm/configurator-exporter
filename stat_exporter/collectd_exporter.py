@@ -132,7 +132,7 @@ def get_stats_dir():
 #     return data
 
 def get_data(num_samples=1, plugins=None, plugin_instances=None):
-    multi_plugins = ["linux", "mysql", "jvm", "tpcc", "postgres"]
+    multi_plugins = ["linux", "mysql", "jvm", "tpcc", "postgres", "kafkatopic", "kafkajmx", "zookeeperjmx"]
     if plugin_instances is None:
         plugin_instances = [ALL]
     if plugins is None:

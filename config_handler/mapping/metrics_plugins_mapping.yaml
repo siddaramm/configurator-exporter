@@ -164,7 +164,7 @@ jvm:
      fieldName: process
 
 # mapping for kafka_topic plugin
-kafka_topic:
+kafkatopic:
  - name: kafka_topic
    interval: 300
    config:
@@ -194,7 +194,7 @@ kafka_topic:
      fieldName: port
 
 # mapping for kafka_jmx plugin
-kafka_jmx:
+kafkajmx:
  - name: kafka_jmx
    interval: 300
    config:
@@ -208,7 +208,7 @@ kafka_jmx:
      fieldName: process
 
 # mapping for zookeeper_jmx plugin
-zookeeper_jmx:
+zookeeperjmx:
  - name: zookeeper_jmx
    interval: 300
    config:
