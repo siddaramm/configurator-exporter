@@ -214,7 +214,7 @@ postgres-general:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
     _plugin: 'postgres'
-    _documentType: 'general-query'
+    _documentType: 'postgresLogs'
     time: ${require 'time'; time.to_time.to_i}
     level: ${record['level'].split(':').first()}
   match:
@@ -234,7 +234,7 @@ elasticsearch:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
     _plugin: 'elasticsearch'
-    _documentType: 'elasticsearch'
+    _documentType: 'ESLogs'
     time: ${require 'time'; time.to_time.to_i}
     logging_class: ${record['logging_class'].strip()}
     level: ${record['level'].strip()}
