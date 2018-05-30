@@ -275,11 +275,17 @@ class FluentdPluginManager:
             lines.append('</match>')
             # Add filter for seperate rule
             for key,val in data.get('parse',{}).iteritems():
-                if key != 'clear':
-		    lines.append('\n<filter ' + key + '.**>')
-		    lines.extend(['\t@type parser', '\tkey_name message', '\t<parse>'])
-		    lines.append('\t\texpression ' + val)
-		    lines.extend(['\t\t@type regexp', '\t</parse>', '</filter>'])
+                lines.append('\n<filter ' + key + '.**>')
+                lines.extend(['\t@type parser', '\tkey_name message', '\t<parse>'])
+                for v in val:
+                    if v == "expressions":
+                        lines.append('\t\t@type multi_format')
+                        for exp_v in val[v]:
+                                lines.append('\t\t' + "<pattern>")
+                                lines.append('\t\t\t' + 'format regexp')
+                                lines.append('\t\t\t' + 'expression ' + exp_v)
+                                lines.append('\t\t' + "</pattern>")
+                        lines.extend(['\t</parse>', '</filter>'])
                 source_tag = '*.'+ source_tag
         elif 'parse' in data:
             # Add parser filter. if data.get('match').has_key('tag'):
