@@ -165,7 +165,7 @@ jvm:
 
 # mapping for kafka_topic plugin
 kafkatopic:
- - name: kafka_topic
+ - name: kafkatopic
    interval: 300
    config:
    - Mandatory: true
@@ -195,7 +195,7 @@ kafkatopic:
 
 # mapping for kafka_jmx plugin
 kafkajmx:
- - name: kafka_jmx
+ - name: kafkajmx
    interval: 300
    config:
    - Mandatory: true
@@ -209,7 +209,7 @@ kafkajmx:
 
 # mapping for zookeeper_jmx plugin
 zookeeperjmx:
- - name: zookeeper_jmx
+ - name: zookeeperjmx
    interval: 300
    config:
    - Mandatory: true
