@@ -142,6 +142,7 @@ linux-syslog:
     extra_data: '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>.*)'
   parse:
     extra_data:
+     '@type': multi_format
      expressions:
       - '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^ :\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? \[(?<level>[^\]]*)\] (?<message>.+)'
       - '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^ :\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? (?<message>.*)'
