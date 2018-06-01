@@ -21,7 +21,7 @@ mysql-error:
     file: '${tag_suffix[1]}'
     _plugin: 'mysql'
     _documentType: 'mysqlErrorLogs'
-    level: ${n_level='info'; if record.key?('level') == nil then n_level else record['level'] end}
+    level: ${n_level='info'; if record.key?('level') == nil then n_level else record['level'].downcase end}
   match:
     flush_interval: 30s
 
@@ -86,7 +86,8 @@ apache-error:
      _documentType: 'apacheErrorLogs'
      time: ${require 'time'; time.to_time.to_i}
      component: ${record['level'].split(':').first()}
-     level: ${record['level'].split(':').last()}
+#     level: ${record['level'].split(':').last()}
+     level: ${n_level='warning'; if record['level'].split(':').last().downcase == 'warn' then n_level else record['level'].split(':').last().downcase end}
    match:
      flush_interval: 30s
 apache-access:
@@ -221,7 +222,7 @@ postgres-general:
     _plugin: 'postgres'
     _documentType: 'postgresLogs'
     time: ${require 'time'; time.to_time.to_i}
-    level: ${record['level'].split(':').first()}
+    level: ${record['level'].split(':').first().downcase}
   match:
     flush_interval: 30s
 
@@ -242,7 +243,31 @@ elasticsearch:
     _documentType: 'ESLogs'
     time: ${require 'time'; time.to_time.to_i}
     logging_class: ${record['logging_class'].strip()}
-    level: ${record['level'].strip()}
+   # level: ${record['level'].strip()}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
     message: ${record['message']}
   match:
     flush_interval: 30s
+
+# kafka logging mapping
+kafka:
+   source:
+     '@type': tail
+     path: '/opt/kafka/logs/server.log, /opt/kafka/logs/controller.log, /opt/kafka/logs/state-change.log'
+     pos_file: '/var/log/td-agent/kafka.pos'
+   multiline:
+     format_firstline: '/^[\[]([^\]]*)[\]]/'
+     expression:
+       - '/^[\[](?<time>[^\]]*)[\]] (?<level>[^\ ]*) \[(?<process>[^\ ]*)\ (?<process_id>[^\]]*)\] (?<message>.*)/'
+   transform:
+     node: '#{Socket.gethostname}'
+     file: '${tag_suffix[1]}'
+     _plugin: 'kafka'
+     _documentType: 'kafkaLogs'
+     time: ${require 'time'; time.to_time.to_i}
+     level: ${n_level='warning'; if record['level'].downcase == 'warn' then n_level else record['level'].downcase end}
+     process: ${record['process']}
+     process_id: ${record['process_id'].split('=')[1].split(' ')[0]}
+     message: ${record['message']}
+   match:
+     flush_interval: 30s
