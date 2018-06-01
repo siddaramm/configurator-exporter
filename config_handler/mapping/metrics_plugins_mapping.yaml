@@ -172,18 +172,10 @@ kafkatopic:
      min: ''
      dataType: string
      max: ''
-     defaultValue: ''
+     defaultValue: 'kafka.Kafka'
      tooltip: Name of java process
      label: Process
      fieldName: process
-   - Mandatory: true
-     min: ''
-     dataType: string
-     max: ''
-     defaultValue: 'localhost'
-     tooltip: Listener binding IP
-     label: ListenerIP
-     fieldName: listener_ip
    - Mandatory: true
      min: ''
      dataType: Integer
@@ -192,6 +184,14 @@ kafkatopic:
      tooltip: Listening kafka port
      label: Port
      fieldName: port
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: ''
+     tooltip: Listener binding IP
+     label: ListenerIP
+     fieldName: listener_ip
 
 # mapping for kafka_jmx plugin
 kafkajmx:
@@ -202,7 +202,7 @@ kafkajmx:
      min: ''
      dataType: string
      max: ''
-     defaultValue: ''
+     defaultValue: 'kafka.Kafka'
      tooltip: Name of java process
      label: Process
      fieldName: process
@@ -216,7 +216,7 @@ zookeeperjmx:
      min: ''
      dataType: string
      max: ''
-     defaultValue: ''
+     defaultValue: 'zookeeper'
      tooltip: Name of java process
      label: Process
      fieldName: process
