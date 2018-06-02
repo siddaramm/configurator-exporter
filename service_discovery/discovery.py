@@ -1,8 +1,6 @@
 import os
 import subprocess
 import psutil
-import socket
-import kafka
 from config_handler import configurator
 from common.util import *
 
@@ -76,27 +74,6 @@ def check_jmx_enabled(pid):
             if element == "-Dcom.sun.management.jmxremote":
                 return True
     return False
-
-
-def add_kafka_listenerip(port):
-    """
-    Return listener IP of kafka broker
-    """
-    list_addr = []
-    for if_name, if_info in psutil.net_if_addrs().items():
-        for family in if_info:
-            if family.family == socket.AF_INET:
-                list_addr.append(family.address)
-
-    #Get the first matched listener IP
-    for addr in list_addr:
-        try:
-            ip = '%s:%s'% (addr, port)
-            consumer = kafka.KafkaConsumer(bootstrap_servers=ip)
-            return addr
-        except Exception:
-            pass
-    return ''
 
 
 def get_process_id(service):
@@ -294,19 +271,7 @@ def add_agent_config(service, dict):
             if agentConfig["name"] == "jvm":
                 agentConfig["config"]["process"] = service
                 break
-            if agentConfig["name"] == "kafkatopic":
-                agentConfig["config"]["process"] = service
-                port = ''
-                for parameter in item["config"]:
-                    if parameter["fieldName"] == "port":
-                        port = parameter["defaultValue"]
-                        agentConfig["config"][parameter["fieldName"]] = port
-                    if parameter["fieldName"] == "listener_ip":
-                        agentConfig["config"][parameter["fieldName"]] = add_kafka_listenerip(port)
-                    if parameter["fieldName"] == "process":
-                        agentConfig["config"][parameter["fieldName"]] = parameter["defaultValue"]
-                break
-            if agentConfig["name"] == "zookeeperjmx":
+            if agentConfig["name"] in ["kafkatopic", "zookeeperjmx"]:
                 agentConfig["config"]["process"] = service
                 for parameter in item["config"]:
                     if parameter["fieldName"] in ["port", "listener_ip", "process"]:
