@@ -258,7 +258,7 @@ kafka:
    multiline:
      format_firstline: '/^[\[]([^\]]*)[\]]/'
      expression:
-       - '/^[\[](?<time>[^\]]*)[\]] (?<level>[^\ ]*) \[(?<process>[^\ ]*)\ (?<process_id>[^\]]*)\] (?<message>.*)/'
+       - '/^[\[](?<time>[^\]]*)[\]] (?<level>[^\ ]*)(( \[(?<process>[^\ ]*)\ (?<process_id>[^\]]*)\])| )(?<message>.*)/'
    transform:
      node: '#{Socket.gethostname}'
      file: '${tag_suffix[1]}'
@@ -267,7 +267,7 @@ kafka:
      time: ${require 'time'; time.to_time.to_i}
      level: ${n_level='warning'; if record['level'].downcase == 'warn' then n_level else record['level'].downcase end}
      process: ${record['process']}
-     process_id: ${record['process_id'].split('=')[1].split(' ')[0]}
+     process_id: ${if record['process_id'] then record['process_id'].split('=')[1].split(' ')[0] else record['process_id'] end}
      message: ${record['message']}
    match:
      flush_interval: 30s
