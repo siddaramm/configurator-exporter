@@ -243,7 +243,7 @@ def add_logger_config(dict, service):
     dict["loggerConfig"] = []
     fluentdPlugins = configurator.get_fluentd_plugins_mapping().keys()
     for item in fluentdPlugins:
-        if(item.startswith(service)):
+        if(item.startswith(service.split(".")[0])):
             logConfig = {}
             logConfig["name"] = item
             logConfig["config"] = {}
