@@ -275,7 +275,7 @@ zookeeper:
   source:
     '@type': tail
     path: '/opt/kafka/logs/server.log, /opt/kafka/logs/controller.log, /opt/kafka/logs/state-change.log'
-    pos_file: '/var/log/td-agent/kafka.pos'
+    pos_file: '/var/log/td-agent/zookeeper.pos'
   parse:
     '@type': regexp
     expression: '/^[\[](?<time>[^\]]*)[\]] (?<level>[^\ ]*)(( \[(?<process>[^\ ]*)\ (?<process_id>[^\]]*)\])| )(?<message>.*)/'
