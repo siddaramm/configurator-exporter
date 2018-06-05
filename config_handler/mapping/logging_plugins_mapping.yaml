@@ -250,7 +250,7 @@ elasticsearch:
     flush_interval: 30s
 
 # kafka logging mapping
-kafka:
+kafka.Kafka:
    source:
      '@type': tail
      path: '/opt/kafka/logs/server.log, /opt/kafka/logs/controller.log, /opt/kafka/logs/state-change.log'
