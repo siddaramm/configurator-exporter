@@ -145,10 +145,9 @@ linux-syslog:
     extra_data:
      '@type': multi_format
      expressions:
-      - '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^ :\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? \[(?<level>[^\]]*)\] (?<message>.+)'
-      - '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^ :\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? (?<level>(error)|(warning))\: (?<message>.*)'
-      - '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^ :\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? (?<message>.*)'
-#    python: '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^ :\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? (?<remote_host>[^:]+)[:](?<remote_pid>[^ -]+) [\-](?<msg_id>[^-]+)[\-] (?<message>.+)$'
+      - '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^:\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? \[(?<level>[^\]][\A-z]+)\] (?<message>.+)'
+      - '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^:\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? (?<level>(error)|(warning))\: (?<message>.*)'
+      - '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^:\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? (?<message>.*)'
   transform:
     node: '#{Socket.gethostname}'
     _plugin: 'linux'
