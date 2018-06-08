@@ -252,7 +252,7 @@ elasticsearch:
 kafka:
   source:
     '@type': tail
-    path: '/opt/kafka/logs/server.log, /opt/kafka/logs/controller.log, /opt/kafka/logs/state-change.log'
+    path: '/opt/kafka/kafka_2.12-1.0.0/logs/server.log, /opt/kafka/kafka_2.12-1.0.0/logs/controller.log, /opt/kafka/kafka_2.12-1.0.0/logs/state-change.log'
     pos_file: '/var/log/td-agent/kafka.pos'
   parse:
     '@type': regexp
@@ -274,7 +274,7 @@ kafka:
 zookeeper:
   source:
     '@type': tail
-    path: '/opt/kafka/logs/server.log, /opt/kafka/logs/controller.log, /opt/kafka/logs/state-change.log'
+    path: '/opt/kafka/kafka_2.12-1.0.0/logs/server.log, /opt/kafka/kafka_2.12-1.0.0/logs/controller.log, /opt/kafka/kafka_2.12-1.0.0/logs/state-change.log'
     pos_file: '/var/log/td-agent/zookeeper.pos'
   parse:
     '@type': regexp
