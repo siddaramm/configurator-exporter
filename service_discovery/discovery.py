@@ -16,7 +16,8 @@ service_name = {
     "nginx": "nginx",
     "tpcc": "tpcc",
     "kafka.Kafka": "kafka",
-    "zookeeper": "zookeeper"
+    "zookeeper": "zookeeper",
+    "hxConnect" : "hxConnect"
 }
 services = [
     "elasticsearch",
@@ -27,7 +28,8 @@ services = [
     "nginx",
     "tpcc",
     "kafka.Kafka",
-    "zookeeper"
+    "zookeeper",
+    "hxConnect"
 ]
 '''
 Mapping for services and the plugin to be configured for them.
@@ -41,7 +43,8 @@ service_plugin_mapping = {
     "nginx": "nginx",
     "tpcc": "tpcc",
     "kafka.Kafka": "kafkatopic",
-    "zookeeper": "zookeeperjmx"
+    "zookeeper": "zookeeperjmx",
+    "hxConnect" : "hxConnect"
 }
 
 poller_plugin = [
@@ -341,6 +344,19 @@ def discover_services():
             If service is tpcc the check for the existance of vcfg.properties file
             '''
             if os.path.exists("/opt/VDriver/jar/vcfg.properties"):
+                port_dict = {}
+                port_dict["loggerConfig"] = []
+                port_dict["agentConfig"] = {}
+                agent_dict = add_agent_config(service, port_dict)
+                final_dict = agent_dict
+                discovery[service_name[service]] = []
+                discovery[service_name[service]].append(final_dict)
+
+	if service == "hxConnect":
+	    '''
+	    If service is hxConnect, check for existance of testbed.properties file
+	    '''
+	    if os.path.exists("/opt/VDriver/jar/testbed.properties"):
                 port_dict = {}
                 port_dict["loggerConfig"] = []
                 port_dict["agentConfig"] = {}
