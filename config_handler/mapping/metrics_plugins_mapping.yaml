@@ -330,11 +330,11 @@ hxconnect:
 - name: hxConnect
   interval: 300
   config:
-  -Mandatory: true
-   min: ''
-   dataType: string
-   max: ''
-   defaultValue: 'https://ucs864cip.eng.storvisor.com'
-   tooltip: "IP for hx connect"
-   label: Hx Connect IP
-   fieldName: hx_connect_ip
+  - Mandatory: true
+    min: ''
+    dataType: string
+    max: ''
+    defaultValue: 'ucs864cip.eng.storvisor.com'
+    tooltip: "IP for hx connect"
+    label: Hx Connect IP
+    fieldName: hx_connect_ip
