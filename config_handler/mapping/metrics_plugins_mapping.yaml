@@ -268,7 +268,7 @@ postgres:
      min: ''
      dataType: password
      max: ''
-     defaultValue: "***"
+     defaultValue: "postgres"
      tooltip: Password for Postgres server
      label: Password
      fieldName: password
