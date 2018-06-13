@@ -128,7 +128,7 @@ mysql:
      min: ''
      dataType: string
      max: ''
-     defaultValue: username
+     defaultValue: "root"
      tooltip: Username for MySQL server
      label: Username
      fieldName: user
@@ -136,7 +136,7 @@ mysql:
      min: ''
      dataType: password
      max: ''
-     defaultValue: "***"
+     defaultValue: "maplelabs"
      tooltip: Password for MySQL server
      label: Password
      fieldName: password
