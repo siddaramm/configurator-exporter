@@ -59,6 +59,7 @@ NO_RESP = "No Response"
 RUNNING = "Running"
 NOT_RUNNING = "Not Running"
 META = "meta"
+HX_CONNECT_IP = "hx_connect_ip"
 
 # operations
 START = "start"

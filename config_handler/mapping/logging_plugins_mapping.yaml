@@ -145,10 +145,9 @@ linux-syslog:
     extra_data:
      '@type': multi_format
      expressions:
-      - '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^ :\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? \[(?<level>[^\]]*)\] (?<message>.+)'
-      - '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^ :\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? (?<level>(error)|(warning))\: (?<message>.*)'
-      - '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^ :\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? (?<message>.*)'
-#    python: '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^ :\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? (?<remote_host>[^:]+)[:](?<remote_pid>[^ -]+) [\-](?<msg_id>[^-]+)[\-] (?<message>.+)$'
+      - '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^:\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? \[(?<level>[^\]][\A-z]+)\] (?<message>.+)'
+      - '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^:\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? (?<level>(error)|(warning))\: (?<message>.*)'
+      - '(?<time>[^ ]*\s*[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[^:\[]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? (?<message>.*)'
   transform:
     node: '#{Socket.gethostname}'
     _plugin: 'linux'
@@ -251,23 +250,45 @@ elasticsearch:
 
 # kafka logging mapping
 kafka:
-   source:
-     '@type': tail
-     path: '/opt/kafka/logs/server.log, /opt/kafka/logs/controller.log, /opt/kafka/logs/state-change.log'
-     pos_file: '/var/log/td-agent/kafka.pos'
-   multiline:
-     format_firstline: '/^[\[]([^\]]*)[\]]/'
-     expression:
-       - '/^[\[](?<time>[^\]]*)[\]] (?<level>[^\ ]*)(( \[(?<process>[^\ ]*)\ (?<process_id>[^\]]*)\])| )(?<message>.*)/'
-   transform:
-     node: '#{Socket.gethostname}'
-     file: '${tag_suffix[1]}'
-     _plugin: 'kafka'
-     _documentType: 'kafkaLogs'
-     time: ${require 'time'; time.to_time.to_i}
-     level: ${n_level='warning'; if record['level'].downcase == 'warn' then n_level else record['level'].downcase end}
-     process: ${record['process']}
-     process_id: ${if record['process_id'] then record['process_id'].split('=')[1].split(' ')[0] else record['process_id'] end}
-     message: ${record['message']}
-   match:
-     flush_interval: 30s
+  source:
+    '@type': tail
+    path: '/opt/kafka/kafka_2.12-1.0.0/logs/server.log, /opt/kafka/kafka_2.12-1.0.0/logs/controller.log, /opt/kafka/kafka_2.12-1.0.0/logs/state-change.log'
+    pos_file: '/var/log/td-agent/kafka.pos'
+  parse:
+    '@type': regexp
+    expression: '/^[\[](?<time>[^\]]*)[\]] (?<level>[^\ ]*)(( \[(?<process>[^\ ]*)\ (?<process_id>[^\]]*)\])| )(?<message>.*)/'
+    types: 'response_time:integer'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'kafka'
+    _documentType: 'kafkaLogs'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].downcase == 'warn' then n_level else record['level'].downcase end}
+    process: ${record['process']}
+    process_id: ${if record['process_id'] then record['process_id'].split('=')[1].split(' ')[0] else record['process_id'] end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
+
+zookeeper:
+  source:
+    '@type': tail
+    path: '/opt/kafka/kafka_2.12-1.0.0/logs/server.log, /opt/kafka/kafka_2.12-1.0.0/logs/controller.log, /opt/kafka/kafka_2.12-1.0.0/logs/state-change.log'
+    pos_file: '/var/log/td-agent/zookeeper.pos'
+  parse:
+    '@type': regexp
+    expression: '/^[\[](?<time>[^\]]*)[\]] (?<level>[^\ ]*)(( \[(?<process>[^\ ]*)\ (?<process_id>[^\]]*)\])| )(?<message>.*)/'
+    types: 'response_time:integer'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'zookeeper'
+    _documentType: 'zookeeperLogs'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].downcase == 'warn' then n_level else record['level'].downcase end}
+    process: ${record['process']}
+    process_id: ${if record['process_id'] then record['process_id'].split('=')[1].split(' ')[0] else record['process_id'] end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
