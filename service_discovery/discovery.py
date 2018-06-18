@@ -305,15 +305,6 @@ def add_agent_config(service, dict):
                         agentConfig["config"][parameter["fieldName"]] = port   
                     if parameter["fieldName"] == "listener_ip":    
                         agentConfig["config"][parameter["fieldName"]] = add_kafka_listenerip(port) 
-                    if parameter["fieldName"] == "process":    
-                        agentConfig["config"][parameter["fieldName"]] = parameter["defaultValue"]  
-                break
-
-            if agentConfig["name"] == "zookeeperjmx":
-                agentConfig["config"]["process"] = service
-                for parameter in item["config"]:
-                    if parameter["fieldName"] in ["port", "listener_ip", "process"]:
-                        agentConfig["config"][parameter["fieldName"]] = parameter["defaultValue"]
                 break
             for parameter in item["config"]:
                 agentConfig["config"][parameter["fieldName"]] = parameter["defaultValue"]

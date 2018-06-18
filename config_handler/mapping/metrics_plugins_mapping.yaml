@@ -170,14 +170,6 @@ kafkatopic:
    config:
    - Mandatory: true
      min: ''
-     dataType: string
-     max: ''
-     defaultValue: 'kafka.Kafka'
-     tooltip: Name of java process
-     label: Process
-     fieldName: process
-   - Mandatory: true
-     min: ''
      dataType: Integer
      max: ''
      defaultValue: 9092
@@ -212,14 +204,6 @@ zookeeperjmx:
  - name: zookeeperjmx
    interval: 300
    config:
-   - Mandatory: true
-     min: ''
-     dataType: string
-     max: ''
-     defaultValue: 'zookeeper'
-     tooltip: Name of java process
-     label: Process
-     fieldName: process
    - Mandatory: true
      min: ''
      dataType: string
