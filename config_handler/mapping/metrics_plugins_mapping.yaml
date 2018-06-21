@@ -332,7 +332,7 @@ topstats:
      min: ''
      dataType: string
      max: ''
-     defaultValue: None
+     defaultValue: '*'
      tooltip: Process to be monitored
      label: Process
      fieldName: process
@@ -367,5 +367,5 @@ topstats:
      options:
       - label: CPU
         value: cpu
-      - label: Memory
+      - label: RAM
         value: mem
