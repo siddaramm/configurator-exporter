@@ -322,3 +322,50 @@ hxconnect:
     tooltip: "IP for hx connect"
     label: Hx Connect IP
     fieldName: hx_connect_ip
+
+#mapping for topstats plugin
+topstats:
+ - name: topstats
+   interval: 10
+   config:
+   - Mandatory: false
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: None
+     tooltip: Process to be monitored
+     label: Process
+     fieldName: process
+   - Mandatory: true
+     min: ''
+     dataType: list
+     multiselect: false
+     max: ''
+     defaultValue: 5
+     tooltip: Maximum number of process to grep
+     label: Number of Top Process
+     fieldName: number_of_top_process
+     options:
+      - label: 5
+        value: 5
+      - label: 6
+        value: 6
+      - label: 7
+        value: 7
+      - label: 8
+        value: 8
+      - label: 9
+        value: 9
+      - label: 10
+        value: 10
+   - Mandatory: true
+     dataType: list
+     defaultValue: cpu
+     label: Resource
+     fieldName: resource
+     multiselect: false
+     options:
+      - label: CPU
+        value: cpu
+      - label: Memory
+        value: mem
