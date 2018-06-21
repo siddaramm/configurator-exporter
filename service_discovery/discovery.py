@@ -343,18 +343,18 @@ def discover_services():
                 discovery[service_name[service]] = []
                 discovery[service_name[service]].append(final_dict)
 
-	if service == "hxConnect":
-	    '''
-	    If service is hxConnect, check for existance of testbed.properties file
-	    '''
-	    if os.path.exists("/opt/VDriver/jar/testbed.properties"):
-                port_dict = {}
-                port_dict["loggerConfig"] = []
-                port_dict["agentConfig"] = {}
-                agent_dict = add_agent_config(service, port_dict)
-                final_dict = agent_dict
-                discovery[service_name[service]] = []
-                discovery[service_name[service]].append(final_dict)
+	#if service == "hxConnect":
+	#    '''
+	#    If service is hxConnect, check for existance of testbed.properties file
+	#    '''
+	#    if os.path.exists("/opt/VDriver/jar/testbed.properties"):
+    #            port_dict = {}
+    #            port_dict["loggerConfig"] = []
+    #            port_dict["agentConfig"] = {}
+    #            agent_dict = add_agent_config(service, port_dict)
+    #            final_dict = agent_dict
+    #            discovery[service_name[service]] = []
+    #            discovery[service_name[service]].append(final_dict)
 
         pidList = get_process_id(service)
         if(len(pidList) != 0):
