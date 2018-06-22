@@ -328,44 +328,27 @@ topstats:
  - name: topstats
    interval: 10
    config:
-   - Mandatory: false
-     min: ''
-     dataType: string
-     max: ''
-     defaultValue: '*'
-     tooltip: Process to be monitored
-     label: Process
-     fieldName: process
-   - Mandatory: true
-     min: ''
-     dataType: list
-     multiselect: false
-     max: ''
-     defaultValue: 5
-     tooltip: Maximum number of process to grep
-     label: Number of Top Process
-     fieldName: number_of_top_process
-     options:
-      - label: 5
-        value: 5
-      - label: 6
-        value: 6
-      - label: 7
-        value: 7
-      - label: 8
-        value: 8
-      - label: 9
-        value: 9
-      - label: 10
-        value: 10
-   - Mandatory: true
-     dataType: list
-     defaultValue: cpu
-     label: Resource
+   - label: Resource
      fieldName: resource
+     tooltip: Utilization type based on which top command result is grepped
+     Mandatory: true
+     dataType: list
      multiselect: false
+     defaultValue: 'Top 5 CPU util'
      options:
-      - label: CPU
-        value: cpu
-      - label: RAM
-        value: mem
+      - label: 'Top 5 CPU util'
+        value: 'CPU'
+      - label: 'Top 5 RAM util'
+        value: 'MEM'
+      - label: 'Process list/Regexp'
+        value: 'process'
+     min: ''
+     max: ''
+   - label: Process name list/Regular expression
+     fieldName: process
+     tooltip: Process to be monitored
+     Mandatory: true
+     dataType: string
+     defaultValue: '*'
+     min: ''
+     max: ''
