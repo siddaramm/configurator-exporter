@@ -205,39 +205,28 @@ def add_ports(dict, service):
     '''
     logger.debug("Add ports %s %s", dict, service)
     ports = []
-    if service not in ["kafka.Kafka", "zookeeper"]:
-        if(service == "apache"):
-            apache_service = ""
-            os_cmd = "lsb_release -d"
-            p = subprocess.Popen(os_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            (out, err) = p.communicate()
-            for line in out.splitlines():
-                if("Ubuntu" in line):
-                    apache_service = "apache2"
-                    break
-            if(apache_service == ""):
-                apache_service = "httpd"
-            cmd = "netstat -anp | grep %s" %(apache_service)
-        else:
-            cmd = "netstat -anp | grep %s" %(dict["PID"])
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    if(service == "apache"):
+        apache_service = ""
+        os_cmd = "lsb_release -d"
+        p = subprocess.Popen(os_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         (out, err) = p.communicate()
         for line in out.splitlines():
-            line = line.split()
-            if((line[5] == 'LISTEN') and (service == "apache" or str(dict['PID']) in line[6])):
-                port = (line[3].split(':')[-1])
-                if port not in ports:
-                    ports.append(port)
+            if("Ubuntu" in line):
+                apache_service = "apache2"
+                break
+        if(apache_service == ""):
+            apache_service = "httpd"
+        cmd = "netstat -anp | grep %s" %(apache_service)
     else:
-        # get port of jmxremote if configured for kafka
-        ps_cmd = "ps -eaf | grep %s | grep -v grep" % (dict["PID"])
-        p = subprocess.Popen(ps_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-        (res, err) = p.communicate()
-        if res is not "":
-            res_list = res.split()
-            for element in res_list:
-                if "-Dcom.sun.management.jmxremote.port" in element:
-                    ports.append(element.split('=')[1])
+        cmd = "netstat -anp | grep %s" %(dict["PID"])
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    (out, err) = p.communicate()
+    for line in out.splitlines():
+        line = line.split()
+        if((line[5] == 'LISTEN') and (service == "apache" or str(dict['PID']) in line[6])):
+            port = (line[3].split(':')[-1])
+            if port not in ports:
+                ports.append(port)
     dict['ports'] = ports
     return dict
 
