@@ -25,7 +25,8 @@ urls = (
     "/api/collectd/process", "CollectdProcess",
     "/api/fluentd/process", "FluentdProcess",
     "/api/service", "Service",
-    "/api/service/", "Service"
+    "/api/service/", "Service",
+    "/api/target/status", "TargetStatus"
 
 )
 
@@ -63,6 +64,11 @@ class Fluentd:
         result = ['process']
         return json.dumps(result)
 
+class TargetStatus:
+    def GET(self):
+        result = {}
+        result['targets'] = configurator.get_target_status()
+        return json.dumps(result)
 
 class CollectdStats:
     def GET(self):

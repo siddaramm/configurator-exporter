@@ -3,6 +3,7 @@ from threading import Timer
 from config_handler import collectd_manager
 from config_handler import fluentd_manager
 from config_util import *
+from elasticsearch import Elasticsearch
 
 CONFIG_WRITE_INTERVAL = 300
 timer = None
@@ -242,3 +243,42 @@ def write_config_to_target(es_config, interval=CONFIG_WRITE_INTERVAL):
             timer.start()
         except Exception as e:
             logger.error("Write Config to Target failed, Error: {0}\n".format(str(e)))
+
+
+def get_target_status():
+    target_status = []
+    target_details = {}
+    exsting_data = file_reader(CollectdData)
+    if exsting_data:
+        exsting_data = json.loads(exsting_data)
+        for target in exsting_data['targets']:
+            target_details["name"] = target["name"]
+            target_details["index"] = target["index"]
+            target_details["status"] = get_elasticsearch_status(target["host"], target["index"])
+            target_status.append(target_details)
+    return target_status
+
+def get_elasticsearch_status(host, index):
+    logger.error("Collecting elasticsearch status for the host %s" % host)
+    connections = [{'host': str(host), 'port': '9200'}]
+    elastic_search = Elasticsearch(connections)
+
+    try:
+        resp = elastic_search.indices.get_settings(index)
+    except Exception as e:
+        logger.error("Elasticsearch error in getting settingss of the index due to  %s" % str(e))
+        return "STOPPED"
+
+    if resp:
+        settings_details = resp[index]['settings']['index'].get('blocks')
+        if settings_details:
+            read_only_allow_delete = settings_details.get('read_only_allow_delete', False)
+            if not read_only_allow_delete:
+                return "RUNNING"
+            else:
+                logger.error("Elasticsearch error. Read_only_allow_delete flag set to %s" % read_only_allow_delete)
+                return "STOPPED"
+        else:
+            return "RUNNING"
+    else:
+        return "STOPPED"
