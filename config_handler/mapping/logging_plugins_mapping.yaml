@@ -173,12 +173,13 @@ nginx-error:
    parse:
      '@type': regexp
      time_format: '%Y/%m/%d %H:%M:%S'
-     expression: '(?<time>[^ ]* [^ ]*)\s*\[(?<level>\S+)\]\s*(?<pid>\d+)#(?<tid>\d+)(?<message>.*)$'
+     expression: '(?<time>[^ ]* [^ ]*)\s*\[(?<level>\S+)\]\s*(?<pid>\d+)#(?<tid>\d+)\:\s*(?<message>.*)$'
    transform:
      node: '#{Socket.gethostname}'
      file: '${tag_suffix[1]}'
      _plugin: 'nginx'
      _documentType: 'nginxErrorLogs'
+     level: ${n_level='error'; if record['level'] == 'emerg' then n_level else record['level'] end}
      time: ${require 'time'; time.to_time.to_i}
    match:
      flush_interval: 30s
@@ -193,8 +194,9 @@ nginx-access:
    parse:
      '@type': regexp
      time_format: '%d/%b/%Y:%H:%M:%S %z'
-     expression: '^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)" (?<gzip_ratio>[^ ]*))?$'
-     types: 'gzip_ratio:integer'
+#     expression: '^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)" (?<gzip_ratio>[^ ]*))?$'
+     expression: '^(?<host>[^ ]*(?:\s+[^ ]+)*) [\-](?<user>[\w\ ]*)[\-] \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)"(?:(| )(?<response_time>[^ ]*)))?$'
+     types: 'response_time:integer, size:float'
    transform:
      node: '#{Socket.gethostname}'
      file: '${tag_suffix[1]}'
@@ -202,6 +204,7 @@ nginx-access:
      _documentType: 'nginxAccessLogs'
      time: ${require 'time'; time.to_time.to_i}
      level: 'info'
+     message: "${record['method'] + ' ' + record['path'] + ' ' + record['code']}"
    match:
      flush_interval: 30s
 
