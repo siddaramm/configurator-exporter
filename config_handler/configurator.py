@@ -259,7 +259,7 @@ def get_target_status():
     return target_status
 
 def get_elasticsearch_status(host, index):
-    logger.error("Collecting elasticsearch status for the host %s" % host)
+    logger.info("Collecting elasticsearch status for the host %s" % host)
     connections = [{'host': str(host), 'port': '9200'}]
     elastic_search = Elasticsearch(connections)
 
