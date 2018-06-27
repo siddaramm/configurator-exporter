@@ -217,7 +217,6 @@ postgres-general:
   parse:
     '@type': regexp
     expression: '(?<time>[\0-9\a-z]+) (?<level>[\a-z]+\: ) (?<message>.*)'
-    types: 'response_time:integer'
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
@@ -257,10 +256,10 @@ kafka:
     '@type': tail
     path: '/opt/kafka/kafka_2.12-1.0.0/logs/server.log, /opt/kafka/kafka_2.12-1.0.0/logs/controller.log, /opt/kafka/kafka_2.12-1.0.0/logs/state-change.log'
     pos_file: '/var/log/td-agent/kafka.pos'
-  parse:
-    '@type': regexp
-    expression: '/^[\[](?<time>[^\]]*)[\]] (?<level>[^\ ]*)(( \[(?<process>[^\ ]*)\ (?<process_id>[^\]]*)\])| )(?<message>.*)/'
-    types: 'response_time:integer'
+  multiline:
+    format_firstline: '^[\[]([^\]]*)[\]] ([^\ ]*)'
+    expression:
+      - '/^[\[](?<time>[^\]]*)[\]] (?<level>[^\ ]*)(( \[(?<process>[^\ ]*)\ (?<process_id>[^\]]*)\])| )(?<message>.*)/'
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
@@ -279,10 +278,10 @@ zookeeper:
     '@type': tail
     path: '/opt/kafka/kafka_2.12-1.0.0/logs/server.log, /opt/kafka/kafka_2.12-1.0.0/logs/controller.log, /opt/kafka/kafka_2.12-1.0.0/logs/state-change.log'
     pos_file: '/var/log/td-agent/zookeeper.pos'
-  parse:
-    '@type': regexp
-    expression: '/^[\[](?<time>[^\]]*)[\]] (?<level>[^\ ]*)(( \[(?<process>[^\ ]*)\ (?<process_id>[^\]]*)\])| )(?<message>.*)/'
-    types: 'response_time:integer'
+  multiline:
+    format_firstline: '^[\[]([^\]]*)[\]] ([^\ ]*)'
+    expression:
+      - '/^[\[](?<time>[^\]]*)[\]] (?<level>[^\ ]*)(( \[(?<process>[^\ ]*)\ (?<process_id>[^\]]*)\])| )(?<message>.*)/'
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
