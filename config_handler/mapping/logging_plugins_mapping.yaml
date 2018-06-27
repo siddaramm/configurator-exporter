@@ -257,7 +257,7 @@ kafka:
     path: '/opt/kafka/kafka_2.12-1.0.0/logs/server.log, /opt/kafka/kafka_2.12-1.0.0/logs/controller.log, /opt/kafka/kafka_2.12-1.0.0/logs/state-change.log'
     pos_file: '/var/log/td-agent/kafka.pos'
   multiline:
-    format_firstline: '^[\[]([^\]]*)[\]] ([^\ ]*)'
+    format_firstline: '/^[\[]([^\]]*)[\]] ([^\ ]*)/'
     expression:
       - '/^[\[](?<time>[^\]]*)[\]] (?<level>[^\ ]*)(( \[(?<process>[^\ ]*)\ (?<process_id>[^\]]*)\])| )(?<message>.*)/'
   transform:
@@ -279,7 +279,7 @@ zookeeper:
     path: '/opt/kafka/kafka_2.12-1.0.0/logs/server.log, /opt/kafka/kafka_2.12-1.0.0/logs/controller.log, /opt/kafka/kafka_2.12-1.0.0/logs/state-change.log'
     pos_file: '/var/log/td-agent/zookeeper.pos'
   multiline:
-    format_firstline: '^[\[]([^\]]*)[\]] ([^\ ]*)'
+    format_firstline: '/^[\[]([^\]]*)[\]] ([^\ ]*)/'
     expression:
       - '/^[\[](?<time>[^\]]*)[\]] (?<level>[^\ ]*)(( \[(?<process>[^\ ]*)\ (?<process_id>[^\]]*)\])| )(?<message>.*)/'
   transform:
