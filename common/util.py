@@ -140,7 +140,7 @@ def get_service_status(service_name):
     if err:
         return -1
     for line in out.splitlines():
-        if "stopped" in line or "inactive" in line:
+        if "stopped" in line or "inactive" in line or "failed" in line:
             return 0
         elif "running" in line or "active" in line:
             pid = get_process_id(service_name)
