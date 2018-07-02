@@ -254,13 +254,15 @@ def get_target_status():
         for target in exsting_data['targets']:
             target_details["name"] = target["name"]
             target_details["index"] = target["index"]
-            target_details["status"] = get_elasticsearch_status(target["host"], target["index"])
+            target_details["status"] = get_elasticsearch_status(target["host"], target["index"], target["port"])
             target_status.append(target_details)
+    else:
+        logger.error("No workload data found in collectd_data.json")
     return target_status
 
-def get_elasticsearch_status(host, index):
+def get_elasticsearch_status(host, index, port):
     logger.info("Collecting elasticsearch status for the host %s" % host)
-    connections = [{'host': str(host), 'port': '9200'}]
+    connections = [{'host': str(host), 'port': str(port)}]
     elastic_search = Elasticsearch(connections)
 
     try:
