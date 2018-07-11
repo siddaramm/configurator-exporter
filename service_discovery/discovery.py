@@ -48,8 +48,7 @@ service_plugin_mapping = {
 }
 
 poller_plugin = [
-    "elasticsearch",
-    "postgres"
+    "elasticsearch"
 ]
 
 def add_pid_usage(pid, service, pid_list):

@@ -236,43 +236,43 @@ elasticsearch:
      fieldName: port
 
 # mapping for Postgres plugin
-#postgres:
-# - name: postgres
-#   interval: 60
-#   config:
-#   - Mandatory: true
-#     min: ''
-#     dataType: string
-#     max: ''
-#     defaultValue: postgres
-#     tooltip: Username for Postgres server
-#     label: Username
-#     fieldName: user
-#   - Mandatory: true
-#     min: ''
-#     dataType: password
-#     max: ''
-#     defaultValue: "postgres"
-#     tooltip: Password for Postgres server
-#     label: Password
-#     fieldName: password
-#   - Mandatory: true
-#     min: ''
-#     dataType: Integer
-#     max: ''
-#     defaultValue: 5432
-#     tooltip: Port
-#     label: Port
-#     fieldName: port
-#   - Mandatory: true
-#     hidden: true
-#     min: ''
-#    dataType: Integer
-#     max: ''
-#     defaultValue: 60
-#     tooltip: Polling Interval
-#     label: Interval
-#     fieldName: interval
+postgres:
+ - name: postgres
+   interval: 60
+   config:
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: postgres
+     tooltip: Username for Postgres server
+     label: Username
+     fieldName: user
+   - Mandatory: true
+     min: ''
+     dataType: password
+     max: ''
+     defaultValue: "postgres"
+     tooltip: Password for Postgres server
+     label: Password
+     fieldName: password
+   - Mandatory: true
+     min: ''
+     dataType: Integer
+     max: ''
+     defaultValue: 5432
+     tooltip: Port
+     label: Port
+     fieldName: port
+   - Mandatory: true
+     hidden: true
+     min: ''
+     dataType: Integer
+     max: ''
+     defaultValue: 60
+     tooltip: Polling Interval
+     label: Interval
+     fieldName: interval
 
 # abstraction for nginx 
 nginx:
