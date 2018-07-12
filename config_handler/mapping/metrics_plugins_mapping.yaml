@@ -352,3 +352,8 @@ topstats:
      defaultValue: '*'
      min: ''
      max: ''
+
+#mapping for cassandra plugin
+cassandra:
+ - name: cassandra
+   interval: 300

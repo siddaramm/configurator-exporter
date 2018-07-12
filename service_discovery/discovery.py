@@ -17,7 +17,8 @@ service_name = {
     "tpcc": "tpcc",
     "kafka.Kafka": "kafka",
     "zookeeper": "zookeeper",
-    "hxConnect" : "hxConnect"
+    "hxConnect" : "hxConnect",
+    "cassandra": "cassandra"
 }
 services = [
     "elasticsearch",
@@ -29,7 +30,8 @@ services = [
     "tpcc",
     "kafka.Kafka",
     "zookeeper",
-    "hxConnect"
+    "hxConnect",
+    "cassandra"
 ]
 '''
 Mapping for services and the plugin to be configured for them.
@@ -44,7 +46,8 @@ service_plugin_mapping = {
     "tpcc": "tpcc",
     "kafka.Kafka": "kafkatopic",
     "zookeeper": "zookeeperjmx",
-    "hxConnect" : "hxConnect"
+    "hxConnect" : "hxConnect",
+    "cassandra" : "cassandra"
 }
 
 poller_plugin = [
@@ -150,11 +153,11 @@ def get_process_id(service):
         processID = ""
         for proc in psutil.process_iter(attrs=['pid', 'name', 'username']):
             # Java processes
-            if service in ["elasticsearch"]:
+            if service in ["elasticsearch", "cassandra"]:
                 if proc.info.get("name") == "java" and proc.info.get("username") == service:
                     processID = proc.info.get("pid")
                     break
-	        # Postgres process
+            # Postgres process
             elif service in ["postgres"]:
                 if proc.info.get("name") == "postmaster" or proc.info.get("name") == "postgres":
                     processID = proc.info.get("pid")
