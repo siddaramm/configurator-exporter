@@ -323,9 +323,9 @@ def discover_services():
     for service in services:
         if service == "tpcc":
             '''
-            If service is tpcc the check for the existance of vcfg.properties file
+            If service is tpcc the check for the existance of .tpcc_discovery file
             '''
-            if os.path.exists("/opt/VDriver/jar/vcfg.properties"):
+            if os.path.exists("/opt/VDriver/.tpcc_discovery"):
                 port_dict = {}
                 port_dict["loggerConfig"] = []
                 port_dict["agentConfig"] = {}
@@ -336,9 +336,9 @@ def discover_services():
 
 	#if service == "hxConnect":
 	#    '''
-	#    If service is hxConnect, check for existance of testbed.properties file
+	#    If service is hxConnect, check for existance of .hxconnect_discovery file
 	#    '''
-	#    if os.path.exists("/opt/VDriver/jar/testbed.properties"):
+	#    if os.path.exists("/opt/VDriver/.hxconnect_discovery"):
     #            port_dict = {}
     #            port_dict["loggerConfig"] = []
     #            port_dict["agentConfig"] = {}
