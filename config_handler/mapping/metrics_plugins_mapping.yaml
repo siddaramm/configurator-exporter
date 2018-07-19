@@ -310,18 +310,18 @@ tpcc:
      interval: 300
 
 #results of hxConnect
-#hxconnect:
-#- name: hxConnect
-  #interval: 300
-  #config:
-  #- Mandatory: true
-    #min: ''
-    ##dataType: string
-    #max: ''
-    #defaultValue: 'ucs864cip.eng.storvisor.com'
-    #tooltip: "IP for hx connect"
-    #label: Hx Connect IP
-    #fieldName: hx_connect_ip
+hxConnect:
+- name: hxConnect
+  interval: 300
+  config:
+  - Mandatory: true
+    min: ''
+    dataType: string
+    max: ''
+    defaultValue: 'ucs864cip.eng.storvisor.com'
+    tooltip: "IP for hx connect"
+    label: Hx Connect IP
+    fieldName: hx_connect_ip
 
 #mapping for topstats plugin
 topstats:
