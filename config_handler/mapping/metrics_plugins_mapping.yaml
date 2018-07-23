@@ -376,9 +376,9 @@ tpcc:
      interval: 300
 
 #results of hxConnect
-hxConnect:
-- name: hxConnect
-  interval: 300
+hxconnect:
+- name: hxconnect
+  interval: 60
   config:
   - Mandatory: true
     min: ''
