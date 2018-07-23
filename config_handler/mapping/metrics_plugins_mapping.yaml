@@ -148,6 +148,22 @@ mysql:
      tooltip: MySql Host IP
      label: Host Ip
      fieldName: host
+   - Mandatory: true
+     fieldName: documentsTypes
+     tooltip: document Types to be collected
+     label: DocumentsTypes
+     dataType: list
+     multiselect: true
+     defaultValue: ['serverDetails']
+     options:
+      - label: 'databaseDetails'
+        value: 'databaseDetails'
+      - label: 'serverDetails'
+        value: 'serverDetails'
+      - label: 'tableDetails'
+        value: 'tableDetails'
+     min: ''
+     max: ''
 
 # mapping for java plugin
 jvm:
@@ -184,6 +200,22 @@ kafkatopic:
      tooltip: Listener binding IP
      label: ListenerIP
      fieldName: listener_ip
+   - Mandatory: true
+     fieldName: documentsTypes
+     tooltip: document Types to be collected
+     label: DocumentsTypes
+     dataType: list
+     multiselect: true
+     defaultValue: ['topicStats']
+     options:
+      - label: 'kafkaStats'
+        value: 'kafkaStats'
+      - label: 'partitionStats'
+        value: 'partitionStats'
+      - label: 'topicStats'
+        value: 'topicStats'
+     min: ''
+     max: ''
 
 # mapping for kafka_jmx plugin
 kafkajmx:
@@ -220,6 +252,20 @@ zookeeperjmx:
      tooltip: Listening zookeeper port
      label: Port
      fieldName: port
+   - Mandatory: true
+     fieldName: documentsTypes
+     tooltip: document Types to be collected
+     label: DocumentsTypes
+     dataType: list
+     multiselect: true
+     defaultValue: ['zookeeperStats']
+     options:
+      - label: 'jmxStats'
+        value: 'jmxStats'
+      - label: 'zookeeperStats'
+        value: 'zookeeperStats'
+     min: ''
+     max: ''
 
 # mapping for elasticsearch plugin
 elasticsearch:
@@ -273,6 +319,26 @@ postgres:
      tooltip: Polling Interval
      label: Interval
      fieldName: interval
+   - Mandatory: true
+     fieldName: documentsTypes
+     tooltip: document Types to be collected
+     label: DocumentsTypes
+     dataType: list
+     multiselect: true
+     defaultValue: ['serverDetails']
+     options:
+      - label: 'databaseDetails'
+        value: 'databaseDetails'
+      - label: 'indexDetails'
+        value: 'indexDetails'
+      - label: 'queryDetails'
+        value: 'queryDetails'
+      - label: 'serverDetails'
+        value: 'serverDetails'
+      - label: 'tableDetails'
+        value: 'tableDetails'
+     min: ''
+     max: ''
 
 # abstraction for nginx 
 nginx:
