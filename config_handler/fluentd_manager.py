@@ -349,7 +349,7 @@ class FluentdPluginManager:
                         key = "@" + key
                     if key == "index":
                         key += "_name"
-                        val = "write_"+val
+                        val = val+"_write"
                     if key == "enable":
                         continue
                     lines.append('\t' + key + ' ' + val)
@@ -403,7 +403,7 @@ class FluentdPluginManager:
                         key = "@" + key
                     if key == "index":
                         key += "_name"
-                        val = "write_"+val
+                        val = val+"_write"
                     if key == "enable":
                         continue
                     lines.append('\t' + key + ' ' + val)
