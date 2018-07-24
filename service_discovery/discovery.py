@@ -17,7 +17,7 @@ service_name = {
     "tpcc": "tpcc",
     "kafka.Kafka": "kafka",
     "zookeeper": "zookeeper",
-    "hxConnect" : "hxConnect",
+    "hxconnect" : "hxconnect",
     "cassandra": "cassandra"
 }
 services = [
@@ -30,7 +30,7 @@ services = [
     "tpcc",
     "kafka.Kafka",
     "zookeeper",
-    "hxConnect",
+    "hxconnect",
     "cassandra"
 ]
 '''
@@ -46,7 +46,7 @@ service_plugin_mapping = {
     "tpcc": "tpcc",
     "kafka.Kafka": "kafkatopic",
     "zookeeper": "zookeeperjmx",
-    "hxConnect" : "hxConnect",
+    "hxconnect" : "hxconnect",
     "cassandra" : "cassandra"
 }
 
@@ -334,18 +334,18 @@ def discover_services():
                 discovery[service_name[service]] = []
                 discovery[service_name[service]].append(final_dict)
 
-	#if service == "hxConnect":
-	#    '''
-	#    If service is hxConnect, check for existance of .hxconnect_discovery file
-	#    '''
-	#    if os.path.exists("/opt/VDriver/.hxconnect_discovery"):
-    #            port_dict = {}
-    #            port_dict["loggerConfig"] = []
-    #            port_dict["agentConfig"] = {}
-    #            agent_dict = add_agent_config(service, port_dict)
-    #            final_dict = agent_dict
-    #            discovery[service_name[service]] = []
-    #            discovery[service_name[service]].append(final_dict)
+	if service == "hxconnect":
+	    '''
+	    If service is hxconnect, check for existance of .hxconnect_discovery file
+	    '''
+	    if os.path.exists("/opt/VDriver/.hxconnect_discovery"):
+                port_dict = {}
+                port_dict["loggerConfig"] = []
+                port_dict["agentConfig"] = {}
+                agent_dict = add_agent_config(service, port_dict)
+                final_dict = agent_dict
+                discovery[service_name[service]] = []
+                discovery[service_name[service]].append(final_dict)
 
         pidList = get_process_id(service)
         if(len(pidList) != 0):
