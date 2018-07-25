@@ -268,18 +268,34 @@ zookeeperjmx:
      max: ''
 
 # mapping for elasticsearch plugin
-#elasticsearch:
-# - name: elasticsearch
-#   interval: 300
-#   config:
-#   - Mandatory: true
-#     min: ''
-#     dataType: Integer
-#     max: ''
-#     defaultValue: 9200
-#     tooltip: Port on which elasticsearch master node is listening.
-#     label: Port
-#     fieldName: port
+elasticsearch:
+ - name: elasticsearch
+   interval: 300
+   config:
+   - Mandatory: true
+     min: ''
+     dataType: Integer
+     max: ''
+     defaultValue: 9200
+     tooltip: Port on which elasticsearch master node is listening.
+     label: Port
+     fieldName: port
+   - Mandatory: true
+     fieldName: documentsTypes
+     tooltip: document Types to be collected
+     label: DocumentsTypes
+     dataType: list
+     multiselect: true
+     defaultValue: ['clusterStats']
+     options:
+      - label: 'clusterStats'
+        value: 'clusterStats'
+      - label: 'nodeStats'
+        value: 'nodeStats'
+      - label: 'indexStats'
+        value: 'indexStats'
+     min: ''
+     max: ''
 
 # mapping for Postgres plugin
 postgres:
