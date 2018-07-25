@@ -290,12 +290,14 @@ def add_agent_config(service, dict):
             if agentConfig["name"] == "kafkatopic":
                 agentConfig["config"]["process"] = service 
                 port = ''  
-                for parameter in item["config"]:   
-                    if parameter["fieldName"] == "port":   
+                for parameter in item["config"]:
+                    if parameter["fieldName"] == "port":
                         port = parameter["defaultValue"]   
-                        agentConfig["config"][parameter["fieldName"]] = port   
-                    if parameter["fieldName"] == "listener_ip":    
-                        agentConfig["config"][parameter["fieldName"]] = add_kafka_listenerip(port) 
+                        agentConfig["config"][parameter["fieldName"]] = port
+                    elif parameter["fieldName"] == "listener_ip":
+                        agentConfig["config"][parameter["fieldName"]] = add_kafka_listenerip(port)
+                    else:
+                        agentConfig["config"][parameter["fieldName"]] = parameter["defaultValue"]
                 break
             for parameter in item["config"]:
                 agentConfig["config"][parameter["fieldName"]] = parameter["defaultValue"]
