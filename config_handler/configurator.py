@@ -264,15 +264,26 @@ def get_elasticsearch_status(host, index, port):
     logger.info("Collecting elasticsearch status for the host %s" % host)
     connections = [{'host': str(host), 'port': str(port)}]
     elastic_search = Elasticsearch(connections)
-
     try:
-        resp = elastic_search.indices.get_settings(index)
+        index_alias = elastic_search.indices.get_alias(index + "_write")
     except Exception as e:
-        logger.error("Elasticsearch error in getting settingss of the index due to  %s" % str(e))
+        logger.error("Elasticsearch error in getting alias of the index %s due to  %s" % (index, str(e)))
+        return "STOPPED"
+
+    current_index = index_alias.keys()[0]
+    try:
+        resp = elastic_search.indices.get_settings(current_index)
+    except Exception as e:
+        logger.error("Elasticsearch error in getting settings of the index %s due to  %s" % (current_index, str(e)))
         return "STOPPED"
 
     if resp:
-        settings_details = resp[index]['settings']['index'].get('blocks')
+        try:
+            settings_details = resp[current_index]['settings']['index'].get('blocks')
+        except Exception as e:
+            logging.error("Elasticsearch error of host %s in index %s due to %s" % (host, current_index, str(e)))
+            return "STOPPED"
+        
         if settings_details:
             read_only_allow_delete = settings_details.get('read_only_allow_delete', False)
             if not read_only_allow_delete:
