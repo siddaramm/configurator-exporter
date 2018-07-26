@@ -154,7 +154,7 @@ mysql:
      label: Document Types
      dataType: list
      multiselect: true
-     defaultValue: ['serverDetails']
+     defaultValue: ['databaseDetails', 'serverDetails', 'tableDetails']
      options:
       - label: 'databaseDetails'
         value: 'databaseDetails'
@@ -206,7 +206,7 @@ kafkatopic:
      label: Document Types
      dataType: list
      multiselect: true
-     defaultValue: ['topicStats']
+     defaultValue: ['kafkaStats', 'partitionStats', 'topicStats']
      options:
       - label: 'kafkaStats'
         value: 'kafkaStats'
@@ -258,7 +258,7 @@ zookeeperjmx:
      label: Document Types
      dataType: list
      multiselect: true
-     defaultValue: ['zookeeperStats']
+     defaultValue: ['jmxStats', 'zookeeperStats']
      options:
       - label: 'jmxStats'
         value: 'jmxStats'
@@ -286,7 +286,7 @@ elasticsearch:
      label: DocumentsTypes
      dataType: list
      multiselect: true
-     defaultValue: ['clusterStats']
+     defaultValue: ['clusterStats', 'nodeStats', 'indexStats']
      options:
       - label: 'clusterStats'
         value: 'clusterStats'
@@ -341,7 +341,7 @@ postgres:
      label: Document Types
      dataType: list
      multiselect: true
-     defaultValue: ['serverDetails']
+     defaultValue: ['databaseDetails', 'indexDetails', 'queryDetails', 'serverDetails', 'tableDetails']
      options:
       - label: 'databaseDetails'
         value: 'databaseDetails'
