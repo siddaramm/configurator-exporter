@@ -228,7 +228,7 @@ postgres-general:
     flush_interval: 30s
 
 # elasticserach logging mapping
-elasticsearch:
+elasticsearch-general:
   source:
     '@type': tail
     path: '/var/log/elasticsearch/elasticsearch.log'
