@@ -294,3 +294,23 @@ zookeeper:
     message: ${record['message']}
   match:
     flush_interval: 30s
+
+# Mapping for ESA collected log
+esa-log:
+  source:
+    '@type': tail
+    path: '/var/log/gui.txt'
+    pos_file: '/var/log/td-agent/esa.pos'
+  parse:
+    '@type': regexp
+    expression: '(?<time>[\a-z]+\s[\a-z]+\s[\0-9\:]+) (?<level>\S+)\: (?<message>.*)'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'esa-log'
+    _documentType: 'ESALogs'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${record['level'].split(':').first().downcase}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
