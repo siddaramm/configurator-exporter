@@ -151,9 +151,19 @@ class FluentdPluginManager:
                     temp['source']['path'] = x_plugin[CONFIG]['log_paths']
                 temp['transform'] = plugin.get('transform')
                 if x_plugin.get(NAME) == 'esa-log':
-                    for log_name in x_plugin[CONFIG]['log_name']:
-                        temp['source']['path'] = '/var/log/esa_logs/{}.txt'.format(log_name)
-                        temp['transform']['_documentType'] = log_name
+                    hosts = None
+                    if os.path.exists('/opt/esa_conf.json'):
+                        with open('/opt/esa_conf.json') as data_file:
+                            data = json.load(data_file)
+                            hosts = data['hosts']
+                    if hosts:
+                        log_path = []
+                        for host in hosts:
+                            log_path.append('/var/log/esa_logs/{}/{}'.format(host, x_plugin[CONFIG]['log_name'][0]))
+                        temp['source']['path'] = ','.join(log_path)
+                    else:
+                        temp['source']['path'] = '/var/log/esa_logs/{}'.format(x_plugin[CONFIG]['log_name'][0])
+                    temp['transform']['_documentType'] = x_plugin[CONFIG]['log_name'][0]
                 if plugin.get('parse'):
                     temp['parse'] = plugin.get('parse')
                 elif plugin.get('multiline'):
