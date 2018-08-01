@@ -299,13 +299,13 @@ zookeeper:
 esa-log:
   source:
     '@type': tail
-    path: '/var/log/gui.txt'
+    path: '/var/log/esa_logs'
     pos_file: '/var/log/td-agent/esa.pos'
   parse:
     '@type': regexp
     expression: '(?<time>[\a-z]+\s[\a-z]+\s[\0-9\:]+) (?<level>\S+)\: (?<message>.*)'
   transform:
-    node: '#{Socket.gethostname}'
+    node: ${tag_suffix[4].rpartition('.').first}
     file: '${tag_suffix[1]}'
     _plugin: 'esa-log'
     _documentType: 'ESALogs'
