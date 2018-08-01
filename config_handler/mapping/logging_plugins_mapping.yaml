@@ -308,7 +308,7 @@ esa-log:
     node: ${tag_suffix[4].rpartition('.').first}
     file: '${tag_suffix[1]}'
     _plugin: 'esa-log'
-    _documentType: 'ESALogs'
+    _documentType: '${tag_suffix[8]}'
     time: ${require 'time'; time.to_time.to_i}
     level: ${record['level'].split(':').first().downcase}
     message: ${record['message']}
