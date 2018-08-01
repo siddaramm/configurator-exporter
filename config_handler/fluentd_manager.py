@@ -164,7 +164,7 @@ class FluentdPluginManager:
                                 log_path.append('{}/{}/{}'.format(esa_path, host, log_name))
                     else:
                         for log_name in x_plugin[CONFIG]['log_name']:
-                            log_path.append('{}/{}'.format(esa_path, log_name)) 
+                            log_path.append('{}/{}'.format(esa_path, log_name))
                     temp['source']['path'] = ','.join(log_path)
                 if plugin.get('parse'):
                     temp['parse'] = plugin.get('parse')
