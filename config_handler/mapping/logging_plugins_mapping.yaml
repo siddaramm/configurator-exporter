@@ -231,7 +231,7 @@ postgres-general:
 elasticsearch-general:
   source:
     '@type': tail
-    path: '/var/log/elasticsearch/elasticsearch.log'
+    path: '/var/log/elasticsearch/master-master/es-cluster.log, /var/log/elasticsearch/node-0-node/es-cluster.log, /var/log/elasticsearch/node-1-node/es-cluster.log'
     pos_file: '/var/log/td-agent/elasticsearch.pos'
   multiline:
     format_firstline: '/^[\[]([^\]]*)[\]]/'
