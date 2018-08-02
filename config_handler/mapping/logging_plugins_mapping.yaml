@@ -299,18 +299,19 @@ zookeeper:
 esa-log:
   source:
     '@type': tail
-    path: '/var/log/esa_logs'
+    path: '/var/log/gui.txt'
     pos_file: '/var/log/td-agent/esa.pos'
   parse:
     '@type': regexp
     expression: '(?<time>[\a-z]+\s[\a-z]+\s[\0-9\:]+) (?<level>\S+)\: (?<message>.*)'
   transform:
-    node: ${tag_suffix[4].rpartition('.').first}
     file: '${tag_suffix[1]}'
     _plugin: 'esa-log'
-    _documentType: '${tag_suffix[8]}'
+    _documentType: '${tag_suffix[5]}'
     time: ${require 'time'; time.to_time.to_i}
     level: ${record['level'].split(':').first().downcase}
     message: ${record['message']}
+    _tag_uuid: "${tag_suffix[4].rpartition('_').last.split('.')[0]}"
+    _tag_Name: "${tag_suffix[4].rpartition('_').first}"
   match:
     flush_interval: 30s

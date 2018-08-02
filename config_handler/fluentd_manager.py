@@ -335,9 +335,14 @@ class FluentdPluginManager:
             lines.append('\t\t' + key + ' \"' + val + '\"')
 
         # lines.append('\t\ttags ' + str(self.tags + [data.get('source').get('tag')]))
-        for tag_key, tag_val in self.tags.items():
-            # tags = [str(x) for x in self.tags + data.get('source').get('tag')]
-            lines.append('\t\t' + '_tag_' + str(tag_key) + ' ' + '"' + str(tag_val) + '"')
+        if data.get('name') == 'esa-log':
+            for tag_key, tag_val in self.tags.items():
+                if tag_key == 'appName':
+                    lines.append('\t\t' + '_tag_' + str(tag_key) + ' ' + '"' + str(tag_val) + '"')
+        else:
+            for tag_key, tag_val in self.tags.items():
+                # tags = [str(x) for x in self.tags + data.get('source').get('tag')]
+                lines.append('\t\t' + '_tag_' + str(tag_key) + ' ' + '"' + str(tag_val) + '"')
         lines.extend(['\t</record>', '</filter>'])
 
 	# Add grep filter.
