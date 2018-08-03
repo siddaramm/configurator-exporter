@@ -442,7 +442,7 @@ cassandra:
 
 #mapping for esa plugin
 esalogstore:
- - name: esa
+ - name: esalogstore
    interval: 60
    config:
    - label: Log Name
