@@ -150,7 +150,7 @@ class FluentdPluginManager:
                 if x_plugin.get(CONFIG, {}).get('log_paths'):
                     temp['source']['path'] = x_plugin[CONFIG]['log_paths']
                 temp['transform'] = plugin.get('transform')
-                if x_plugin.get(NAME) == 'esa-log':
+                if x_plugin.get(NAME) == 'esalogstore':
                     hosts = None
                     esa_path = '/var/log/esa_logs'
                     log_path = []
@@ -335,7 +335,7 @@ class FluentdPluginManager:
             lines.append('\t\t' + key + ' \"' + val + '\"')
 
         # lines.append('\t\ttags ' + str(self.tags + [data.get('source').get('tag')]))
-        if data.get('name') == 'esa-log':
+        if data.get('name') == 'esalogstore':
             for tag_key, tag_val in self.tags.items():
                 if tag_key == 'appName':
                     lines.append('\t\t' + '_tag_' + str(tag_key) + ' ' + '"' + str(tag_val) + '"')
