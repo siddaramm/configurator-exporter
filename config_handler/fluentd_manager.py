@@ -150,7 +150,7 @@ class FluentdPluginManager:
                 if x_plugin.get(CONFIG, {}).get('log_paths'):
                     temp['source']['path'] = x_plugin[CONFIG]['log_paths']
                 temp['transform'] = plugin.get('transform')
-                if x_plugin.get(NAME) == 'esalogstore':
+                if x_plugin.get(NAME) == 'esalogstore-general':
                     hosts = None
                     esa_path = '/var/log/esa_logs'
                     log_path = []
@@ -160,10 +160,10 @@ class FluentdPluginManager:
                             hosts = data['hosts']
                     if hosts:
                         for host in hosts:
-                            for log_name in x_plugin[CONFIG]['log_name']:
-                                log_path.append('{}/{}/{}'.format(esa_path, host, log_name))
+                            for log_name in x_plugin[CONFIG].get('log_name',['systemlogs']):
+                                log_path.append('{}/{}/{}'.format(esa_path, host['name']+"_"+host['uuid'], log_name))
                     else:
-                        for log_name in x_plugin[CONFIG]['log_name']:
+                        for log_name in x_plugin[CONFIG].get('log_name',['systemlogs']):
                             log_path.append('{}/{}'.format(esa_path, log_name))
                     temp['source']['path'] = ','.join(log_path)
                 if plugin.get('parse'):
@@ -335,7 +335,7 @@ class FluentdPluginManager:
             lines.append('\t\t' + key + ' \"' + val + '\"')
 
         # lines.append('\t\ttags ' + str(self.tags + [data.get('source').get('tag')]))
-        if data.get('name') == 'esalogstore':
+        if data.get('name') == 'esalogstore-general':
             for tag_key, tag_val in self.tags.items():
                 if tag_key == 'appName':
                     lines.append('\t\t' + '_tag_' + str(tag_key) + ' ' + '"' + str(tag_val) + '"')

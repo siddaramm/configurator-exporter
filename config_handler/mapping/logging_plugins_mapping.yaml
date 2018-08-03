@@ -296,7 +296,7 @@ zookeeper:
     flush_interval: 30s
 
 # Mapping for ESA collected log
-esalogstore:
+esalogstore-general:
   source:
     '@type': tail
     path: '/var/log/esa_logs'
