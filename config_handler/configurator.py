@@ -248,16 +248,29 @@ def write_config_to_target(es_config, interval=CONFIG_WRITE_INTERVAL):
 def get_target_status():
     target_status = []
     target_details = {}
-    exsting_data = file_reader(CollectdData)
-    if exsting_data:
+    try:
+        exsting_data = file_reader(CollectdData)
         exsting_data = json.loads(exsting_data)
-        for target in exsting_data['targets']:
-            target_details["name"] = target["name"]
-            target_details["index"] = target["index"]
-            target_details["status"] = get_elasticsearch_status(target["host"], target["index"], target["port"])
-            target_status.append(target_details)
-    else:
-        logger.error("No workload data found in collectd_data.json")
+        if exsting_data:
+            for target in exsting_data['targets']:
+                target_details["name"] = target["name"]
+                target_details["index"] = target["index"]
+                target_details["status"] = get_elasticsearch_status(target["host"], target["index"], target["port"])
+                target_status.append(target_details)
+        else:
+            logger.info("No workload data found in collectd_data.json. Collecting workload details from fluentd_data.json")
+            existing_workload = file_reader(FluentdData)
+            exsting_workload = json.loads(existing_workload)
+            if existing_workload:
+                for target in exsting_workload['targets']:
+                    target_details["name"] = target["name"]
+                    target_details["index"] = target["index"]
+                    target_details["status"] = get_elasticsearch_status(target["host"], target["index"], target["port"])
+                    target_status.append(target_details)
+            else:
+                logger.error("No workload data found in collectd_data.json")
+    except Exception as e:
+        logger.error("Exception in getting target status due to %s" % str(e))
     return target_status
 
 def get_elasticsearch_status(host, index, port):
