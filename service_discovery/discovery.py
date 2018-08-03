@@ -49,7 +49,8 @@ service_plugin_mapping = {
     "kafka.Kafka": "kafkatopic",
     "zookeeper": "zookeeperjmx",
     "hxconnect" : "hxconnect",
-    "cassandra" : "cassandra"
+    "cassandra" : "cassandra",
+    "esalogstore": "esalogstore"
 }
 
 poller_plugin = [
@@ -360,7 +361,8 @@ def discover_services():
                 port_dict["loggerConfig"] = []
                 port_dict["agentConfig"] = {}
                 logger_dict = add_logger_config(port_dict, service)
-                final_dict = logger_dict
+                agent_dict = add_agent_config(service, logger_dict)
+                final_dict = agent_dict
                 discovery[service_name[service]] = []
                 discovery[service_name[service]].append(final_dict)
 
