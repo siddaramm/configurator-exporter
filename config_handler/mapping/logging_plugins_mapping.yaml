@@ -299,7 +299,7 @@ zookeeper:
 esa-log:
   source:
     '@type': tail
-    path: '/var/log/gui.txt'
+    path: '/var/log/esa_logs'
     pos_file: '/var/log/td-agent/esa.pos'
   parse:
     '@type': regexp

@@ -18,7 +18,8 @@ service_name = {
     "kafka.Kafka": "kafka",
     "zookeeper": "zookeeper",
     "hxconnect" : "hxconnect",
-    "cassandra": "cassandra"
+    "cassandra": "cassandra",
+    "esalogstore": "ESAlogstore"
 }
 services = [
     "elasticsearch",
@@ -31,7 +32,8 @@ services = [
     "kafka.Kafka",
     "zookeeper",
     "hxconnect",
-    "cassandra"
+    "cassandra",
+    "esalogstore"
 ]
 '''
 Mapping for services and the plugin to be configured for them.
@@ -346,6 +348,19 @@ def discover_services():
                 port_dict["agentConfig"] = {}
                 agent_dict = add_agent_config(service, port_dict)
                 final_dict = agent_dict
+                discovery[service_name[service]] = []
+                discovery[service_name[service]].append(final_dict)
+
+        if service == "esalogstore":
+            '''
+            If service is esalogstore then check for the existance of esa_conf.json file
+            '''
+            if os.path.exists("/opt/esa_conf.json"):
+                port_dict = {}
+                port_dict["loggerConfig"] = []
+                port_dict["agentConfig"] = {}
+                logger_dict = add_logger_config(port_dict, service)
+                final_dict = logger_dict
                 discovery[service_name[service]] = []
                 discovery[service_name[service]].append(final_dict)
 
