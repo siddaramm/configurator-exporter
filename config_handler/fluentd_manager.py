@@ -146,13 +146,17 @@ class FluentdPluginManager:
             if x_plugin.get(NAME) in self.plugin_config.keys():
                 plugin = self.plugin_config.get(
                     x_plugin.get(NAME))
+                if x_plugin.get(NAME) == 'esalogstore':
+                    temp['esalogsdownload'] = {}
+                    temp['esalogsdownload'].update(plugin.get('esalogsdownload'))
+                    temp['esalogsdownload']['command'] = plugin.get('esalogsdownload').get('command') + ' "'+ str(x_plugin[CONFIG].get('log_name',['system_logs']))+'"'
                 temp['source'].update(plugin.get('source'))
                 if x_plugin.get(CONFIG, {}).get('log_paths'):
                     temp['source']['path'] = x_plugin[CONFIG]['log_paths']
                 temp['transform'] = plugin.get('transform')
-                if x_plugin.get(NAME) == 'esalogstore-general':
+                if x_plugin.get(NAME) == 'esalogstore':
                     hosts = None
-                    esa_path = '/var/log/esa_logs'
+                    esa_path = '/var/log/td-agent/esa_logs'
                     log_path = []
                     if os.path.exists('/opt/esa_conf.json'):
                         with open('/opt/esa_conf.json') as data_file:
@@ -161,10 +165,10 @@ class FluentdPluginManager:
                     if hosts:
                         for host in hosts:
                             for log_name in x_plugin[CONFIG].get('log_name',['systemlogs']):
-                                log_path.append('{}/{}/{}'.format(esa_path, host['name']+"_"+host['uuid'], log_name))
+                                log_path.append('{}/{}/{}'.format(esa_path, host['name']+"_"+host['uuid'], log_name.replace('_', '')))
                     else:
                         for log_name in x_plugin[CONFIG].get('log_name',['systemlogs']):
-                            log_path.append('{}/{}'.format(esa_path, log_name))
+                            log_path.append('{}/{}'.format(esa_path, log_name.replace('_', '')))
                     temp['source']['path'] = ','.join(log_path)
                 if plugin.get('parse'):
                     temp['parse'] = plugin.get('parse')
@@ -227,6 +231,11 @@ class FluentdPluginManager:
         logger.info("Configure plugin file, data %s" %json.dumps(data))
         source_tag = str()
         lines = ['<source>']
+        if data.get('name') == "esalogstore":
+            for key, value in data.get('esalogsdownload', {}).iteritems():
+                lines.append('\t' + str(key) + ' ' + str(value))
+            lines.append('</source>')
+            lines.append('\n<source>')
         for key, val in data.get('source', {}).iteritems():
             # if isinstance(val, list):
             #     try:
@@ -335,7 +344,7 @@ class FluentdPluginManager:
             lines.append('\t\t' + key + ' \"' + val + '\"')
 
         # lines.append('\t\ttags ' + str(self.tags + [data.get('source').get('tag')]))
-        if data.get('name') == 'esalogstore-general':
+        if data.get('name') == 'esalogstore':
             for tag_key, tag_val in self.tags.items():
                 if tag_key == 'appName':
                     lines.append('\t\t' + '_tag_' + str(tag_key) + ' ' + '"' + str(tag_val) + '"')

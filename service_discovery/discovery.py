@@ -50,7 +50,6 @@ service_plugin_mapping = {
     "zookeeper": "zookeeperjmx",
     "hxconnect" : "hxconnect",
     "cassandra" : "cassandra",
-    "esalogstore": "esalogstore"
 }
 
 poller_plugin = [
@@ -361,8 +360,7 @@ def discover_services():
                 port_dict["loggerConfig"] = []
                 port_dict["agentConfig"] = {}
                 logger_dict = add_logger_config(port_dict, service)
-                agent_dict = add_agent_config(service, logger_dict)
-                final_dict = agent_dict
+                final_dict = logger_dict
                 discovery[service_name[service]] = []
                 discovery[service_name[service]].append(final_dict)
 

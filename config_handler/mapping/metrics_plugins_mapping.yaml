@@ -441,25 +441,25 @@ cassandra:
    interval: 300
 
 #mapping for esa plugin
-esalogstore:
- - name: esalogstore
-   interval: 60
-   config:
-   - label: Log Name
-     fieldName: log_name
-     tooltip: Name of the log file which has to be downloaded
-     Mandatory: true
-     dataType: list
-     multiselect: true
-     defaultValue: ['system_logs']
-     options:
-      - label: 'Authentication'
-        value: 'authentication'
-      - label: 'HTTP Logs'
-        value: 'gui_logs'
-      - label: 'IronPort Text Mail'
-        value: 'mail_logs'
-      - label: 'System Logs'
-        value: 'system_logs'
-     min: ''
-     max: ''
+#esalogstore:
+# - name: esalogstore
+#   interval: 60
+#   config:
+#   - label: Log Name
+#     fieldName: log_name
+#     tooltip: Name of the log file which has to be downloaded
+#     Mandatory: true
+#     dataType: list
+#     multiselect: true
+#     defaultValue: ['system_logs']
+#     options:
+#      - label: 'Authentication'
+#        value: 'authentication'
+#      - label: 'HTTP Logs'
+#        value: 'gui_logs'
+#      - label: 'IronPort Text Mail'
+#        value: 'mail_logs'
+#      - label: 'System Logs'
+#        value: 'system_logs'
+#     min: ''
+#     max: ''

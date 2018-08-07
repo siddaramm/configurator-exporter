@@ -296,7 +296,14 @@ zookeeper:
     flush_interval: 30s
 
 # Mapping for ESA collected log
-esalogstore-general:
+esalogstore:
+  esalogsdownload:
+    '@type': exec
+    format: tsv
+    tag: ESALogsDownload
+    command: python /opt/collectd/plugins/esalogstore.py
+    keys: ESALogsDownload
+    run_interval: 10s
   source:
     '@type': tail
     path: '/var/log/esa_logs'
