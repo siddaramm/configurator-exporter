@@ -318,7 +318,7 @@ esalogstore:
     time: ${require 'time'; time.to_time.to_i}
     level: ${record['level'].split(':').first().downcase}
     message: ${record['message']}
-    _tag_uuid: "${tag_suffix[4].rpartition('_').last.split('.')[0]}"
-    _tag_Name: "${tag_suffix[4].rpartition('_').first}"
+    _tag_uuid: "${tag_suffix[5].rpartition('_').last.split('.')[0]}"
+    _tag_Name: "${tag_suffix[5].rpartition('_').first}"
   match:
     flush_interval: 30s
