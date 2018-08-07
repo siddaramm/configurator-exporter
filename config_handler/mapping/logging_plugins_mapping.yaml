@@ -306,7 +306,7 @@ esalogstore-general:
     expression: '(?<time>[\a-z]+\s[\a-z]+\s[\0-9\:]+) (?<level>\S+)\: (?<message>.*)'
   transform:
     file: '${tag_suffix[1]}'
-    _plugin: 'esa-log'
+    _plugin: 'esalogstore'
     _documentType: '${tag_suffix[5]}'
     time: ${require 'time'; time.to_time.to_i}
     level: ${record['level'].split(':').first().downcase}

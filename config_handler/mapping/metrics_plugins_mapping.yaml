@@ -450,8 +450,8 @@ esalogstore:
      tooltip: Name of the log file which has to be downloaded
      Mandatory: true
      dataType: list
-     multiselect: false
-     defaultValue: 'system_logs'
+     multiselect: true
+     defaultValue: ['system_logs']
      options:
       - label: 'Authentication'
         value: 'authentication'
