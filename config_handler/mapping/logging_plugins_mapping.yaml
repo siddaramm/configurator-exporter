@@ -301,7 +301,7 @@ esalogstore:
     '@type': exec
     format: tsv
     tag: ESALogsDownload
-    command: python /opt/collectd/plugins/esalogstore.py
+    command: python /opt/configurator-exporter/config_handler/mapping/esalogstore.py
     keys: ESALogsDownload
     run_interval: 10s
   source:
