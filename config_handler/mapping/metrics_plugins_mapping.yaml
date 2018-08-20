@@ -193,14 +193,6 @@ kafkatopic:
      label: Port
      fieldName: port
    - Mandatory: true
-     min: ''
-     dataType: string
-     max: ''
-     defaultValue: ''
-     tooltip: Listener binding IP
-     label: Listener IP
-     fieldName: listener_ip
-   - Mandatory: true
      fieldName: documentsTypes
      tooltip: document Types to be collected
      label: Document Types

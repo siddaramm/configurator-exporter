@@ -84,27 +84,6 @@ def check_jmx_enabled(pid):
                 return True
     return False
 
-
-def add_kafka_listenerip(port): 
-    """ 
-    Return listener IP of kafka broker  
-    """ 
-    list_addr = []  
-    for if_name, if_info in psutil.net_if_addrs().items():  
-        for family in if_info:  
-            if family.family == socket.AF_INET: 
-                list_addr.append(family.address)    
-    
-    #Get the first matched listener IP  
-    for addr in list_addr:  
-        try:    
-            ip = '%s:%s'% (addr, port)  
-            consumer = kafka.KafkaConsumer(bootstrap_servers=ip)    
-            return addr 
-        except Exception:   
-           pass 
-    return ''
-
 def get_process_id(service):
     '''
     :param service: name of the service
@@ -290,16 +269,9 @@ def add_agent_config(service, dict):
                 agentConfig["config"]["process"] = service
                 break
             if agentConfig["name"] == "kafkatopic":
-                agentConfig["config"]["process"] = service 
-                port = ''  
+                agentConfig["config"]["process"] = service
                 for parameter in item["config"]:
-                    if parameter["fieldName"] == "port":
-                        port = parameter["defaultValue"]   
-                        agentConfig["config"][parameter["fieldName"]] = port
-                    elif parameter["fieldName"] == "listener_ip":
-                        agentConfig["config"][parameter["fieldName"]] = add_kafka_listenerip(port)
-                    else:
-                        agentConfig["config"][parameter["fieldName"]] = parameter["defaultValue"]
+                    agentConfig["config"][parameter["fieldName"]] = parameter["defaultValue"]
                 break
             for parameter in item["config"]:
                 agentConfig["config"][parameter["fieldName"]] = parameter["defaultValue"]
