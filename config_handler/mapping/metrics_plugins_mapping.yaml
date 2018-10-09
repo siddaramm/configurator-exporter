@@ -198,7 +198,7 @@ kafkatopic:
      label: Document Types
      dataType: list
      multiselect: true
-     defaultValue: ['kafkaStats', 'partitionStats', 'topicStats']
+     defaultValue: ['kafkaStats', 'partitionStats', 'topicStats', 'consumerStats']
      options:
       - label: 'kafkaStats'
         value: 'kafkaStats'
@@ -206,6 +206,8 @@ kafkatopic:
         value: 'partitionStats'
       - label: 'topicStats'
         value: 'topicStats'
+      - label: 'consumerStats'
+        value: 'consumerStats'
      min: ''
      max: ''
 
