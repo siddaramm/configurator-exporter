@@ -196,8 +196,8 @@ nginx-access:
      time_format: '%d/%b/%Y:%H:%M:%S %z'
 #     expression: '^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)" (?<gzip_ratio>[^ ]*))?$'
 #     expression: '^(?<host>[^ ]*(?:\s+[^ ]+)*) [\-](?<user>[\w\ ]*)[\-] \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)"(?:(| )(?<response_time>[^ ]*)))?$'
-     expression: '^(?<host>[^ ]*(?:\s+[^ ]+)*) (?<user>[\w\-\ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*) "(?<referer>[^\"]*)" "(?<agent>[^\"]*)" "(?<referer2>[^\"]*)" (rt=(?<response_time>[^\ ]*)) (uct=(?<uct>[^\ ]*)) (uht=(?<uht>[^\ ]*)) (urt=(?<urt>[^\ ]*))?$'
-     types: 'response_time:integer, size:float'
+     expression: '^(?<host>[^ ]*(?:\s+[^ ]+)*) (?<user>[\w\-\ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*) "(?<referer>[^\"]*)" "(?<agent>[^\"]*)" "(?<referer2>[^\"]*)" (rt=(?<request_time>[^\ ]*)) (uct=(?<upstream_connect_time>[^\ ]*)) (uht=(?<upstream_header_time>[^\ ]*)) (urt=(?<upstream_response_time>[^\ ]*))?$'
+     types: 'request_time:integer, size:float'
    transform:
      node: '#{Socket.gethostname}'
      file: '${tag_suffix[1]}'
