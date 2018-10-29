@@ -24,7 +24,7 @@ linux_stats:
 #mapping for oozie plugin
 oozie:
  - name: oozie
-   interval: 10
+   interval: 300
    config:
    - label: Oozie host
      fieldName: ooziehost
