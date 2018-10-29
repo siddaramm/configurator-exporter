@@ -19,6 +19,7 @@ service_name = {
     "zookeeper": "zookeeper",
     "hxconnect" : "hxconnect",
     "cassandra": "cassandra",
+    "knox": "KS",
     "esalogstore": "ESAlogstore"
 }
 services = [
@@ -33,6 +34,7 @@ services = [
     "zookeeper",
     "hxconnect",
     "cassandra",
+    "knox",
     "esalogstore"
 ]
 '''
@@ -43,6 +45,7 @@ service_plugin_mapping = {
     "apache": "apache",
     "mysql": "mysql",
     "mssql": "mssql",
+    "knox": "oozie",
     "postgres": "postgres",
     "nginx": "nginx",
     "tpcc": "tpcc",
@@ -134,7 +137,7 @@ def get_process_id(service):
         processID = ""
         for proc in psutil.process_iter(attrs=['pid', 'name', 'username']):
             # Java processes
-            if service in ["elasticsearch", "cassandra"]:
+            if service in ["elasticsearch", "cassandra", "knox"]:
                 if proc.info.get("name") == "java" and proc.info.get("username") == service:
                     processID = proc.info.get("pid")
                     break
