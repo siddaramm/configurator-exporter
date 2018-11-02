@@ -86,3 +86,12 @@ DOCUMENT = "_doc"
 
 CUSTOM_HOSTNAME = "custom_hostname"
 NODEID = "NodeId"
+
+OOZIEHOST = 'ooziehost'
+OOZIEPORT = 'oozieport'
+TIMELINE_HOST = 'timeline_server'
+TIMELINE_PORT = 'timeline_port'
+JOB_HISTORY_SERVER = 'job_history_server'
+JOB_HISTORY_PORT = 'job_history_port'
+RESOURCE_MANAGER = 'resource_manager'
+RESOURCE_MANAGER_PORT = 'resource_manager_port'
