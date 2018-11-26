@@ -503,8 +503,8 @@ oozie:
      max: ''
 
 #mapping for yarn_stats plugin
-yarn_stats:
- - name: yarn_stats 
+yarn:
+ - name: yarn
    interval: 300
    config:
    - label: Yarn host
@@ -524,9 +524,9 @@ yarn_stats:
      min: ''
      max: ''
 
-#mapping for name_node plugin
-name_node:
- - name: name_node
+#mapping for namenode plugin
+namenode:
+ - name: namenode
    interval: 300
    config:
    - label: Name node host
