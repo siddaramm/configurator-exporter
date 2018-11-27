@@ -65,9 +65,8 @@ SERVICE_PLUGIN_MAPPING = {
     "knox": "oozie",
     "redis": "oozie",
     "OOZIE": "oozie",
-    "YARN": "yarn_stats",
-    "HDFS": "name_node",
-    "YARN": "containers"
+    "YARN": "yarn",
+    "HDFS": "namenode"
 }
 
 POLLER_PLUGIN = ["elasticsearch"]
@@ -425,6 +424,7 @@ def discover_services():
             discovery[SERVICE_NAME[service]].append(final_dict)
 
     for service in get_hadoop_service_list(discovery.keys()):
+        logger.info("Hadoop service is %s" %service)
         discovery[service] = []
         port_dict = {}
         port_dict["agentConfig"] = {}
