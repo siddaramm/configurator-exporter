@@ -118,7 +118,7 @@ def parser_jcmd(service):
          if java_avail:
              return JCMD_PID_DICT
 
-         res = exec_subprocess("sudo /usr/lib/java/jdk1.8.0_131/bin/jcmd | awk '{print $1 \" \" $2}'")
+         res = exec_subprocess("sudo jcmd | awk '{print $1 \" \" $2}'")
          if not res:
              return pid_list
 
