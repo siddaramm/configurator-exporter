@@ -110,30 +110,33 @@ def exec_subprocess(cmd):
 def parser_jcmd(service):
     """ Parser for jcmd """
     pid_list = list()
-    if not JCMD_PID_DICT:
-         java_avail = subprocess.check_call(
-             ["java", "-version"],
-             stdout=subprocess.PIPE,
-             stderr=subprocess.PIPE)
-         if java_avail:
-             return JCMD_PID_DICT
+    try:
+        if not JCMD_PID_DICT:
+             java_avail = subprocess.check_call(
+                 ["java", "-version"],
+                 stdout=subprocess.PIPE,
+                 stderr=subprocess.PIPE)
+             if java_avail:
+                 return JCMD_PID_DICT
 
-         res = exec_subprocess("sudo jcmd | awk '{print $1 \" \" $2}'")
-         if not res:
-             return pid_list
+             res = exec_subprocess("sudo jcmd | awk '{print $1 \" \" $2}'")
+             if not res:
+                 return pid_list
 
-         for line in res.splitlines():
-             if not line:
-                continue
-             out_list = line.split()
-             JCMD_PID_DICT[out_list[1]] = int(out_list[0])
-         print(JCMD_PID_DICT)
-    
-    for service_name, pid in JCMD_PID_DICT.items():
-        if re.search(service,service_name):
-            pid_list.append(pid)
-    print("{} pid list {}".format (service,pid_list))
-    return pid_list
+             for line in res.splitlines():
+                 if not line:
+                    continue
+                 out_list = line.split()
+                 JCMD_PID_DICT[out_list[1]] = int(out_list[0])
+             print(JCMD_PID_DICT)
+        
+        for service_name, pid in JCMD_PID_DICT.items():
+            if re.search(service,service_name):
+                pid_list.append(pid)
+        print("{} pid list {}".format (service,pid_list))
+        return pid_list
+    except:
+        return pid_list
 
 def get_hadoop_running_service_list():
     '''
