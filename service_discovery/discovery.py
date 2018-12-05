@@ -53,6 +53,7 @@ Mapping for services and the plugin to be configured for them.
 SERVICE_PLUGIN_MAPPING = {
     "elasticsearch": "elasticsearch",
     "apache": "apache",
+    "redis": "redisdb",
     "mysql": "mysql",
     "mssql": "mssql",
     "postgres": "postgres",

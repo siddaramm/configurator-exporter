@@ -165,6 +165,46 @@ mysql:
      min: ''
      max: ''
 
+# mapping for redis plugin
+redisdb:
+ - name: redisdb
+   interval: 300
+   config:
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: 127.0.0.1
+     tooltip: Redis Host IP
+     label: Host Ip
+     fieldName: host
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: '6379'
+     tooltip: Redis Host Port
+     label: Host Port
+     fieldName: port
+   - Mandatory: true
+     fieldName: documentsTypes
+     tooltip: document Types to be collected
+     label: Document Types
+     dataType: list
+     multiselect: true
+     defaultValue: ['generalDetails', 'serverDetails', 'memoryDetails', 'replicationDetails']
+     options:
+      - label: 'generalDetails'
+        value: 'generalDetails'
+      - label: 'serverDetails'
+        value: 'serverDetails'
+      - label: 'memoryDetails'
+        value: 'memoryDetails'
+      - label: 'replicationDetails'
+        value: 'replicationDetails'
+     min: ''
+     max: ''
+
 # mapping for java plugin
 jvm:
  - name: jvm
