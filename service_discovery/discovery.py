@@ -439,7 +439,7 @@ def discover_services():
 
     if SERVICE_NAME["knox"] in discovery:
         del discovery[SERVICE_NAME["knox"]]
-    if SERVICE_NAME["redis"] in discovery:
-        del discovery[SERVICE_NAME["redis"]]
+    #if SERVICE_NAME["redis"] in discovery:
+     #   del discovery[SERVICE_NAME["redis"]]
     logger.info("Discovered service %s", discovery)
     return discovery
