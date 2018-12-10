@@ -63,8 +63,6 @@ SERVICE_PLUGIN_MAPPING = {
     "zookeeper": "zookeeperjmx",
     "hxconnect": "hxconnect",
     "cassandra": "cassandra",
-    "knox": "oozie",
-    "redis": "oozie",
     "OOZIE": "oozie",
     "YARN": "yarn",
     "HDFS": "namenode"
@@ -436,10 +434,5 @@ def discover_services():
         final_dict = add_agent_config(service, logger_dict)
         discovery[service].append(final_dict)
 
-
-    if SERVICE_NAME["knox"] in discovery:
-        del discovery[SERVICE_NAME["knox"]]
-    #if SERVICE_NAME["redis"] in discovery:
-     #   del discovery[SERVICE_NAME["redis"]]
     logger.info("Discovered service %s", discovery)
     return discovery
