@@ -328,7 +328,7 @@ tomcat:
         path: '/opt/tomcat/apache-tomcat-9.0.13/logs/catalina.out'
         pos_file: '/var/log/td-agent/tomcat.pos'
     multiline:
-        format_firstline: '/^([^ ]*)\s([^ ]*)\s([^ \[]*)/'
+        format_firstline: '/^([^\:\ ]*)\s([^ ]*)\s([^\:\ ]*)\s\[([^\]]*)\]/'
         expression:
             - '/^(?<time>[^ ]*\s[^ ]*)\s(?<level>[^ ]*)\s\[(?<logging_class>[^ ]*)\]\s(?<class_name>[^ ]*)\s(?<message>.*)$/'
     transform:
