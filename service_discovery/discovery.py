@@ -15,6 +15,7 @@ URL = "https://localhost:8443/gateway/default"
 SERVICE_NAME = {
     "elasticsearch": "ES",
     "apache": "apache",
+    "tomcat": "tomcat",
     "mysql": "mysql",
     "mssql": "mssql",
     "postgres": "postgres",
@@ -34,6 +35,7 @@ SERVICE_NAME = {
 SERVICES = [
     "elasticsearch",
     "apache",
+    "tomcat",
     "redis",
     "mysql",
     "mssql",
@@ -53,6 +55,7 @@ Mapping for services and the plugin to be configured for them.
 SERVICE_PLUGIN_MAPPING = {
     "elasticsearch": "elasticsearch",
     "apache": "apache",
+    "tomcat": "tomcat",
     "redis": "redisdb",
     "mysql": "mysql",
     "mssql": "mssql",
@@ -156,7 +159,9 @@ def get_process_id(service):
     logger.info("Get process id for service %s", service)
     pids = []
 
-    if service in ["kafka.Kafka", "zookeeper"]:
+    if service in ["kafka.Kafka", "zookeeper", "tomcat"]:
+        service = "apache" if service == "tomcat" else service
+
         pid_list = parser_jcmd(service)
 
         for pid in pid_list:
@@ -399,7 +404,6 @@ def discover_services():
         for item in pid_list:
             service_pid_dict = {}
             service_pid_dict["PID"] = []
-            service_pid_dict["PID"] = item["process_id"]
 
             # Add PID, cpuUsage, memUsage, status to service_discovery
             service_pid_dict["PID"] = item["process_id"]
