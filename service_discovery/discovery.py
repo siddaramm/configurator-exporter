@@ -160,7 +160,9 @@ def get_process_id(service):
     pids = []
 
     if service in ["kafka.Kafka", "zookeeper", "tomcat"]:
-        service = "apache" if service == "tomcat" else service
+        """if servcie == "tomcat":
+          service = "apache"
+        """
 
         pid_list = parser_jcmd(service)
 
