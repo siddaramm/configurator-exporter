@@ -174,18 +174,18 @@ redisdb:
      min: ''
      dataType: string
      max: ''
-     defaultValue: 127.0.0.1
-     tooltip: Redis Host IP
-     label: Host Ip
-     fieldName: host
-   - Mandatory: true
-     min: ''
-     dataType: string
-     max: ''
      defaultValue: '6379'
      tooltip: Redis Host Port
      label: Host Port
      fieldName: port
+   - Mandatory: true
+     min: ''
+     dataType: password
+     max: ''
+     defaultValue: "postgres"
+     tooltip: Password for Redis server
+     label: Password
+     fieldName: password
    - Mandatory: true
      fieldName: documentsTypes
      tooltip: document Types to be collected
