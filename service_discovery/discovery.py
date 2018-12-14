@@ -192,7 +192,7 @@ def get_process_id(service):
                     break
             
             elif service in ["tomcat"]:
-                if proc.info.get("name") == "java" and "org.apache.catalina.startup.Bootstrap tomcatorg.apache.catalina.startup.Bootstrap" in proc.info.get(
+                if proc.info.get("name") == "java" and "org.apache.catalina.startup.Bootstrap" in proc.info.get(
                         "cmdline"):
                     process_id = proc.info.get("pid")
                     break
