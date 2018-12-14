@@ -159,7 +159,7 @@ def get_process_id(service):
     logger.info("Get process id for service %s", service)
     pids = []
 
-    if service in ["kafka.Kafka", "zookeeper", "tomcat"]:
+    if service in ["kafka.Kafka", "zookeeper"]:
         """if servcie == "tomcat":
           service = "apache"
         """
