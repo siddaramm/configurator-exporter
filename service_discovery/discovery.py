@@ -183,7 +183,7 @@ def get_process_id(service):
 
     try:
         process_id = ""
-        for proc in psutil.process_iter(attrs=['pid', 'name', 'username']):
+        for proc in psutil.process_iter(attrs=['pid', 'name', 'username','cmdline']):
             # Java processes
             if service in ["elasticsearch", "cassandra", "knox"]:
                 if proc.info.get("name") == "java" and proc.info.get(
