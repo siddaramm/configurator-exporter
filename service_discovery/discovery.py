@@ -71,7 +71,7 @@ SERVICE_PLUGIN_MAPPING = {
     "HDFS": "namenode"
 }
 
-POLLER_PLUGIN = ["elasticsearch"]
+POLLER_PLUGIN = ["elasticsearch","tomcat"]
 HADOOP_SERVICES = [
     "OOZIE",
     "YARN",
@@ -190,6 +190,13 @@ def get_process_id(service):
                         "username") == service:
                     process_id = proc.info.get("pid")
                     break
+            
+            elif service in ["tomcat"]:
+                if proc.info.get("name") == "java" and "org.apache.catalina.startup.Bootstrap tomcatorg.apache.catalina.startup.Bootstrap" in proc.info.get(
+                        "cmdline"):
+                    process_id = proc.info.get("pid")
+                    break
+                         
             # Postgres process
             elif service in ["postgres"]:
                 if proc.info.get("name") == "postmaster" or proc.info.get(
