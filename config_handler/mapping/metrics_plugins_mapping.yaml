@@ -168,7 +168,7 @@ mysql:
 # mapping for redis plugin
 redisdb:
  - name: redisdb
-   interval: 300
+   interval: 60
    config:
    - Mandatory: true
      min: ''
@@ -182,7 +182,7 @@ redisdb:
      min: ''
      dataType: password
      max: ''
-     defaultValue: "postgres"
+     defaultValue: "fusion12"
      tooltip: Password for Redis server
      label: Password
      fieldName: password
