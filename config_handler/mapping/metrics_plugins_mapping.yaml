@@ -423,7 +423,7 @@ nginx:
 # abstraction for nginx-plus
 nginxplus:
   - name: nginxplus
-    interval: 30
+    interval: 300
 
 #results of tpcc
 tpcc:
