@@ -26,7 +26,7 @@ SERVICE_NAME = {
     "hxconnect": "hxconnect",
     "cassandra": "cassandra",
     "esalogstore": "ESAlogstore",
-    "knox": "knox",
+    #"knox": "knox",
     "redis": "redis",
     "OOZIE": "OOZIE",
     "YARN": "YARN",
@@ -47,7 +47,7 @@ SERVICES = [
     "hxconnect",
     "cassandra",
     "esalogstore",
-    "knox",
+    #"knox",
 ]
 '''
 Mapping for services and the plugin to be configured for them.
@@ -278,13 +278,16 @@ def get_cluster():
 
 def get_hadoop_service_list(discovered_service_list):
     hadoop_agent_Service_list = list()
-    if not is_discover_serivce("knox", discovered_service_list):
+    
+    knox_pid = get_process_id("knox")
+    if not knox_pid:
         return hadoop_agent_Service_list
+      
     cluster_name = get_cluster()
     if not cluster_name:
         return hadoop_agent_Service_list
     for service in ["OOZIE", "YARN", "HDFS"]:
-        if service == "OOZIE" and not is_discover_serivce("redis", discovered_service_list):
+        if service == "OOZIE" and not is_discover_service("redis", discovered_service_list):
             continue
         res_json = requests.get(URL+"/ambari/api/v1/clusters/%s/services/%s" %(cluster_name, service), auth=("admin", "admin"), verify=False)
         if res_json.status_code != 200:
@@ -294,7 +297,7 @@ def get_hadoop_service_list(discovered_service_list):
         hadoop_agent_Service_list.append(service)
     return hadoop_agent_Service_list
 
-def is_discover_serivce(service_name,discovered_service_list):
+def is_discover_service(service_name,discovered_service_list):
     if SERVICE_NAME[service_name] in discovered_service_list:
        return True
     return False
