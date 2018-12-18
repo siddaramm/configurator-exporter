@@ -420,6 +420,11 @@ nginx:
       label: Secure
       fieldName: secure
 
+# abstraction for nginx-plus
+nginxplus:
+  - name: nginxplus
+    interval: 30
+
 #results of tpcc
 tpcc:
    - name: tpcc
