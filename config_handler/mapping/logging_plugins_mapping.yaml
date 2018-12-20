@@ -191,10 +191,10 @@ nginx-access:
     path: '/var/log/nginx/access.log'
     pos_file: '/var/log/td-agent/nginx_access.pos'
   parse:
-    '@type': multi_format
-    expressions:
-        - '^(?<host>[^ ]*)\s-(?<user>[^-]*)-\s\[(?<time>[^\]]*)\]\s\"(?<method>[^ ]*)\s(?<path>[^"]*)\"\s(?<code>[^ ]*)\s(?<size>[^ ]*)\s\"(?<referer>[^"]*)\"\s\"(?<agent>[^"]*)\"\s\"(?<response_time>[^"]*)\"$'
-        - '^(?<host>[^ ]*)\s(?<user>[^ ]*)\s\[(?<time>[^\]]*)\]\s\"(?<method>[^ ]*)\s(?<path>[^"]*)\"\s(?<code>[^ ]*)\s(?<size>[^ ]*)\s\"(?<referer>[^"]*)\"\s\"(?<agent>[^"]*)\"\s\"(?<referer2>[^"]*)\"\s(rt=(?<request_time>[^ ]*))\s(uct=(?<upstream_connect_time>[^ ]*))\s(uht=(?<upstream_header_time>[^ ]*))\s(urt=(?<upstream_response_time>[^ ]*))$'
+    '@type': regexp
+    time_format: '%d/%b/%Y:%H:%M:%S %z'
+    #expression: '^(?<host>[^ ]*)\s-(?<user>[^-]*)-\s\[(?<time>[^\]]*)\]\s\"(?<method>[^ ]*)\s(?<path>[^"]*)\"\s(?<code>[^ ]*)\s(?<size>[^ ]*)\s\"(?<referer>[^"]*)\"\s\"(?<agent>[^"]*)\"\s\"(?<response_time>[^"]*)\"$'
+    expression: '^(?<host>[^ ]*)\s(?<user>[^ ]*)\s\[(?<time>[^\]]*)\]\s\"(?<method>[^ ]*)\s(?<path>[^"]*)\"\s(?<code>[^ ]*)\s(?<size>[^ ]*)\s\"(?<referer>[^"]*)\"\s\"(?<agent>[^"]*)\"\s\"(?<referer2>[^"]*)\"\s(rt=(?<request_time>[^ ]*))\s(uct=(?<upstream_connect_time>[^ ]*))\s(uht=(?<upstream_header_time>[^ ]*))\s(urt=(?<upstream_response_time>[^ ]*))$'
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
