@@ -384,6 +384,10 @@ def add_agent_config(service, service_dict):
     service_dict["agentConfig"].update(agent_config)
     return service_dict
 
+def check_nginx_plus():
+    logger.error('new in check condition')
+    res = exec_subprocess("service nginx status")
+    return res and 'Plus' in res.splitlines()[0]
 
 def discover_services():
     '''
@@ -449,6 +453,12 @@ def discover_services():
         logger_dict = add_logger_config(port_dict, service)
         final_dict = add_agent_config(service, logger_dict)
         discovery[service].append(final_dict)
+
+    if 'nginx' in discovery and check_nginx_plus():
+        logger.info('in oonnnn')
+        var = discovery.pop('nginx')[0]
+        var['agentConfig'] = {'name':'nginxplus'}
+        discovery['nginxplus'] = [var]
 
     logger.info("Discovered service %s", discovery)
     return discovery
