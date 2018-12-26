@@ -26,7 +26,7 @@ SERVICE_NAME = {
     "hxconnect": "hxconnect",
     "cassandra": "cassandra",
     "esalogstore": "ESAlogstore",
-    "knox": "knox",
+    #"knox": "knox",
     "redis": "redis",
     "OOZIE": "OOZIE",
     "YARN": "YARN",
@@ -47,7 +47,7 @@ SERVICES = [
     "hxconnect",
     "cassandra",
     "esalogstore",
-    "knox",
+    #"knox",
 ]
 '''
 Mapping for services and the plugin to be configured for them.
@@ -71,7 +71,7 @@ SERVICE_PLUGIN_MAPPING = {
     "HDFS": "namenode"
 }
 
-POLLER_PLUGIN = ["elasticsearch"]
+POLLER_PLUGIN = ["elasticsearch","tomcat"]
 HADOOP_SERVICES = [
     "OOZIE",
     "YARN",
@@ -159,7 +159,7 @@ def get_process_id(service):
     logger.info("Get process id for service %s", service)
     pids = []
 
-    if service in ["kafka.Kafka", "zookeeper", "tomcat"]:
+    if service in ["kafka.Kafka", "zookeeper"]:
         """if servcie == "tomcat":
           service = "apache"
         """
@@ -183,13 +183,20 @@ def get_process_id(service):
 
     try:
         process_id = ""
-        for proc in psutil.process_iter(attrs=['pid', 'name', 'username']):
+        for proc in psutil.process_iter(attrs=['pid', 'name', 'username','cmdline']):
             # Java processes
             if service in ["elasticsearch", "cassandra", "knox"]:
                 if proc.info.get("name") == "java" and proc.info.get(
                         "username") == service:
                     process_id = proc.info.get("pid")
                     break
+            
+            elif service in ["tomcat"]:
+                if proc.info.get("name") == "java" and "org.apache.catalina.startup.Bootstrap" in proc.info.get(
+                        "cmdline"):
+                    process_id = proc.info.get("pid")
+                    break
+                         
             # Postgres process
             elif service in ["postgres"]:
                 if proc.info.get("name") == "postmaster" or proc.info.get(
@@ -271,13 +278,16 @@ def get_cluster():
 
 def get_hadoop_service_list(discovered_service_list):
     hadoop_agent_Service_list = list()
-    if not is_discover_serivce("knox", discovered_service_list):
+    
+    knox_pid = get_process_id("knox")
+    if not knox_pid:
         return hadoop_agent_Service_list
+      
     cluster_name = get_cluster()
     if not cluster_name:
         return hadoop_agent_Service_list
     for service in ["OOZIE", "YARN", "HDFS"]:
-        if service == "OOZIE" and not is_discover_serivce("redis", discovered_service_list):
+        if service == "OOZIE" and not is_discover_service("redis", discovered_service_list):
             continue
         res_json = requests.get(URL+"/ambari/api/v1/clusters/%s/services/%s" %(cluster_name, service), auth=("admin", "admin"), verify=False)
         if res_json.status_code != 200:
@@ -287,7 +297,7 @@ def get_hadoop_service_list(discovered_service_list):
         hadoop_agent_Service_list.append(service)
     return hadoop_agent_Service_list
 
-def is_discover_serivce(service_name,discovered_service_list):
+def is_discover_service(service_name,discovered_service_list):
     if SERVICE_NAME[service_name] in discovered_service_list:
        return True
     return False
@@ -374,6 +384,10 @@ def add_agent_config(service, service_dict):
     service_dict["agentConfig"].update(agent_config)
     return service_dict
 
+def check_nginx_plus():
+    logger.error('new in check condition')
+    res = exec_subprocess("service nginx status")
+    return res and 'Plus' in res.splitlines()[0]
 
 def discover_services():
     '''
@@ -439,6 +453,12 @@ def discover_services():
         logger_dict = add_logger_config(port_dict, service)
         final_dict = add_agent_config(service, logger_dict)
         discovery[service].append(final_dict)
+
+    if 'nginx' in discovery and check_nginx_plus():
+        logger.info('in oonnnn')
+        var = discovery.pop('nginx')[0]
+        var['agentConfig'] = {'name':'nginxplus'}
+        discovery['nginxplus'] = [var]
 
     logger.info("Discovered service %s", discovery)
     return discovery
