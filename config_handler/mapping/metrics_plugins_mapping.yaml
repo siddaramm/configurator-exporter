@@ -226,7 +226,7 @@ tomcat:
      tooltip: Jolokia username
      label: Username
      fieldName: username
-  - Mandatory: true
+   - Mandatory: true
      min: ''
      dataType: password
      max: ''
