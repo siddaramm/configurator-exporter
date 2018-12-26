@@ -205,6 +205,52 @@ redisdb:
      min: ''
      max: ''
 
+# mapping for tomcat plugin
+tomcat:
+ - name: tomcat
+   interval: 300
+   config:
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: '8080'
+     tooltip: Tomcat Port
+     label: Tomcat Port
+     fieldName: port
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: 'admin'
+     tooltip: Jolokia username
+     label: Username
+     fieldName: username
+  - Mandatory: true
+     min: ''
+     dataType: password
+     max: ''
+     defaultValue: 'admin@12345'
+     tooltip: Password for Jolokia user
+     label: Password
+     fieldName: password
+   - Mandatory: true
+     fieldName: documentsTypes
+     tooltip: document Types to be collected
+     label: Document Types
+     dataType: list
+     multiselect: true
+     defaultValue: ['tomcatStats', 'requestProcessorStats', 'jvmStats']
+     options:
+      - label: 'tomcatStats'
+        value: 'tomcatStats'
+      - label: 'requestProcessorStats'
+        value: 'requestProcessorStats'
+      - label: 'jvmStats'
+        value: 'jvmStats'
+     min: ''
+     max: ''
+     
 # mapping for java plugin
 jvm:
  - name: jvm
