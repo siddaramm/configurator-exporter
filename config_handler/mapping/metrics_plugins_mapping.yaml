@@ -658,37 +658,7 @@ containers:
      defaultValue: '*'
      min: ''
      max: ''
-
-# mapping for tomcat plugin
-tomcat:
- - name: tomcat
-   interval: 300
-   config:
-   - Mandatory: true
-     min: ''
-     dataType: Integer
-     max: ''
-     defaultValue: 8080
-     tooltip: Listening tomcat port
-     label: Port
-     fieldName: port
-   - Mandatory: true
-     fieldName: documentsTypes
-     tooltip: document Types to be collected
-     label: Document Types
-     dataType: list
-     multiselect: true
-     defaultValue: ['tomcatStats', 'jvmStats', 'requestProcessorStats']
-     options:
-      - label: 'tomcatStats'
-        value: 'tomcatStats'
-      - label: 'jvmStats'
-        value: 'jvmStats'
-      - label: 'requestProcessorStats'
-        value: 'requestProcessorStats'
-     min: ''
-     max: ''
-
+     
 #mapping for esa plugin
 #esalogstore:
 # - name: esalogstore
