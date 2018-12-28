@@ -192,16 +192,14 @@ redisdb:
      label: Document Types
      dataType: list
      multiselect: true
-     defaultValue: ['generalDetails', 'serverDetails', 'memoryDetails', 'replicationDetails']
+     defaultValue: ['redisDetails', 'redisStat', 'keyspaceStat']
      options:
-      - label: 'generalDetails'
-        value: 'generalDetails'
-      - label: 'serverDetails'
-        value: 'serverDetails'
-      - label: 'memoryDetails'
-        value: 'memoryDetails'
-      - label: 'replicationDetails'
-        value: 'replicationDetails'
+      - label: 'redisDetails'
+        value: 'redisDetails'
+      - label: 'redisStat'
+        value: 'redisStat'
+      - label: 'keyspaceStat'
+        value: 'keyspaceStat'
      min: ''
      max: ''
 
