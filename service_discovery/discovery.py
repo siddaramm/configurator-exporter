@@ -71,7 +71,7 @@ SERVICE_PLUGIN_MAPPING = {
     "HDFS": "namenode"
 }
 
-POLLER_PLUGIN = ["elasticsearch","tomcat"]
+POLLER_PLUGIN = ["elasticsearch"]
 HADOOP_SERVICES = [
     "OOZIE",
     "YARN",

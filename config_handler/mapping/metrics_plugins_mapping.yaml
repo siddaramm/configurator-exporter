@@ -192,19 +192,63 @@ redisdb:
      label: Document Types
      dataType: list
      multiselect: true
-     defaultValue: ['generalDetails', 'serverDetails', 'memoryDetails', 'replicationDetails']
+     defaultValue: ['redisDetails', 'redisStat', 'keyspaceStat']
      options:
-      - label: 'generalDetails'
-        value: 'generalDetails'
-      - label: 'serverDetails'
-        value: 'serverDetails'
-      - label: 'memoryDetails'
-        value: 'memoryDetails'
-      - label: 'replicationDetails'
-        value: 'replicationDetails'
+      - label: 'redisDetails'
+        value: 'redisDetails'
+      - label: 'redisStat'
+        value: 'redisStat'
+      - label: 'keyspaceStat'
+        value: 'keyspaceStat'
      min: ''
      max: ''
 
+# mapping for tomcat plugin
+tomcat:
+ - name: tomcat
+   interval: 300
+   config:
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: '8080'
+     tooltip: Tomcat Port
+     label: Tomcat Port
+     fieldName: port
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: 'admin'
+     tooltip: Jolokia username
+     label: Username
+     fieldName: user
+   - Mandatory: true
+     min: ''
+     dataType: password
+     max: ''
+     defaultValue: 'admin@12345'
+     tooltip: Password for Jolokia user
+     label: Password
+     fieldName: password
+   - Mandatory: true
+     fieldName: documentsTypes
+     tooltip: document Types to be collected
+     label: Document Types
+     dataType: list
+     multiselect: true
+     defaultValue: ['tomcatStats', 'requestProcessorStats', 'jvmStats']
+     options:
+      - label: 'tomcatStats'
+        value: 'tomcatStats'
+      - label: 'requestProcessorStats'
+        value: 'requestProcessorStats'
+      - label: 'jvmStats'
+        value: 'jvmStats'
+     min: ''
+     max: ''
+     
 # mapping for java plugin
 jvm:
  - name: jvm
@@ -612,6 +656,7 @@ containers:
      defaultValue: '*'
      min: ''
      max: ''
+     
 #mapping for esa plugin
 #esalogstore:
 # - name: esalogstore
