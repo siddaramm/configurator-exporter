@@ -325,7 +325,7 @@ esalogstore:
 tomcat:
     source:
         '@type': tail
-        path: '/opt/tomcat/apache-tomcat-9.0.13/logs/catalina.out'
+        path: '/opt/apache-tomcat-9.0.12/logs/catalina.out'
         pos_file: '/var/log/td-agent/tomcat.pos'
     multiline:
         format_firstline: '/^([^\:\ ]*)\s([^ ]*)\s([^\:\ ]*)\s\[([^\]]*)\]/'
