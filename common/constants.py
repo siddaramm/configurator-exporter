@@ -102,3 +102,7 @@ NAMENODE_PORT = "namenode_port"
 # yarn plugin constants
 YARN_NODE = "yarn_node"
 CLUSTER = "cluster"
+
+USE_REST_API = "use_rest_api"
+HDFS_PORT = "hdfs_port"
+HDFS_HOST = "hdfs_host"

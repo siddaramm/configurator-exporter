@@ -560,20 +560,6 @@ oozie:
      defaultValue: '*'
      min: ''
      max: ''
-   - label: Resource manager
-     fieldName: resource_manager
-     tooltip: IP of the Resource manager
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-   - label: Port of Resource manager
-     fieldName: resource_manager_port
-     tooltip: Port of the Resource manager
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
    - label: Timeline server
      fieldName: timeline_server
      tooltip: IP of the Timeline server
@@ -588,6 +574,30 @@ oozie:
      Mandatory: true
      dataType: string
      defaultValue: '*'
+     min: ''
+     max: ''
+   - label: HDFS Server
+     fieldName: hdfs_host
+     tooltip: IP of the HDFS server
+     Mandatory: true
+     dataType: string
+     defaultValue: '*'
+     min: ''
+     max: ''
+   - label: Port of HDFS server
+     fieldName: hdfs_port
+     tooltip: Port of the hdfs server
+     Mandatory: true
+     dataType: string
+     defaultValue: '*'
+     min: ''
+     max: ''
+   - label: Use rest api
+     fieldName: use_rest_api
+     tooltip: use rest api
+     Mandatory: true
+     dataType: string
+     defaultValue: '0'
      min: ''
      max: ''
 
@@ -635,28 +645,6 @@ namenode:
      min: ''
      max: ''
 
-#mapping for containers plugin
-containers:
- - name: containers 
-   interval: 300
-   config:
-   - label: Yarn node
-     fieldName: cluster
-     tooltip: Ip of the yarn node
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
-   - label: Resource manager port
-     fieldName: resource_manager_port
-     tooltip: Port of the resource manager
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
-     
 #mapping for esa plugin
 #esalogstore:
 # - name: esalogstore
