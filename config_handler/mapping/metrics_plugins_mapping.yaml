@@ -223,7 +223,7 @@ tomcat:
      defaultValue: 'admin'
      tooltip: Jolokia username
      label: Username
-     fieldName: username
+     fieldName: user
    - Mandatory: true
      min: ''
      dataType: password
