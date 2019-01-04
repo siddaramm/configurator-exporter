@@ -341,3 +341,275 @@ tomcat:
         message: ${record['message']}
     match:
         flush_interval: 30s
+        
+        # yarn resource manager logging mapping
+yarn-rm:
+  source:
+    '@type': tail
+    path: '/var/log/hadoop-yarn/yarn/yarn-yarn-resourcemanager-manager-0.log'
+    pos_file: '/var/log/td-agent/yarn-rm.pos'
+  multiline:
+    format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
+    expression:
+      - '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*) (?<message>[\s\S]*)/'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'YarnRmLogs'
+    _documentType: 'YarnRmLogs'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
+
+# yarn resource manager audit logging mapping
+yarn-audit:
+  source:
+    '@type': tail
+    path: '/var/log/hadoop-yarn/yarn/rm-audit.log'
+    pos_file: '/var/log/td-agent/rm-audit.pos'
+  multiline:
+    format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
+    expression:
+      - '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*) (?<message>[\s\S]*)/'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'YarnRmAuditLogs'
+    _documentType: 'YarnRmAuditLogs'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
+
+#Yarn timeline server  logging mapping
+yarn-timeline:
+  source:
+    '@type': tail
+    path: '/var/log/hadoop-yarn/yarn/yarn-yarn-timelineserver-manager-0.log'
+    pos_file: '/var/log/td-agent/yarn-yarn-timelineserver-manager.pos'
+  multiline:
+    format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
+    expression:
+      - '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*) (?<message>[\s\S]*)/'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'YarmTimelineLogs'
+    _documentType: 'YarmTimelineLogs'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
+
+# hdfs audit logging mapping
+hdfs-audit:
+  source:
+    '@type': tail
+    path: '/var/log/hadoop/hdfs/hdfs-audit.log'
+    pos_file: '/var/log/td-agent/hdfs-audit.pos'
+  parse:
+    '@type': multi_format
+    expressions:
+     - '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*)\s+(?<message>.*)$/'
+     - '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*)\s+(?<message>.*)/'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'HdfsAuditLogs'
+    _documentType: 'HdfsAuditLogs'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
+
+# hdfs namenode logging mapping
+hdfs-namenode:
+  source:
+    '@type': tail
+    path: '/var/log/hadoop/hdfs/hadoop-hdfs-namenode-manager-0.log'
+    pos_file: '/var/log/td-agent/hadoop-hdfs-namenode-manager-0.log.pos'
+  multiline:
+    format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
+    expression:
+      - '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*) (?<message>[\s\S]*)/'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'HdfsNameNodeLogs'
+    _documentType: 'HdfsNameNodeLogs'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
+
+
+# oozie audit logging mapping
+oozie-audit:
+  source:
+    '@type': tail
+    path: '/var/log/oozie/oozie-audit.log'
+    pos_file: '/var/log/td-agent/oozie-audit.log.pos'
+  parse:
+    '@type': regexp
+    expression: '^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*)\s+(?<message>.*)'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'OozieAuditLogs'
+    _documentType: 'OozieAuditLogs'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
+
+# oozie Error logging mapping
+oozie-error-logs:
+  source:
+    '@type': tail
+    path: '/var/log/oozie/oozie-error.log'
+    pos_file: '/var/log/td-agent/oozie-error.pos'
+  parse:
+    '@type': regexp
+    expression: '^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*)\s+(?<message>.*)'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'OozieErrorLogs'
+    _documentType: 'OozieErrorLogs'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
+
+# oozie logging mapping
+oozie-logs:
+  source:
+    '@type': tail
+    path: '/var/log/oozie/oozie.log'
+    pos_file: '/var/log/td-agent/oozie.pos'
+  parse:
+    '@type': regexp
+    expression: '^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*)\s+(?<message>.*)'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'OozieLogs'
+    _documentType: 'OozieLogs'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
+
+# yarn resource manager logging mapping
+hdfs-journalnode-manager:
+  source:
+    '@type': tail
+    path: '/var/log/hadoop/hdfs/hadoop-hdfs-journalnode-manager-0.log'
+    pos_file: '/var/log/td-agent/hadoop-hdfs-journalnode-manager-0.log'
+  multiline:
+    format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
+    expression:
+      - '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*) (?<message>[\s\S]*)/'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'hdfsjournalnodemanager'
+    _documentType: 'hdfsjournalnodemanager'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
+
+#hdfs zoopkeeper manager logs
+hdfs-zkfc-manager:
+  source:
+    '@type': tail
+    path: '/var/log/hadoop/hdfs/hadoop-hdfs-zkfc-manager-0.log'
+    pos_file: '/var/log/td-agent/hadoop-hdfs-zkfc-manager-0.log'
+  multiline:
+    format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
+    expression:
+      - '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*) (?<message>[\s\S]*)/'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'hdfszkfcmanager'
+    _documentType: 'hdfszkfcmanager'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
+
+#Oozie jpa logs
+oozie-jpa:
+  source:
+    '@type': tail
+    path: '/var/log/oozie/oozie-jpa.log'
+    pos_file: '/var/log/td-agent/oozie-jpa.log.pos'
+  multiline:
+    format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
+    expression:
+      - '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*) (?<message>[\s\S]*)/'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'OozieJpaLogs'
+    _documentType: 'OozieJpaLogs'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
+
+#Oozie instrumentation logs
+oozie-instrumentation:
+  source:
+    '@type': tail
+    path: '/var/log/oozie/oozie-instrumentation.log'
+    pos_file: '/var/log/td-agent/oozie-instrumentation.log.pos'
+  multiline:
+    format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
+    expression:
+      - '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*) (?<message>[\s\S]*)/'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'OozieInstrumentationLogs'
+    _documentType: 'OozieInstrumentationLogs'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
+
+#Oozie ops logs
+oozie-ops:
+  source:
+    '@type': tail
+    path: '/var/log/oozie/oozie-ops.log'
+    pos_file: '/var/log/td-agent/oozie-ops.log.pos'
+  multiline:
+    format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
+    expression:
+      - '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*) (?<message>[\s\S]*)/'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'OozieOpsLogs'
+    _documentType: 'OozieOpsLogs'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
