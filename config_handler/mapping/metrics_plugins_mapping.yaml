@@ -528,70 +528,6 @@ oozie:
  - name: oozie
    interval: 300
    config:
-   - label: Oozie host
-     fieldName: ooziehost
-     tooltip: Ip of the oozie server
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
-   - label: Oozie Port
-     fieldName: oozieport
-     tooltip: Port of the oozie server
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
-   - label: Job history server
-     fieldName: job_history_server
-     tooltip: Ip of the job history server
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
-   - label: Port of Job history server
-     fieldName: job_history_port
-     tooltip: Port of the job history server
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
-   - label: Timeline server
-     fieldName: timeline_server
-     tooltip: IP of the Timeline server
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
-   - label: Port of Timeline server
-     fieldName: timeline_port
-     tooltip: Port of the Timeline server
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
-   - label: HDFS Server
-     fieldName: hdfs_host
-     tooltip: IP of the HDFS server
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
-   - label: Port of HDFS server
-     fieldName: hdfs_port
-     tooltip: Port of the hdfs server
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
    - label: Use rest api
      fieldName: use_rest_api
      tooltip: use rest api
@@ -605,46 +541,15 @@ oozie:
 yarn:
  - name: yarn
    interval: 300
-   config:
-   - label: Yarn host
-     fieldName: yarn_node
-     tooltip: Ip of the yarn server
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
-   - label: Resource manager port
-     fieldName: resource_manager_port
-     tooltip: Port of the resource manager
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
 
 #mapping for namenode plugin
 namenode:
  - name: namenode
    interval: 300
-   config:
-   - label: Name node host
-     fieldName: namenode_host
-     tooltip: Ip of the name node 
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
-   - label: Name node port
-     fieldName: namenode_port
-     tooltip: Port of the name node
-     Mandatory: true
-     dataType: string
-     defaultValue: '*'
-     min: ''
-     max: ''
 
+spark:
+ - name: spark
+   interval: 300
 #mapping for esa plugin
 #esalogstore:
 # - name: esalogstore
