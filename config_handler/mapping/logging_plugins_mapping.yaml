@@ -419,7 +419,7 @@ hdfs-audit:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'HdfsAuditLogs'
+    _plugin: 'hdfs-audit'
     _documentType: 'HdfsAuditLogs'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
@@ -440,7 +440,7 @@ hdfs-namenode:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'HdfsNameNodeLogs'
+    _plugin: 'hdfs-namenode'
     _documentType: 'HdfsNameNodeLogs'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
@@ -461,7 +461,7 @@ oozie-audit:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'OozieAuditLogs'
+    _plugin: 'oozie-audit'
     _documentType: 'OozieAuditLogs'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
@@ -481,7 +481,7 @@ oozie-error-logs:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'OozieErrorLogs'
+    _plugin: 'oozie-error-logs'
     _documentType: 'OozieErrorLogs'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
@@ -501,7 +501,7 @@ oozie-logs:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'OozieLogs'
+    _plugin: 'oozie-logs'
     _documentType: 'OozieLogs'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
@@ -522,7 +522,7 @@ hdfs-journalnode-manager:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'hdfsjournalnodemanager'
+    _plugin: 'hdfs-journalnode-manager'
     _documentType: 'hdfsjournalnodemanager'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
@@ -543,7 +543,7 @@ hdfs-zkfc-manager:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'hdfszkfcmanager'
+    _plugin: 'hdfs-zkfc-manager'
     _documentType: 'hdfszkfcmanager'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
@@ -564,7 +564,7 @@ oozie-jpa:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'OozieJpaLogs'
+    _plugin: 'oozie-jpa'
     _documentType: 'OozieJpaLogs'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
@@ -585,7 +585,7 @@ oozie-instrumentation:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'OozieInstrumentationLogs'
+    _plugin: 'oozie-instrumentation'
     _documentType: 'OozieInstrumentationLogs'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
@@ -606,7 +606,7 @@ oozie-ops:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'OozieOpsLogs'
+    _plugin: 'oozie-ops'
     _documentType: 'OozieOpsLogs'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
