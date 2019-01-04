@@ -450,7 +450,8 @@ def discover_services():
         discovery[service] = []
         port_dict = {}
         port_dict["agentConfig"] = {}
-        logger_dict = add_logger_config(port_dict, service)
+        logger_dict = add_logger_config(port_dict, service.lower())
+        logger_dict["pollerConfig"] = {}
         final_dict = add_agent_config(service, logger_dict)
         discovery[service].append(final_dict)
 
