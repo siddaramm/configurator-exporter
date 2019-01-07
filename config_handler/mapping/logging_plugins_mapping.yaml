@@ -355,8 +355,8 @@ yarn-rm:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'YarnRmLogs'
-    _documentType: 'YarnRmLogs'
+    _plugin: 'hadoop-logs'
+    _documentType: 'yarnLog'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
     message: ${record['message']}
@@ -376,8 +376,8 @@ yarn-audit:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'YarnRmAuditLogs'
-    _documentType: 'YarnRmAuditLogs'
+    _plugin: 'hadoop-logs'
+    _documentType: 'yarnAuditLog'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
     message: ${record['message']}
@@ -397,8 +397,8 @@ yarn-timeline:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'YarmTimelineLogs'
-    _documentType: 'YarmTimelineLogs'
+    _plugin: 'hadoop-logs'
+    _documentType: 'timeLineServerLog'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
     message: ${record['message']}
@@ -419,8 +419,8 @@ hdfs-audit:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'hdfs-audit'
-    _documentType: 'HdfsAuditLogs'
+    _plugin: 'hadoop-logs'
+    _documentType: 'hdfsAuditLog'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
     message: ${record['message']}
@@ -440,8 +440,8 @@ hdfs-namenode:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'hdfs-namenode'
-    _documentType: 'HdfsNameNodeLogs'
+    _plugin: 'hadoop-logs'
+    _documentType: 'nameNodeLog'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
     message: ${record['message']}
@@ -461,8 +461,8 @@ oozie-audit:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'oozie-audit'
-    _documentType: 'OozieAuditLogs'
+    _plugin: 'hadoop-logs'
+    _documentType: 'oozieAuditLog'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
     message: ${record['message']}
@@ -481,8 +481,8 @@ oozie-error-logs:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'oozie-error-logs'
-    _documentType: 'OozieErrorLogs'
+    _plugin: 'hadoop-logs'
+    _documentType: 'oozieErrorLog'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
     message: ${record['message']}
@@ -501,8 +501,8 @@ oozie-logs:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'oozie-logs'
-    _documentType: 'OozieLogs'
+    _plugin: 'hadoop-logs'
+    _documentType: 'oozieLog'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
     message: ${record['message']}
@@ -522,8 +522,8 @@ hdfs-journalnode-manager:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'hdfs-journalnode-manager'
-    _documentType: 'hdfsjournalnodemanager'
+    _plugin: 'hadoop-logs'
+    _documentType: 'journalNodeLog'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
     message: ${record['message']}
@@ -543,8 +543,8 @@ hdfs-zkfc-manager:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'hdfs-zkfc-manager'
-    _documentType: 'hdfszkfcmanager'
+    _plugin: 'hadoop-logs'
+    _documentType: 'hdfsZkfcLog'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
     message: ${record['message']}
@@ -564,8 +564,8 @@ oozie-jpa:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'oozie-jpa'
-    _documentType: 'OozieJpaLogs'
+    _plugin: 'hadoop-logs'
+    _documentType: 'oozieJpaLog'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
     message: ${record['message']}
@@ -585,8 +585,8 @@ oozie-instrumentation:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'oozie-instrumentation'
-    _documentType: 'OozieInstrumentationLogs'
+    _plugin: 'hadoop-logs'
+    _documentType: 'oozieInstrumentationLog'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
     message: ${record['message']}
@@ -606,8 +606,8 @@ oozie-ops:
   transform:
     node: '#{Socket.gethostname}'
     file: '${tag_suffix[1]}'
-    _plugin: 'oozie-ops'
-    _documentType: 'OozieOpsLogs'
+    _plugin: 'hadoop-logs'
+    _documentType: 'oozieOpsLog'
     time: ${require 'time'; time.to_time.to_i}
     level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
     message: ${record['message']}
