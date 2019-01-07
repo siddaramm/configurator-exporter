@@ -87,7 +87,7 @@ HADOOP_SERVICE = {
                    },
     "yarn-timeline-server": { \
          "service-name": "org.apache.hadoop.yarn.server.applicationhistoryservice.ApplicationHistoryServer",
-         "service-list": ["yarn-timeline", "yarn-audit"]
+         "service-list": ["yarn-timeline"]
                             },
     "hdfs-namenode": { \
          "service-name": "org.apache.hadoop.hdfs.server.namenode.NameNode",
@@ -95,7 +95,7 @@ HADOOP_SERVICE = {
                      },
     "hdfs-journalnode": { \
          "service-name": "org.apache.hadoop.hdfs.qjournal.server.JournalNode",
-         "service-list": ["hdfs-journalnode", "hdfs-audit", "hdfs-gc", "hdfs-journalnode-manager"]
+         "service-list": ["hdfs-journalnode", "hdfs-gc", "hdfs-journalnode-manager"]
                         },
     "oozie-server": { \
          "service-name": "org.apache.catalina.startup.Bootstrap",
