@@ -30,7 +30,8 @@ SERVICE_NAME = {
     "redis": "redis",
     "OOZIE": "OOZIE",
     "YARN": "YARN",
-    "HDFS": "HDFS"
+    "HDFS": "HDFS",
+    "SPARK2": "SPARK2"
 }
 SERVICES = [
     "elasticsearch",
@@ -68,14 +69,16 @@ SERVICE_PLUGIN_MAPPING = {
     "cassandra": "cassandra",
     "OOZIE": "oozie",
     "YARN": "yarn",
-    "HDFS": "namenode"
+    "HDFS": "namenode",
+    "SPARK2": "spark"
 }
 
 POLLER_PLUGIN = ["elasticsearch"]
 HADOOP_SERVICES = [
     "OOZIE",
     "YARN",
-    "HDFS"
+    "HDFS",
+    "SPARK2"
 ]
 
 def add_pid_usage(pid, pid_list):
@@ -286,8 +289,8 @@ def get_hadoop_service_list(discovered_service_list):
     cluster_name = get_cluster()
     if not cluster_name:
         return hadoop_agent_Service_list
-    for service in ["OOZIE", "YARN", "HDFS"]:
-        if service == "OOZIE" and not is_discover_service("redis", discovered_service_list):
+    for service in ["OOZIE", "YARN", "HDFS", "SPARK2"]:
+        if (service == "OOZIE" or service == "SPARK2") and not is_discover_service("redis", discovered_service_list):
             continue
         res_json = requests.get(URL+"/ambari/api/v1/clusters/%s/services/%s" %(cluster_name, service), auth=("admin", "admin"), verify=False)
         if res_json.status_code != 200:
@@ -450,8 +453,7 @@ def discover_services():
         discovery[service] = []
         port_dict = {}
         port_dict["agentConfig"] = {}
-        logger_dict = add_logger_config(port_dict, service.lower())
-        logger_dict["pollerConfig"] = {}
+        logger_dict = add_logger_config(port_dict, service)
         final_dict = add_agent_config(service, logger_dict)
         discovery[service].append(final_dict)
 
