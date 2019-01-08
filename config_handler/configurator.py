@@ -273,9 +273,16 @@ def get_elasticsearch_status(host, index, port):
     elastic_search = Elasticsearch(connections)
     try:
         index_alias = elastic_search.indices.get_alias(index + "_write")
-    except Exception as e:
-        logger.error("Elasticsearch error in getting alias of the index %s due to  %s" % (index, str(e)))
-        return "STOPPED"
+    except Exception as err:
+        service = 'configurator'
+        restart_service(service)
+        logger.info("Restarting configurator service due to error in getting alias of index %s" % (index))
+        time.sleep(1)
+        try:
+            index_alias = elastic_search.indices.get_alias(index + "_write")
+        except Exception as e:
+            logger.error("Elasticsearch error in getting alias of the index %s due to  %s" % (index, str(e)))
+            return "STOPPED"
 
     current_index = index_alias.keys()[0]
     try:
