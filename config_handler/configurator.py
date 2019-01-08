@@ -277,7 +277,7 @@ def get_elasticsearch_status(host, index, port):
         service = 'configurator'
         restart_service(service)
         logger.info("Restarting configurator service due to error in getting alias of index %s" % (index))
-        time.sleep(1)
+        time.sleep(5)
         try:
             index_alias = elastic_search.indices.get_alias(index + "_write")
         except Exception as e:
