@@ -346,7 +346,7 @@ tomcat:
 yarn-rm:
   source:
     '@type': tail
-    path: '/var/log/hadoop-yarn/yarn/yarn-yarn-resourcemanager-manager-0.log'
+    path: '/var/log/hadoop-yarn/yarn/yarn-yarn-resourcemanager-*.log'
     pos_file: '/var/log/td-agent/yarn-rm.pos'
   multiline:
     format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
@@ -388,8 +388,8 @@ yarn-audit:
 yarn-timeline:
   source:
     '@type': tail
-    path: '/var/log/hadoop-yarn/yarn/yarn-yarn-timelineserver-manager-0.log'
-    pos_file: '/var/log/td-agent/yarn-yarn-timelineserver-manager.pos'
+    path: '/var/log/hadoop-yarn/yarn/yarn-yarn-timelineserver-*.log'
+    pos_file: '/var/log/td-agent/yarn-yarn-timelineserver.pos'
   multiline:
     format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
     expression:
@@ -431,8 +431,8 @@ hdfs-audit:
 hdfs-namenode:
   source:
     '@type': tail
-    path: '/var/log/hadoop/hdfs/hadoop-hdfs-namenode-manager-0.log'
-    pos_file: '/var/log/td-agent/hadoop-hdfs-namenode-manager-0.log.pos'
+    path: '/var/log/hadoop/hdfs/hadoop-hdfs-namenode-*.log'
+    pos_file: '/var/log/td-agent/hadoop-hdfs-namenode.log.pos'
   multiline:
     format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
     expression:
@@ -513,8 +513,8 @@ oozie-logs:
 hdfs-journalnode-manager:
   source:
     '@type': tail
-    path: '/var/log/hadoop/hdfs/hadoop-hdfs-journalnode-manager-0.log'
-    pos_file: '/var/log/td-agent/hadoop-hdfs-journalnode-manager-0.log'
+    path: '/var/log/hadoop/hdfs/hadoop-hdfs-journalnode-*.log'
+    pos_file: '/var/log/td-agent/hadoop-hdfs-journalnode.log'
   multiline:
     format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
     expression:
@@ -534,8 +534,8 @@ hdfs-journalnode-manager:
 hdfs-zkfc-manager:
   source:
     '@type': tail
-    path: '/var/log/hadoop/hdfs/hadoop-hdfs-zkfc-manager-0.log'
-    pos_file: '/var/log/td-agent/hadoop-hdfs-zkfc-manager-0.log'
+    path: '/var/log/hadoop/hdfs/hadoop-hdfs-zkfc-*.log'
+    pos_file: '/var/log/td-agent/hadoop-hdfs-zkfc.log'
   multiline:
     format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
     expression:
