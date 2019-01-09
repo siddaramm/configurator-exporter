@@ -99,7 +99,7 @@ HADOOP_SERVICE = {
                         },
     "oozie-server": { \
          "service-name": "org.apache.catalina.startup.Bootstrap",
-         "service-list": ["oozie-server", "oozie-audit", "oozie-error-logs", "oozie-logs","oozie-instrumentation","oozie-jpa"],
+         "service-list": ["oozie-ops", "oozie-audit", "oozie-error-logs", "oozie-logs","oozie-instrumentation","oozie-jpa"],
          "service-cmd-line": "oozie-server"
                     }
 }
