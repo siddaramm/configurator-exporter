@@ -434,6 +434,26 @@ postgres:
      min: ''
      max: ''
 
+# mapping for haproxy plugin
+haproxy:
+ - name: haproxy
+   interval: 300
+   config:
+   - Mandatory: true
+     fieldName: documentsTypes
+     tooltip: document Types to be collected
+     label: Document Types
+     dataType: list
+     multiselect: true
+     defaultValue: ['frontendStats', 'backendStats']
+     options:
+      - label: 'frontendStats'
+        value: 'frontendStats'
+      - label: 'backendStats'
+        value: 'backendStats'
+     min: ''
+     max: ''
+
 # abstraction for nginx 
 nginx:
   - name: nginx
