@@ -101,7 +101,7 @@ HADOOP_SERVICE = {
                         },
     "oozie-server": { \
          "service-name": "org.apache.catalina.startup.Bootstrap",
-         "service-list": ["oozie-ops", "oozie-audit", "oozie-error-logs", "oozie-logs", "oozie-instrumentation","oozie-jpa"],
+         "service-list": ["oozie-ops", "oozie-audit", "oozie-error-logs", "oozie-logs", "oozie-instrumentation", "oozie-jpa"],
          "service-cmd-line": "oozie-server"
                     }
 }
@@ -120,6 +120,12 @@ def add_pid_usage(pid, pid_list):
     pid_info["status"] = "running"
     pid_list.append(pid_info)
 
+def is_service_name(pid, service_cmd_line):
+    """Check if PID is for oozie_server"""
+    pid_detail = psutil.Process(pid)
+    if re.search(service_cmd_line, str(pid_detail.cmdline())):
+        return True
+    return False
 
 def check_jmx_enabled(pid):
     """Check if jmx enabled for java process"""
@@ -160,7 +166,6 @@ def parser_jcmd(service):
                 out_list = line.split()
                 if len(out_list) > 1:
                     JCMD_PID_DICT[out_list[1]] = int(out_list[0])
-            #print(JCMD_PID_DICT)
 
         for service_name, pid in JCMD_PID_DICT.items():
             if re.search(service, service_name):
@@ -168,6 +173,7 @@ def parser_jcmd(service):
         #print("{} pid list {}".format(service, pid_list))
         return pid_list
     except:
+        logger.error("JCMD parser error")
         return pid_list
 
 def get_hadoop_running_service_list():
@@ -176,8 +182,15 @@ def get_hadoop_running_service_list():
     '''
     hadoop_running_service_list = list()
     for name, service_name in HADOOP_SERVICE.items():
-        if parser_jcmd(service_name['service-name']):
-            hadoop_running_service_list.append(name)
+        pid = parser_jcmd(service_name['service-name'])
+        if not pid:
+            continue
+
+        if 'service-cmd-line' in service_name.keys():
+            if is_service_name(pid[0], service_name['service-cmd-line']):
+                hadoop_running_service_list.append(name)
+            continue
+        hadoop_running_service_list.append(name)
     return hadoop_running_service_list
 
 def get_process_id(service):
@@ -300,6 +313,7 @@ def add_ports(service_dict, service):
     return service_dict
 
 def is_discover_service(service_name, discovered_service_list):
+    """ is discivered services? """
     if SERVICE_NAME[service_name] in discovered_service_list:
         return True
     return False
@@ -387,6 +401,7 @@ def add_agent_config(service, service_dict):
     return service_dict
 
 def check_nginx_plus():
+    """ check nginx plus service  """
     logger.error('new in check condition')
     res = exec_subprocess("service nginx status")
     return res and 'Plus' in res.splitlines()[0]
@@ -470,11 +485,9 @@ def discover_services():
         hadoop_dict["loggerConfig"] = list()
         hadoop_dict["agentConfig"] = dict()
         hadoop_dict['pollerConfig'] = dict()
-        
+
         for service_name in get_hadoop_running_service_list():
             logger.info("Hadoop services are %s" %service_name)
-            #print ("Hadoop services are %s" %service_name)
-            #print(HADOOP_SERVICE[service_name])
 
             for service in HADOOP_SERVICE[service_name]['service-list']:
                 logger.info("service detail: {}".format(service))
@@ -492,9 +505,6 @@ def discover_services():
             discovery["hadoop-logs"] = list()
             discovery["hadoop-logs"].append(hadoop_dict)
             #print(discovery["hadoop-logs"])
-    except:
-        pass
-    # Hadoop Log End
-
+    except Exception as e: print(e)
     logger.info("Discovered service %s", discovery)
     return discovery
