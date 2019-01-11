@@ -220,25 +220,17 @@ tomcat:
      min: ''
      dataType: string
      max: ''
-     defaultValue: 'admin'
-     tooltip: Jolokia username
-     label: Username
-     fieldName: user
-   - Mandatory: true
-     min: ''
-     dataType: password
-     max: ''
-     defaultValue: 'admin@12345'
-     tooltip: Password for Jolokia user
-     label: Password
-     fieldName: password
+     defaultValue: '/usr/bin'
+     tooltip: Java path of host
+     label: Java path
+     fieldName: java_path
    - Mandatory: true
      fieldName: documentsTypes
      tooltip: document Types to be collected
      label: Document Types
      dataType: list
      multiselect: true
-     defaultValue: ['tomcatStats', 'requestProcessorStats', 'jvmStats']
+     defaultValue: ['tomcatStats', 'requestProcessorStats', 'jvmStats', 'contextStats']
      options:
       - label: 'tomcatStats'
         value: 'tomcatStats'
@@ -246,6 +238,8 @@ tomcat:
         value: 'requestProcessorStats'
       - label: 'jvmStats'
         value: 'jvmStats'
+      - label: 'contextStats'
+        value: 'contextStats'
      min: ''
      max: ''
      
