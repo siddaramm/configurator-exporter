@@ -555,7 +555,7 @@ oozie:
      dataType: string
      max: ''
      defaultValue: "admin"
-     tooltip: Password for ambari server
+     tooltip: Username for ambari server
      label: ambari_username
      fieldName: user
    - Mandatory: true
