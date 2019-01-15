@@ -445,12 +445,14 @@ haproxy:
      label: Document Types
      dataType: list
      multiselect: true
-     defaultValue: ['frontendStats', 'backendStats']
+     defaultValue: ['frontendStats', 'backendStats', 'haproxyStats']
      options:
       - label: 'frontendStats'
         value: 'frontendStats'
       - label: 'backendStats'
         value: 'backendStats'
+      - label: 'haproxyStats'
+        value: 'haproxyStats'
      min: ''
      max: ''
 
