@@ -550,20 +550,91 @@ oozie:
      defaultValue: '0'
      min: ''
      max: ''
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: "admin"
+     tooltip: Username for ambari server
+     label: ambari_username
+     fieldName: user
+   - Mandatory: true
+     min: ''
+     dataType: password
+     max: ''
+     defaultValue: "MapleAdmin123"
+     tooltip: Password for ambari server
+     label: Password
+     fieldName: password
 
 #mapping for yarn_stats plugin
 yarn:
  - name: yarn
    interval: 300
+   config:
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: "admin"
+     tooltip: Password for ambari server
+     label: ambari_username
+     fieldName: user
+   - Mandatory: true
+     min: ''
+     dataType: password
+     max: ''
+     defaultValue: "MapleAdmin123"
+     tooltip: Password for ambari server
+     label: Password
+     fieldName: password
+
 
 #mapping for namenode plugin
 namenode:
  - name: namenode
    interval: 300
+   config:
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: "admin"
+     tooltip: Password for ambari server
+     label: ambari_username
+     fieldName: user
+   - Mandatory: true
+     min: ''
+     dataType: password
+     max: ''
+     defaultValue: "MapleAdmin123"
+     tooltip: Password for ambari server
+     label: Password
+     fieldName: password
+
 
 spark:
  - name: spark
    interval: 300
+   config:
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: "admin"
+     tooltip: Password for ambari server
+     label: ambari_username
+     fieldName: user
+   - Mandatory: true
+     min: ''
+     dataType: password
+     max: ''
+     defaultValue: "MapleAdmin123"
+     tooltip: Password for ambari server
+     label: Password
+     fieldName: password
+
+
 #mapping for esa plugin
 #esalogstore:
 # - name: esalogstore
