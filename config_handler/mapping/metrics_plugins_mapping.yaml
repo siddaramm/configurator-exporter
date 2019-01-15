@@ -220,25 +220,17 @@ tomcat:
      min: ''
      dataType: string
      max: ''
-     defaultValue: 'admin'
-     tooltip: Jolokia username
-     label: Username
-     fieldName: user
-   - Mandatory: true
-     min: ''
-     dataType: password
-     max: ''
-     defaultValue: 'admin@12345'
-     tooltip: Password for Jolokia user
-     label: Password
-     fieldName: password
+     defaultValue: '/usr/bin'
+     tooltip: Java path of host
+     label: Java path
+     fieldName: java_path
    - Mandatory: true
      fieldName: documentsTypes
      tooltip: document Types to be collected
      label: Document Types
      dataType: list
      multiselect: true
-     defaultValue: ['tomcatStats', 'requestProcessorStats', 'jvmStats']
+     defaultValue: ['tomcatStats', 'requestProcessorStats', 'jvmStats', 'contextStats']
      options:
       - label: 'tomcatStats'
         value: 'tomcatStats'
@@ -246,6 +238,8 @@ tomcat:
         value: 'requestProcessorStats'
       - label: 'jvmStats'
         value: 'jvmStats'
+      - label: 'contextStats'
+        value: 'contextStats'
      min: ''
      max: ''
      
@@ -558,20 +552,91 @@ oozie:
      defaultValue: '0'
      min: ''
      max: ''
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: "admin"
+     tooltip: Username for ambari server
+     label: ambari_username
+     fieldName: user
+   - Mandatory: true
+     min: ''
+     dataType: password
+     max: ''
+     defaultValue: "MapleAdmin123$"
+     tooltip: Password for ambari server
+     label: Password
+     fieldName: password
 
 #mapping for yarn_stats plugin
 yarn:
  - name: yarn
    interval: 300
+   config:
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: "admin"
+     tooltip: Password for ambari server
+     label: ambari_username
+     fieldName: user
+   - Mandatory: true
+     min: ''
+     dataType: password
+     max: ''
+     defaultValue: "MapleAdmin123$"
+     tooltip: Password for ambari server
+     label: Password
+     fieldName: password
+
 
 #mapping for namenode plugin
 namenode:
  - name: namenode
    interval: 300
+   config:
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: "admin"
+     tooltip: Password for ambari server
+     label: ambari_username
+     fieldName: user
+   - Mandatory: true
+     min: ''
+     dataType: password
+     max: ''
+     defaultValue: "MapleAdmin123$"
+     tooltip: Password for ambari server
+     label: Password
+     fieldName: password
+
 
 spark:
  - name: spark
    interval: 300
+   config:
+   - Mandatory: true
+     min: ''
+     dataType: string
+     max: ''
+     defaultValue: "admin"
+     tooltip: Password for ambari server
+     label: ambari_username
+     fieldName: user
+   - Mandatory: true
+     min: ''
+     dataType: password
+     max: ''
+     defaultValue: "MapleAdmin123$"
+     tooltip: Password for ambari server
+     label: Password
+     fieldName: password
+
+
 #mapping for esa plugin
 #esalogstore:
 # - name: esalogstore

@@ -11,7 +11,6 @@ from common.util import *
 
 logger = expoter_logging(COLLECTD_MGR)
 JCMD_PID_DICT = dict()
-URL = "https://localhost:8443/gateway/default"
 SERVICE_NAME = {
     "elasticsearch": "ES",
     "apache": "apache",
@@ -94,7 +93,7 @@ HADOOP_SERVICE = {
                             },
     "hdfs-namenode": { \
          "service-name": "org.apache.hadoop.hdfs.server.namenode.NameNode",
-         "service-list": ["hdfs-namenode", "hdfs-audit", "hdfs-gc","hdfs-zkfc-manager"]
+         "service-list": ["hdfs-namenode", "hdfs-audit", "hdfs-gc", "hdfs-zkfc-manager"]
                      },
     "hdfs-journalnode": { \
          "service-name": "org.apache.hadoop.hdfs.qjournal.server.JournalNode",
@@ -102,7 +101,7 @@ HADOOP_SERVICE = {
                         },
     "oozie-server": { \
          "service-name": "org.apache.catalina.startup.Bootstrap",
-         "service-list": ["oozie-ops", "oozie-audit", "oozie-error-logs", "oozie-logs","oozie-instrumentation","oozie-jpa"],
+         "service-list": ["oozie-ops", "oozie-audit", "oozie-error-logs", "oozie-logs", "oozie-instrumentation", "oozie-jpa"],
          "service-cmd-line": "oozie-server"
                     }
 }
@@ -121,6 +120,12 @@ def add_pid_usage(pid, pid_list):
     pid_info["status"] = "running"
     pid_list.append(pid_info)
 
+def is_service_name(pid, service_cmd_line):
+    """Check if PID is for oozie_server"""
+    pid_detail = psutil.Process(pid)
+    if re.search(service_cmd_line, str(pid_detail.cmdline())):
+        return True
+    return False
 
 def check_jmx_enabled(pid):
     """Check if jmx enabled for java process"""
@@ -150,6 +155,7 @@ def parser_jcmd(service):
             if java_avail:
                 return JCMD_PID_DICT
 
+            #print( exec_subprocess("sudo jcmd | awk '{print $1 \" \" $2}'"))
             res = exec_subprocess("sudo jcmd | awk '{print $1 \" \" $2}'")
             if not res:
                 return pid_list
@@ -158,8 +164,8 @@ def parser_jcmd(service):
                 if not line:
                     continue
                 out_list = line.split()
-                JCMD_PID_DICT[out_list[1]] = int(out_list[0])
-            #print(JCMD_PID_DICT)
+                if len(out_list) > 1:
+                    JCMD_PID_DICT[out_list[1]] = int(out_list[0])
 
         for service_name, pid in JCMD_PID_DICT.items():
             if re.search(service, service_name):
@@ -167,6 +173,7 @@ def parser_jcmd(service):
         #print("{} pid list {}".format(service, pid_list))
         return pid_list
     except:
+        logger.error("JCMD parser error")
         return pid_list
 
 def get_hadoop_running_service_list():
@@ -175,8 +182,15 @@ def get_hadoop_running_service_list():
     '''
     hadoop_running_service_list = list()
     for name, service_name in HADOOP_SERVICE.items():
-        if parser_jcmd(service_name['service-name']):
-            hadoop_running_service_list.append(name)
+        pid = parser_jcmd(service_name['service-name'])
+        if not pid:
+            continue
+
+        if 'service-cmd-line' in service_name.keys():
+            if is_service_name(pid[0], service_name['service-cmd-line']):
+                hadoop_running_service_list.append(name)
+            continue
+        hadoop_running_service_list.append(name)
     return hadoop_running_service_list
 
 def get_process_id(service):
@@ -214,7 +228,7 @@ def get_process_id(service):
         process_id = ""
         for proc in psutil.process_iter(attrs=['pid', 'name', 'username', 'cmdline']):
             # Java processes
-            if service in ["elasticsearch", "cassandra", "knox"]:
+            if service in ["elasticsearch", "cassandra"]:
                 if proc.info.get("name") == "java" and proc.info.get(
                         "username") == service:
                     process_id = proc.info.get("pid")
@@ -298,35 +312,8 @@ def add_ports(service_dict, service):
     service_dict['ports'] = ports
     return service_dict
 
-def get_cluster():
-    res_json = requests.get(URL+"/ambari/api/v1/clusters", auth=("admin", "admin"), verify=False)
-    if res_json.status_code != 200:
-        return None
-    cluster_name = res_json.json()["items"][0]["Clusters"]["cluster_name"]
-    return cluster_name
-
-def get_hadoop_service_list(discovered_service_list):
-    hadoop_agent_service_list = list()
-
-    knox_pid = get_process_id("knox")
-    if not knox_pid:
-        return hadoop_agent_service_list
-
-    cluster_name = get_cluster()
-    if not cluster_name:
-        return hadoop_agent_Service_list
-    for service in ["OOZIE", "YARN", "HDFS", "SPARK2"]:
-        if (service == "OOZIE" or service == "SPARK2") and not is_discover_service("redis", discovered_service_list):
-            continue
-        res_json = requests.get(URL+"/ambari/api/v1/clusters/%s/services/%s" %(cluster_name, service), auth=("admin", "admin"), verify=False)
-        if res_json.status_code != 200:
-            continue
-        if res_json.json()["ServiceInfo"]["state"] != "INSTALLED" and res_json.json()["ServiceInfo"]["state"] != "STARTED":
-            continue
-        hadoop_agent_service_list.append(service)
-    return hadoop_agent_service_list
-
 def is_discover_service(service_name, discovered_service_list):
+    """ is discivered services? """
     if SERVICE_NAME[service_name] in discovered_service_list:
         return True
     return False
@@ -414,6 +401,7 @@ def add_agent_config(service, service_dict):
     return service_dict
 
 def check_nginx_plus():
+    """ check nginx plus service  """
     logger.error('new in check condition')
     res = exec_subprocess("service nginx status")
     return res and 'Plus' in res.splitlines()[0]
@@ -473,32 +461,33 @@ def discover_services():
                 final_dict = add_agent_config(service, logger_dict)
 
             discovery[SERVICE_NAME[service]].append(final_dict)
-
-    for service in get_hadoop_service_list(discovery.keys()):
-        logger.info("Hadoop service is %s" %service)
-        discovery[service] = []
-        port_dict = {}
-        port_dict["agentConfig"] = {}
-        logger_dict = add_logger_config(port_dict, service)
-        final_dict = add_agent_config(service, logger_dict)
-        discovery[service].append(final_dict)
-
     if 'nginx' in discovery and check_nginx_plus():
         logger.info('in oonnnn')
         var = discovery.pop('nginx')[0]
         var['agentConfig'] = {'name':'nginxplus'}
         discovery['nginxplus'] = [var]
 
+    # Hadoop plugin Start
+    if parser_jcmd("org.apache.ambari.server.controller.AmbariServer"):
+        for service in ["OOZIE", "HDFS", "YARN", "SPARK2"]:
+            logger.info("Hadoop service is %s" %service)
+            discovery[service] = []
+            port_dict = {}
+            port_dict["agentConfig"] = {}
+            logger_dict = add_logger_config(port_dict, service)
+            final_dict = add_agent_config(service, logger_dict)
+            discovery[service].append(final_dict)
+
+
+    # Hadoop Log Start
     try:
         hadoop_dict = dict()
         hadoop_dict["loggerConfig"] = list()
         hadoop_dict["agentConfig"] = dict()
         hadoop_dict['pollerConfig'] = dict()
-        
+
         for service_name in get_hadoop_running_service_list():
             logger.info("Hadoop services are %s" %service_name)
-            #print ("Hadoop services are %s" %service_name)
-            #print(HADOOP_SERVICE[service_name])
 
             for service in HADOOP_SERVICE[service_name]['service-list']:
                 logger.info("service detail: {}".format(service))
@@ -515,9 +504,7 @@ def discover_services():
         if hadoop_dict["loggerConfig"]:
             discovery["hadoop-logs"] = list()
             discovery["hadoop-logs"].append(hadoop_dict)
-            print(discovery["hadoop-logs"])
-    except:
-        pass
+            #print(discovery["hadoop-logs"])
+    except Exception as e: print(e)
     logger.info("Discovered service %s", discovery)
     return discovery
-
