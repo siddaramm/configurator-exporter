@@ -562,7 +562,7 @@ oozie:
      min: ''
      dataType: password
      max: ''
-     defaultValue: "MapleAdmin123"
+     defaultValue: "MapleAdmin123$"
      tooltip: Password for ambari server
      label: Password
      fieldName: password
@@ -584,7 +584,7 @@ yarn:
      min: ''
      dataType: password
      max: ''
-     defaultValue: "MapleAdmin123"
+     defaultValue: "MapleAdmin123$"
      tooltip: Password for ambari server
      label: Password
      fieldName: password
@@ -607,7 +607,7 @@ namenode:
      min: ''
      dataType: password
      max: ''
-     defaultValue: "MapleAdmin123"
+     defaultValue: "MapleAdmin123$"
      tooltip: Password for ambari server
      label: Password
      fieldName: password
@@ -629,7 +629,7 @@ spark:
      min: ''
      dataType: password
      max: ''
-     defaultValue: "MapleAdmin123"
+     defaultValue: "MapleAdmin123$"
      tooltip: Password for ambari server
      label: Password
      fieldName: password
