@@ -103,7 +103,11 @@ HADOOP_SERVICE = {
          "service-name": "org.apache.catalina.startup.Bootstrap",
          "service-list": ["oozie-ops", "oozie-audit", "oozie-error-logs", "oozie-logs", "oozie-instrumentation", "oozie-jpa"],
          "service-cmd-line": "oozie-server"
-                    }
+                    },
+    "hdfs-datanode": { \
+    "service-name": "org.apache.hadoop.hdfs.server.datanode.DataNode",
+    "service-list": ["hdfs-datanode"]
+     }
 }
 
 def add_pid_usage(pid, pid_list):
@@ -488,7 +492,6 @@ def discover_services():
 
         for service_name in get_hadoop_running_service_list():
             logger.info("Hadoop services are %s" %service_name)
-
             for service in HADOOP_SERVICE[service_name]['service-list']:
                 logger.info("service detail: {}".format(service))
                 port_dict = dict()
@@ -496,7 +499,6 @@ def discover_services():
                 port_dict["agentConfig"] = dict()
                 #print(service)
                 final_dict = add_logger_config(port_dict, service)
-                #print(final_dict)
                 if not final_dict["loggerConfig"]:
                     continue
                 hadoop_dict["loggerConfig"].append(final_dict["loggerConfig"][0])

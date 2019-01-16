@@ -613,3 +613,23 @@ oozie-ops:
     message: ${record['message']}
   match:
     flush_interval: 30s
+
+hdfs-datanode:
+  source:
+    '@type': tail
+    path: '/var/log/hadoop/hdfs/hadoop-hdfs-datanode-*.log'
+    pos_file: '/var/log/td-agent/hadoop-hdfs-datanode.pos'
+  multiline:
+    format_firstline: '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*/'
+    expression:
+      - '/^(?<time>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\,[^ ]*[ ]*(?<level>[^ ]*) (?<message>[\s\S]*)/'
+  transform:
+    node: '#{Socket.gethostname}'
+    file: '${tag_suffix[1]}'
+    _plugin: 'hadoop-logs'
+    _documentType: 'dataNodeLog'
+    time: ${require 'time'; time.to_time.to_i}
+    level: ${n_level='warning'; if record['level'].strip().downcase == 'warn' then n_level else record['level'].strip().downcase end}
+    message: ${record['message']}
+  match:
+    flush_interval: 30s
